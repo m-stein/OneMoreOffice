@@ -1,22 +1,7 @@
 import { GameObject } from "./game_object";
+import { Matrix3 } from "./matrix_3";
 import { Sprite } from "./sprite";
 import { Vector2 } from "./vector_2";
-
-export class TileMap
-{
-    constructor()
-    {
-        this.map = [];
-    }
-
-    addTile(row, col, tile)
-    {
-        if (typeof this.map[row] === 'undefined') {
-            this.map[row] = []
-        }
-        this.map[row][col] = tile;
-    }
-}
 
 export class Tile
 {
@@ -82,28 +67,18 @@ export class OfficeFloor extends GameObject
     {
 
         super(tile.position, "OfficeFloor");
-        this.tileMap = new TileMap();
+        this.tileMap = new Matrix3();
         this.tiledRect = new TiledRectangle(tileWidth, tileHeight, size);
         this.tiles = [];
         this.tiledRect.tiles.forEach((tile) => {
             let floorTile = new FloorTile(tile, image);
             this.tiles.push(floorTile);
-            this.tileMap.addTile(tile.row, tile.col, floorTile);
+            this.tileMap.insert(floorTile, tile.row, tile.col, 0);
         });
         this.tiles.forEach((tile) => {
             this.addChild(tile);
         });
         this.tile = tile;
-    }
-
-    rightCorner()
-    {
-        return this.position.copy().add(this.rightCornerOffset);
-    }
-    
-    leftCorner()
-    {
-        return this.position.copy().add(this.leftCornerOffset);
     }
 
     update(deltaTimeMs)
@@ -124,7 +99,7 @@ export class LevelFloor extends GameObject
         super(position, "LevelFloor")
         this.officeSize = 3;
         this.size = size;
-        this.tileMap = new TileMap();
+        this.tileMap = new Matrix3();
         this.floorTileWidth = 32;
         this.floorTileHeight = 16;
         this.officeMargin = 6;
@@ -140,7 +115,7 @@ export class LevelFloor extends GameObject
                 this.officeSize);
 
             this.offices.push(office);
-            this.tileMap.addTile(tile.row, tile.col, office);
+            this.tileMap.insert(office, tile.row, tile.col, 0);
         });
         this.offices.forEach((office) => {
             this.addChild(office);
@@ -149,8 +124,8 @@ export class LevelFloor extends GameObject
 
     tilePosition(office, tile)
     {
-        const officeTile = this.tileMap.map[office[0]][office[1]];
-        const floorTile = officeTile.tileMap.map[tile[0]][tile[1]];
+        const officeTile = this.tileMap.item(office[0], office[1], 0);
+        const floorTile = officeTile.tileMap.item(tile[0], tile[1], 0);
         return this.position.copy().add(officeTile.position).add(floorTile.position);
     }
 
