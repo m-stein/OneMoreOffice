@@ -2,31 +2,31 @@ export class Matrix3
 {
     constructor() { }
 
-    insert(object, x, y, z)
+    insert(object, at)
     {
         if (typeof this.array === 'undefined') {
             this.array = [];
         }
-        if (typeof this.array[x] === 'undefined') {
-            this.array[x] = [];
+        if (typeof this.array[at.x] === 'undefined') {
+            this.array[at.x] = [];
         }
-        if (typeof this.array[x][y] === 'undefined') {
-            this.array[x][y] = [];
+        if (typeof this.array[at.x][at.y] === 'undefined') {
+            this.array[at.x][at.y] = [];
         }
-        this.array[x][y][z] = object;
+        this.array[at.x][at.y][at.z] = object;
     }
 
-    item(x, y, z)
+    item(at)
     {
         if (typeof this.array === 'undefined') {
             return undefined;
         }
-        if (typeof this.array[x] === 'undefined') {
+        if (typeof this.array[at.x] === 'undefined') {
             return undefined;
         }
-        if (typeof this.array[x][y] === 'undefined') {
+        if (typeof this.array[at.x][at.y] === 'undefined') {
             return undefined;
         }
-        return this.array[x][y][z];
+        return this.array[at.x][at.y][at.z];
     }
 } 
