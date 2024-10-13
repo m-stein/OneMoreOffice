@@ -2,6 +2,7 @@ import { GameObject } from "./game_object";
 import { Matrix3 } from "./matrix_3";
 import { Sprite } from "./sprite";
 import { Vector2 } from "./vector_2";
+import { Vector3 } from "./vector_3";
 
 export class Tile
 {
@@ -73,7 +74,7 @@ export class OfficeFloor extends GameObject
         this.tiledRect.tiles.forEach((tile) => {
             let floorTile = new FloorTile(tile, image);
             this.tiles.push(floorTile);
-            this.tileMap.insert(floorTile, tile.row, tile.col, 0);
+            this.tileMap.insert(floorTile, new Vector3(tile.row, tile.col, 0));
         });
         this.tiles.forEach((tile) => {
             this.addChild(tile);
@@ -115,7 +116,7 @@ export class LevelFloor extends GameObject
                 this.officeSize);
 
             this.offices.push(office);
-            this.tileMap.insert(office, tile.row, tile.col, 0);
+            this.tileMap.insert(office, new Vector3(tile.row, tile.col, 0));
         });
         this.offices.forEach((office) => {
             this.addChild(office);
@@ -124,8 +125,8 @@ export class LevelFloor extends GameObject
 
     tilePosition(office, tile)
     {
-        const officeTile = this.tileMap.item(office[0], office[1], 0);
-        const floorTile = officeTile.tileMap.item(tile[0], tile[1], 0);
+        const officeTile = this.tileMap.item(new Vector3(office[0], office[1], 0));
+        const floorTile = officeTile.tileMap.item(new Vector3(tile[0], tile[1], 0));
         return this.position.copy().add(officeTile.position).add(floorTile.position);
     }
 
