@@ -6,6 +6,8 @@ import { Vector2 } from './vector_2.js';
 import { Camera } from './camera.js';
 import { Sprite } from './sprite.js';
 import { LevelFloor, OfficeFloor } from './floor.js';
+import { IsometricFormation3 } from './isometric_formation.js';
+import { Vector3 } from './vector_3.js';
 
 class Main extends GameObject
 {
@@ -30,11 +32,49 @@ class Main extends GameObject
                 })
             );
         });
+        this.if3 = new IsometricFormation3(new Vector2(400, 100), "if3", 32, 8);
+        this.if3.insert(
+            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
+            new Vector3(0, 0, 0)
+        )
+        this.if3.insert(
+            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
+            new Vector3(0, 1, 0)
+        )
+        this.if3.insert(
+            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
+            new Vector3(1, 0, 0)
+        )
+        this.if3.insert(
+            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
+            new Vector3(2, 2, 0)
+        )
+        this.if3.insert(
+            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
+            new Vector3(1, 2, 0)
+        )
+        this.if3.insert(
+            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
+            new Vector3(2, 1, 0)
+        )
+        this.if3.insert(
+            new Sprite({sourceImage: this.resources.imageRegistry.plant, position: new Vector2(0, 20) }),
+            new Vector3(0, 1, 1)
+        )
+        this.if3.insert(
+            new Sprite({sourceImage: this.resources.imageRegistry.plant, position: new Vector2(0, 20) }),
+            new Vector3(2, 2, 1)
+        )
+        this.if3.insert(
+            new Sprite({sourceImage: this.resources.imageRegistry.plant, position: new Vector2(0, 0) }),
+            new Vector3(3, 2, 0)
+        )
         this.addChild(this.camera);
         this.addChild(this.levelFloor);
         this.plants.forEach((plant) => {
             this.addChild(plant);
         });
+        this.addChild(this.if3);
         this.gameEngine = new GameEngine
         ({
             rootGameObj: this,

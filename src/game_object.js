@@ -7,9 +7,18 @@ export class GameObject
         this.position = position;
     }
 
-    addChild(child)
+    addChild(child, index)
     {
-        this.children.push(child);
+        if (typeof index === 'undefined') {
+            this.children.push(child);
+        } else {
+            this.children[index] = child;
+        }
+    }
+
+    child(index)
+    {
+        return this.children[index];
     }
 
     removeChild(child)
