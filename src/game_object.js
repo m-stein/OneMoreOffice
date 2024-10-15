@@ -16,7 +16,7 @@ export class GameObject
         }
     }
 
-    child(index)
+    childAt(index)
     {
         return this.children[index];
     }

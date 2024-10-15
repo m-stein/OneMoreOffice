@@ -1,18 +1,35 @@
 import { GameObject } from "./game_object";
 import { Vector2 } from './vector_2.js';
 
+export class IsometricFormationTile extends GameObject
+{
+    constructor(position, label) { super(position, label); }
+
+    update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
+
+    draw(drawingContext) { this.drawChildren(drawingContext); }
+}
+
 export class IsometricFormation1 extends GameObject
 {
-    constructor(position, label, tileQuarterIsoWidth)
+    constructor(position, label, tileQuartIsoWidth)
     {
         super(position, label);
-        this.tileQuarterIsoWidth = tileQuarterIsoWidth;
+        this.tileQuartIsoWidth = tileQuartIsoWidth;
     }
 
     insert(object, at)
     {
-        object.position.x += at * this.tileQuarterIsoWidth * 4;
-        this.addChild(object, at);
+        let child = this.childAt(at);
+        if (typeof child === 'undefined') {
+
+            child = new IsometricFormationTile(
+                new Vector2(at * this.tileQuartIsoWidth * 4, 0),
+                this.label, this.tileQuartIsoWidth);
+
+            this.addChild(child, at);
+        }
+        child.addChild(object);
     }
     
     update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
@@ -22,19 +39,21 @@ export class IsometricFormation1 extends GameObject
 
 export class IsometricFormation2 extends GameObject
 {
-    constructor(position, label, tileQuarterIsoWidth)
+    constructor(position, label, tileHeight, tileQuartIsoWidth)
     {
         super(position, label);
-        this.tileQuarterIsoWidth = tileQuarterIsoWidth;
+        this.tileHeight = tileHeight;
+        this.tileQuartIsoWidth = tileQuartIsoWidth;
     }
 
     insert(object, at)
     {
-        let child = this.child(at.y);
+        let child = this.childAt(at.y);
         if (typeof child === 'undefined') {
+
             child = new IsometricFormation1(
-                new Vector2(at.y * -this.tileQuarterIsoWidth * 2, at.y * this.tileQuarterIsoWidth),
-                this.label, this.tileQuarterIsoWidth);
+                new Vector2(0, at.y * -this.tileHeight),
+                this.label, this.tileQuartIsoWidth);
 
             this.addChild(child, at.y);
         }
@@ -48,25 +67,27 @@ export class IsometricFormation2 extends GameObject
 
 export class IsometricFormation3 extends GameObject
 {
-    constructor(position, label, tileHeight, tileQuarterIsoWidth)
+    constructor(position, label, tileHeight, tileQuartIsoWidth)
     {
         super(position, label);
         this.tileHeight = tileHeight;
-        this.tileQuarterIsoWidth = tileQuarterIsoWidth;
+        this.tileQuartIsoWidth = tileQuartIsoWidth;
     }
 
     insert(object, at)
     {
         at.y += at.x;
-        let child = this.child(at.z);
+        let child = this.childAt(at.y);
         if (typeof child === 'undefined') {
-            child = new IsometricFormation2(
-                new Vector2(0, at.z * -this.tileHeight),
-                this.label, this.tileQuarterIsoWidth);
 
-            this.addChild(child, at.z);
+            child = new IsometricFormation2(
+                new Vector2(at.y * -this.tileQuartIsoWidth * 2,
+                            at.y * this.tileQuartIsoWidth),
+                this.label, this.tileHeight, this.tileQuartIsoWidth);
+
+            this.addChild(child, at.y);
         }
-        child.insert(object, new Vector2(at.x, at.y));
+        child.insert(object, new Vector2(at.x, at.z));
     }
 
     update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
