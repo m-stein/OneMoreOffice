@@ -5,7 +5,7 @@ import { GameObject } from './game_object.js';
 import { Vector2 } from './vector_2.js';
 import { Camera } from './camera.js';
 import { Sprite } from './sprite.js';
-import { LevelFloor, OfficeFloor } from './floor.js';
+import { OfficeLevel, Office } from './office_level.js';
 import { IsometricFormation3 } from './isometric_formation.js';
 import { Vector3 } from './vector_3.js';
 
@@ -17,64 +17,9 @@ class Main extends GameObject
         this.resources = new Resources();
         this.canvas = document.querySelector('#gameCanvas');
         this.camera = new Camera(this.resources.imageRegistry.sky, this.canvas.width, this.canvas.height);
-        this.levelFloor = new LevelFloor(this.resources, new Vector2(200, 100), 3);
-        this.plantPositions = [
-            { office: [2, 1], tile: [0, 0] },
-            { office: [2, 1], tile: [0, 1] },
-            { office: [0, 2], tile: [2, 1] },
-        ];
-        this.plants = [];
-        this.plantPositions.forEach((plantPos) => {
-            this.plants.push(
-                new Sprite({
-                    sourceImage: this.resources.imageRegistry.plant,
-                    position: this.levelFloor.tilePosition(plantPos.office, plantPos.tile).add([0, -12]),
-                })
-            );
-        });
-        this.if3 = new IsometricFormation3(new Vector2(400, 100), "if3", 32, 8);
-        this.if3.insert(
-            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
-            new Vector3(0, 0, 0)
-        )
-        this.if3.insert(
-            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
-            new Vector3(0, 1, 0)
-        )
-        this.if3.insert(
-            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
-            new Vector3(1, 0, 0)
-        )
-        this.if3.insert(
-            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
-            new Vector3(2, 2, 0)
-        )
-        this.if3.insert(
-            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
-            new Vector3(1, 2, 0)
-        )
-        this.if3.insert(
-            new Sprite({sourceImage: this.resources.imageRegistry.floor, position: new Vector2(0, 0) }),
-            new Vector3(2, 1, 0)
-        )
-        this.if3.insert(
-            new Sprite({sourceImage: this.resources.imageRegistry.plant, position: new Vector2(0, 20) }),
-            new Vector3(0, 1, 1)
-        )
-        this.if3.insert(
-            new Sprite({sourceImage: this.resources.imageRegistry.plant, position: new Vector2(0, 20) }),
-            new Vector3(2, 2, 1)
-        )
-        this.if3.insert(
-            new Sprite({sourceImage: this.resources.imageRegistry.plant, position: new Vector2(0, 0) }),
-            new Vector3(3, 2, 0)
-        )
+        this.officeLevel = new OfficeLevel(this.resources, new Vector2(200, 100));
         this.addChild(this.camera);
-        this.addChild(this.levelFloor);
-        this.plants.forEach((plant) => {
-            this.addChild(plant);
-        });
-        this.addChild(this.if3);
+        this.addChild(this.officeLevel);
         this.gameEngine = new GameEngine
         ({
             rootGameObj: this,
