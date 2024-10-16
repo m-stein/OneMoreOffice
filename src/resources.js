@@ -3,6 +3,7 @@ export class Resources
     constructor()
     {
         this.imageRegistry = {
+            desk: { src: "/sprites/desk.png" },
             plant: { src: "/sprites/plant.png" },
             floor: { src: "/sprites/floor.png" },
             sky: { src: "/sprites/sky.png" },
