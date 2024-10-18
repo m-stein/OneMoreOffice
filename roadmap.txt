@@ -2,6 +2,11 @@ Milestone:
 The user can play the game with all the basioc logic in a GUI that reflects
 the basic design decisions. Developers can easily add levels.
 
+    Bug:
+    Usually when loading the game from a vite server for the first time,
+    only the background image appears but not the offices and objects.
+    A reload of the page fixes the issue.
+
     Feature:
     Display 4 additional offices as options for the user to choose from.
 
