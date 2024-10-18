@@ -54,9 +54,24 @@ class Main extends GameObject
             });
             officeX = (officeX + 1) % OfficeLevel.size;
         });
-        this.officeLevel = new OfficeLevel(this.resources, new Vector2(200, 110), this.officeLevelObjects);
+        const officeLevelX = 200;
+        this.officeLevel = new OfficeLevel(this.resources, new Vector2(officeLevelX, 50), this.officeLevelObjects);
+        this.officeOptions = [];
+        const officeMargin = 2;
+        const officeWidth = Office.tileIsoQuartWidth * 4 * Office.size;
+        const numOfficeOptions = 4;
+        const officeOptionsWidth = numOfficeOptions * officeWidth + (numOfficeOptions - 1) * officeMargin;
+        const officeOptionsX = officeLevelX + (Office.tileIsoQuartWidth * 2) - officeOptionsWidth / 2;
+        const officeOffset = Office.tileIsoQuartWidth * 4 * Math.floor(Office.size / 2);
+        for (let i = 0; i < numOfficeOptions; i++) {
+            const office = new Office(new Vector2(officeOptionsX + i * (officeWidth + officeMargin) + officeOffset, 230), this.resources);
+            this.officeOptions.push(office);
+        }
         this.addChild(this.camera);
         this.addChild(this.officeLevel);
+        this.officeOptions.forEach((office) => {
+            this.addChild(office);
+        });
         this.gameEngine = new GameEngine
         ({
             rootGameObj: this,
