@@ -1,0 +1,21 @@
+Milestone:
+The user can play the game with all the basioc logic in a GUI that reflects
+the basic design decisions. Developers can easily add levels.
+
+    Feature:
+    Display 4 additional offices as options for the user to choose from.
+
+    Feature:
+    When the user clicks on one of the additional 4 offices, the game
+    gives feedback whether it is the correct one.
+
+    Feature:
+    Levels are loaded from dedicated text files.
+
+    Feature:
+    When the user has found the correct missing office, a new level is
+    loaded.
+
+    Feature:
+    Levels are grouped by their difficulty and the player has a
+    difficulty-level state that affects which levels are choosen.
