@@ -57,7 +57,6 @@ export class OfficeLevel extends IsometricFormation3
             for (let x = 0; x < OfficeLevel.size; x++) {
                 const office = new Office(new Vector2(0, 0), resources);
                 this.insert(office, new Vector3(x, y, 0));
-                console.log("add office ", x, y);
                 this.offices.insert(office, new Vector2(x, y));
             }
         }

@@ -15,15 +15,12 @@ export class Matrix2
 
     item(at)
     {
-        console.log(at);
         if (typeof this.array === 'undefined') {
             return undefined;
         }
-        console.log(at);
         if (typeof this.array[at.x] === 'undefined') {
             return undefined;
         }
-        console.log(at);
         return this.array[at.x][at.y];
     }
 }
