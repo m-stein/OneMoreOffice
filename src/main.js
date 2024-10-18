@@ -4,42 +4,54 @@ import { GameEngine } from './game_engine.js';
 import { GameObject } from './game_object.js';
 import { Vector2 } from './vector_2.js';
 import { Camera } from './camera.js';
-import { Sprite } from './sprite.js';
-import { Matrix2 } from './matrix_3.js';
 import { OfficeLevel, Office, Desk, Plant } from './office_level.js';
-import { IsometricFormation3 } from './isometric_formation.js';
 import { Vector3 } from './vector_3.js';
+
+function randomIntInclusive(min, max)
+{
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}
+  
 
 class Main extends GameObject
 {
+    static numOfficeOptions = 4;
+
     constructor()
     {
         super(new Vector2(0, 0), 'Main');
         this.resources = new Resources();
         this.canvas = document.querySelector('#gameCanvas');
         this.camera = new Camera(this.resources.imageRegistry.sky, this.canvas.width, this.canvas.height);
-        this.officeLevelObjects = [
-            /*
-            [ "plant", 0, 0, 0, 0 ],
-            [ "plant", 1, 2, 0, 0 ],
-            [ "plant", 2, 0, 1, 2 ],
-            */
-        ];
-        this.objects = [
-            [1,0,0], [0,0,0], [0,0,0],
-            [0,1,0], [0,2,0], [0,0,0],
-            [2,0,0], [0,0,2], [0,0,0],
+        this.officeLevelObjects = [];
+        this.officeOptionsObjects = [];
 
-            [0,0,0], [0,0,0], [0,0,0],
-            [0,0,0], [0,2,1], [0,0,0],
-            [0,0,0], [0,0,1], [0,0,0],
-            
-            [0,1,0], [0,0,0], [1,1,0],
-            [2,0,0], [0,0,0], [0,2,0],
-            [2,0,0], [0,0,0], [0,0,0],
-        ];
+        this.levelConfig = {
+            "solution": [
+                [1,0,0], [0,0,0], [0,0,0],
+                [0,1,0], [0,2,0], [0,0,0],
+                [2,0,0], [0,0,2], [0,0,1],
+    
+                [0,0,0], [0,0,0], [0,0,0],
+                [0,0,0], [0,2,1], [0,0,0],
+                [0,0,0], [0,0,1], [0,0,2],
+                
+                [0,1,0], [0,0,0], [1,1,0],
+                [2,0,0], [0,0,0], [0,2,0],
+                [2,0,0], [0,0,2], [0,1,1],
+            ],
+            "baddies": [
+                [0,1,0], [1,0,0], [0,0,0],
+                [0,1,0], [0,1,0], [1,1,1],
+                [0,1,0], [0,0,1], [0,0,0],
+            ]
+        };
+
+        const correctAnswerIdx = randomIntInclusive(0, Main.numOfficeOptions - 1);
         let officeX = 0;
-        this.objects.forEach((outerItem, outerIdx) => {
+        this.levelConfig["solution"].forEach((outerItem, outerIdx) => {
             outerItem.forEach((innerItem, innerIdx) => {
                 if (innerItem == 0) {
                     return;
@@ -47,54 +59,70 @@ class Main extends GameObject
                 const y = Math.floor(outerIdx / OfficeLevel.size);
                 const tileY = y % OfficeLevel.size;
                 const officeY = Math.floor(y / OfficeLevel.size);
-                switch (innerItem) {
-                    case 1: this.officeLevelObjects.push([ "plant", officeX, officeY, innerIdx, tileY ]); break;
-                    case 2: this.officeLevelObjects.push([ "desk", officeX, officeY, innerIdx, tileY ]); break;
+                if (officeX < OfficeLevel.size - 1 ||
+                    officeY < OfficeLevel.size - 1)
+                {
+                    switch (innerItem) {
+                        case 1: this.officeLevelObjects.push([ "plant", officeX, officeY, innerIdx, tileY ]); break;
+                        case 2: this.officeLevelObjects.push([ "desk", officeX, officeY, innerIdx, tileY ]); break;
+                    }
+                } else if (officeX == OfficeLevel.size - 1 &&
+                           officeY == OfficeLevel.size - 1)
+                {
+                    switch (innerItem) {
+                        case 1: this.officeOptionsObjects.push([ "plant", correctAnswerIdx, innerIdx, tileY ]); break;
+                        case 2: this.officeOptionsObjects.push([ "desk", correctAnswerIdx, innerIdx, tileY ]); break;
+                    }
+                } else {
+                    console.log("Warning: Malformed level config!");
                 }
             });
             officeX = (officeX + 1) % OfficeLevel.size;
         });
         const officeLevelX = 200;
         this.officeLevel = new OfficeLevel(this.resources, new Vector2(officeLevelX, 50), this.officeLevelObjects);
-        this.officeOptionsConfig = [
-            [0,1,0], [0,0,0], [1,1,0], [1,0,0],
-            [2,0,0], [0,0,0], [0,2,0], [0,2,0],
-            [2,0,0], [0,0,0], [0,0,0], [2,2,0],
-        ];
+
         this.officeOptions = [];
-        this.officeOptionsObjects = [];
         const officeMargin = 2;
         const officeWidth = Office.tileIsoQuartWidth * 4 * Office.size;
-        const numOfficeOptions = 4;
-        const officeOptionsWidth = numOfficeOptions * officeWidth + (numOfficeOptions - 1) * officeMargin;
+        const officeOptionsWidth = Main.numOfficeOptions * officeWidth + (Main.numOfficeOptions - 1) * officeMargin;
         const officeOptionsX = officeLevelX + (Office.tileIsoQuartWidth * 2) - officeOptionsWidth / 2;
         const officeOffset = Office.tileIsoQuartWidth * 4 * Math.floor(Office.size / 2);
-        for (let i = 0; i < numOfficeOptions; i++) {
+        for (let i = 0; i < Main.numOfficeOptions; i++) {
             const office = new Office(new Vector2(officeOptionsX + i * (officeWidth + officeMargin) + officeOffset, 230), this.resources);
             this.officeOptions.push(office);
         }
-        let officeOptionX = 0;
-        this.officeOptionsConfig.forEach((outerItem, outerIdx) => {
-            outerItem.forEach((innerItem, innerIdx) => {
-                if (innerItem == 0) {
-                    return;
-                }
-                const tileY = Math.floor(outerIdx / numOfficeOptions);
-                switch (innerItem) {
-                    case 1: this.officeOptionsObjects.push([ "plant", officeOptionX, innerIdx, tileY ]); break;
-                    case 2: this.officeOptionsObjects.push([ "desk", officeOptionX, innerIdx, tileY ]); break;
-                }
+        const numBaddies = Main.numOfficeOptions - 1;
+        this.baddieConfigs = [];
+        this.levelConfig["baddies"].forEach((item, idx) => {
+            if (typeof this.baddieConfigs[idx % numBaddies] === "undefined") {
+                this.baddieConfigs[idx] = [];
+            }
+            this.baddieConfigs[idx % numBaddies].push(item);
+        });
+        console.log(this.baddieConfigs);
+        
+        let officeIdx = correctAnswerIdx == 0 ? 1 : 0;
+        this.baddieConfigs.forEach((baddie) => {
+            baddie.forEach((row, y) => {
+                row.forEach((cell, x) => {
+                    switch (cell) {
+                        case 1: console.log("plant", officeIdx, x, y); this.officeOptionsObjects.push([ "plant", officeIdx, x, y ]); break;
+                        case 2: console.log("desk", officeIdx, x, y); this.officeOptionsObjects.push([ "desk", officeIdx, x, y ]); break;
+                    }
+                });
             });
-            officeOptionX = (officeOptionX + 1) % numOfficeOptions;
+            officeIdx++;
+            if (officeIdx == correctAnswerIdx) {
+                officeIdx++;
+            }
         });
         this.officeOptionsObjects.forEach((obj) => {
             switch(obj[0]) {
                 case "plant":
-                    console.log("Add " + obj);
                     this.officeOptions[obj[1]].insert(new Plant(this.resources), new Vector3(obj[2], obj[3], 1));
                     break;
                 case "desk":
-                    console.log("Add " + obj);
                     this.officeOptions[obj[1]].insert(new Desk(this.resources), new Vector3(obj[2], obj[3], 1));
                     break;
             }
