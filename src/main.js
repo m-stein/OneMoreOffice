@@ -6,7 +6,7 @@ import { Vector2 } from './vector_2.js';
 import { Camera } from './camera.js';
 import { Sprite } from './sprite.js';
 import { Matrix2 } from './matrix_3.js';
-import { OfficeLevel, Office } from './office_level.js';
+import { OfficeLevel, Office, Desk, Plant } from './office_level.js';
 import { IsometricFormation3 } from './isometric_formation.js';
 import { Vector3 } from './vector_3.js';
 
@@ -56,7 +56,13 @@ class Main extends GameObject
         });
         const officeLevelX = 200;
         this.officeLevel = new OfficeLevel(this.resources, new Vector2(officeLevelX, 50), this.officeLevelObjects);
+        this.officeOptionsConfig = [
+            [0,1,0], [0,0,0], [1,1,0], [1,0,0],
+            [2,0,0], [0,0,0], [0,2,0], [0,2,0],
+            [2,0,0], [0,0,0], [0,0,0], [2,2,0],
+        ];
         this.officeOptions = [];
+        this.officeOptionsObjects = [];
         const officeMargin = 2;
         const officeWidth = Office.tileIsoQuartWidth * 4 * Office.size;
         const numOfficeOptions = 4;
@@ -67,11 +73,35 @@ class Main extends GameObject
             const office = new Office(new Vector2(officeOptionsX + i * (officeWidth + officeMargin) + officeOffset, 230), this.resources);
             this.officeOptions.push(office);
         }
+        let officeOptionX = 0;
+        this.officeOptionsConfig.forEach((outerItem, outerIdx) => {
+            outerItem.forEach((innerItem, innerIdx) => {
+                if (innerItem == 0) {
+                    return;
+                }
+                const tileY = Math.floor(outerIdx / numOfficeOptions);
+                switch (innerItem) {
+                    case 1: this.officeOptionsObjects.push([ "plant", officeOptionX, innerIdx, tileY ]); break;
+                    case 2: this.officeOptionsObjects.push([ "desk", officeOptionX, innerIdx, tileY ]); break;
+                }
+            });
+            officeOptionX = (officeOptionX + 1) % numOfficeOptions;
+        });
+        this.officeOptionsObjects.forEach((obj) => {
+            switch(obj[0]) {
+                case "plant":
+                    console.log("Add " + obj);
+                    this.officeOptions[obj[1]].insert(new Plant(this.resources), new Vector3(obj[2], obj[3], 1));
+                    break;
+                case "desk":
+                    console.log("Add " + obj);
+                    this.officeOptions[obj[1]].insert(new Desk(this.resources), new Vector3(obj[2], obj[3], 1));
+                    break;
+            }
+        });
         this.addChild(this.camera);
         this.addChild(this.officeLevel);
-        this.officeOptions.forEach((office) => {
-            this.addChild(office);
-        });
+        this.officeOptions.forEach((office) => { this.addChild(office); });
         this.gameEngine = new GameEngine
         ({
             rootGameObj: this,
