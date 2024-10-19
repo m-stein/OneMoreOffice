@@ -13,11 +13,18 @@ function randomIntInclusive(min, max)
     const maxFloored = Math.floor(max);
     return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
-  
 
 class Main extends GameObject
 {
     static numOfficeOptions = 4;
+
+    onMouseDown = (event) =>
+    {
+        let rect = this.canvas.getBoundingClientRect();
+        let x = event.clientX - rect.left;
+        let y = event.clientY - rect.top;
+        console.log("MouseDown at: (" + x + ", " + y + ")");
+    }
 
     constructor()
     {
@@ -27,6 +34,8 @@ class Main extends GameObject
         this.camera = new Camera(this.resources.imageRegistry.sky, this.canvas.width, this.canvas.height);
         this.officeLevelObjects = [];
         this.officeOptionsObjects = [];
+ 
+        this.canvas.addEventListener("mousedown", this.onMouseDown);
 
         this.levelConfig = {
             "solution": [
@@ -100,15 +109,14 @@ class Main extends GameObject
             }
             this.baddieConfigs[idx % numBaddies].push(item);
         });
-        console.log(this.baddieConfigs);
         
         let officeIdx = correctAnswerIdx == 0 ? 1 : 0;
         this.baddieConfigs.forEach((baddie) => {
             baddie.forEach((row, y) => {
                 row.forEach((cell, x) => {
                     switch (cell) {
-                        case 1: console.log("plant", officeIdx, x, y); this.officeOptionsObjects.push([ "plant", officeIdx, x, y ]); break;
-                        case 2: console.log("desk", officeIdx, x, y); this.officeOptionsObjects.push([ "desk", officeIdx, x, y ]); break;
+                        case 1: this.officeOptionsObjects.push([ "plant", officeIdx, x, y ]); break;
+                        case 2: this.officeOptionsObjects.push([ "desk", officeIdx, x, y ]); break;
                     }
                 });
             });
