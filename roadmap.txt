@@ -2,14 +2,6 @@ Milestone:
 The user can play the game with all the basioc logic in a GUI that reflects
 the basic design decisions. Developers can easily add levels.
 
-    Bug:
-    Usually when loading the game from a vite server for the first time,
-    only the background image appears but not the offices and objects.
-    A reload of the page fixes the issue.
-
-    Feature:
-    Display 4 additional offices as options for the user to choose from.
-
     Feature:
     When the user clicks on one of the additional 4 offices, the game
     gives feedback whether it is the correct one.
@@ -24,3 +16,16 @@ the basic design decisions. Developers can easily add levels.
     Feature:
     Levels are grouped by their difficulty and the player has a
     difficulty-level state that affects which levels are choosen.
+
+Milestone:
+The user experiences the look and feel of the game as homogenous, streamlined,
+and immersive.
+
+    Bug:
+    Usually when loading the game from a vite server for the first time,
+    only the background image appears but not the offices and objects.
+    A reload of the page fixes the issue.
+
+Milestone:
+The user is hooked by the games challenges, wants to reach the end of the game,
+and wants to improve his score.
