@@ -6,6 +6,7 @@ import { Vector2 } from './vector_2.js';
 import { Camera } from './camera.js';
 import { OfficeLevel, Office, Desk, Plant } from './office_level.js';
 import { Vector3 } from './vector_3.js';
+import { Rectangle } from './rectangle.js';
 
 function randomIntInclusive(min, max)
 {
@@ -18,13 +19,40 @@ class Main extends GameObject
 {
     static numOfficeOptions = 4;
     static drawButtonAlphaMaps = false;
+    static hoverAlphaThreshold = 128;
+    
+    static State = {
+        NoSelection: 0,
+        SelectionRequested: 1,
+        SelectionApplied: 2,
+    };
 
     onMouseDown = (event) =>
     {
-        let rect = this.canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-        console.log("MouseDown at: (" + x + ", " + y + ")");
+        if (this.state != Main.State.NoSelection) {
+            return;
+        }
+        const canvasRect = this.canvas.getBoundingClientRect();
+        const mousePosition = new Vector2(
+            (event.clientX - canvasRect.left) * (this.canvas.width / canvasRect.width),
+            (event.clientY - canvasRect.top) * (this.canvas.height / canvasRect.height)
+        );
+        this.officeOptions.forEach((office, idx) => {
+            const officeBoundingRect = new Rectangle(
+                office.position.copy().add(office.boundingRect.position),
+                office.boundingRect.width,
+                office.boundingRect.height
+            );
+            if (officeBoundingRect.isInside(mousePosition)) {
+                const offset = mousePosition.copy().subtract(officeBoundingRect.position);
+                const imgData = office.alphaMap.getContext('2d').getImageData(offset.x, offset.y, 1, 1).data;
+                if (imgData[0] >= Main.hoverAlphaThreshold) {
+                    this.selectedAnswerIdx = idx;
+                    this.state = Main.State.SelectionRequested;
+                    return;
+                }
+            }
+        });
     }
 
     onAllResourcesLoaded = () =>
@@ -38,8 +66,8 @@ class Main extends GameObject
     constructor(windowDocument)
     {
         super(new Vector2(0, 0), 'Main');
-        this.windowDocument = windowDocument;
         this.resources = new Resources(this.onAllResourcesLoaded);
+        this.windowDocument = windowDocument;
         this.canvas = windowDocument.querySelector('#gameCanvas');
         this.camera = new Camera(this.resources.imageRegistry.sky, this.canvas.width, this.canvas.height);
         this.officeLevelObjects = [];
@@ -69,6 +97,7 @@ class Main extends GameObject
         };
 
         const correctAnswerIdx = randomIntInclusive(0, Main.numOfficeOptions - 1);
+        this.state = Main.State.NoSelection;
         let officeX = 0;
         this.levelConfig["solution"].forEach((outerItem, outerIdx) => {
             outerItem.forEach((innerItem, innerIdx) => {
@@ -107,8 +136,8 @@ class Main extends GameObject
         const officeOptionsWidth = Main.numOfficeOptions * officeWidth + (Main.numOfficeOptions - 1) * officeMargin;
         const officeOptionsX = officeLevelX + (Office.tileIsoQuartWidth * 2) - officeOptionsWidth / 2;
         const officeOffset = Office.tileIsoQuartWidth * 4 * Math.floor(Office.size / 2);
-        for (let i = 0; i < Main.numOfficeOptions; i++) {
-            const office = new Office(new Vector2(officeOptionsX + i * (officeWidth + officeMargin) + officeOffset, 230), this.resources);
+        for (let idx = 0; idx < Main.numOfficeOptions; idx++) {
+            const office = new Office(new Vector2(officeOptionsX + idx * (officeWidth + officeMargin) + officeOffset, 230), this.resources);
             this.officeOptions.push(office);
         }
         const numBaddies = Main.numOfficeOptions - 1;
@@ -153,13 +182,19 @@ class Main extends GameObject
             rootGameObj: this,
             camera: this.camera,
             canvas: this.canvas,
-            updatePeriodMs: 1000 / 60
+            updatePeriodMs: 1000 / 60,
         });
     }
 
     update(deltaTimeMs)
     {
         this.updateChildren(deltaTimeMs);
+        if (this.state == Main.State.SelectionRequested) {
+            const office = this.officeOptions.splice(this.selectedAnswerIdx, 1)[0];
+            this.removeChild(office);
+            this.officeLevel.addMissingOffice(office);
+            this.state = Main.State.SelectionApplied;
+        }
         this.camera.position = new Vector2(0,0);
     }
 
@@ -176,26 +211,6 @@ class Main extends GameObject
             });
             drawingContext.canvasContext.globalAlpha = 1;
         }
-        /*
-        this.levelFloor.tileMap.map.forEach((officeRow, row0) => {
-            officeRow.forEach((office, col0) => {
-
-                let pos0 = this.levelFloor.position.copy().add(office.position).add([10, 6]);
-                drawingContext.canvasContext.fillStyle = "rgba(255, 255, 255, 0.6)";
-                drawingContext.drawText(row0 + "." + col0, pos0);
-                drawingContext.canvasContext.fillStyle = "rgba(255, 255, 255, 0.3)";
-
-                
-                office.tileMap.map.forEach((tileRow, row1) => {
-                    tileRow.forEach((tile, col1) => {
-
-                        let pos1 = this.levelFloor.position.copy().add(office.position).add(tile.position).add([10, 16]);
-                        drawingContext.drawText(row1 + "." + col1, pos1);
-                    });
-                });
-            });
-        });
-        */
     }
 }
 

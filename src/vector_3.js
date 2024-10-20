@@ -1,3 +1,5 @@
+import { Vector2 } from "./vector_2";
+
 export class Vector3
 {
     constructor(x, y, z)
@@ -29,6 +31,11 @@ export class Vector3
             this.z += other.z;
         }
         return this;
+    }
+
+    to2d()
+    {
+        return new Vector2(this.x, this.y);
     }
     
     negate()

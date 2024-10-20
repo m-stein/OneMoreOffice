@@ -53,19 +53,24 @@ export class Desk extends Sprite
 export class OfficeLevel extends IsometricFormation3
 {
     static size = 3;
-    static officeMargin = 3;
+    static officeMargin = 2;
     static tileHeight = Office.tileHeight * OfficeLevel.size + OfficeLevel.officeMargin;
     static tileIsoQuartWidth = Office.tileIsoQuartWidth * OfficeLevel.size + OfficeLevel.officeMargin;
 
     constructor(resources, position, objects)
     {
         super(position, "OfficeLevel", OfficeLevel.tileHeight, OfficeLevel.tileIsoQuartWidth);
+        this.missingOfficePosition = new Vector3(OfficeLevel.size - 1, OfficeLevel.size - 1, 0);
         this.offices = new Matrix2();
         for (let y = 0; y < OfficeLevel.size; y++) {
             for (let x = 0; x < OfficeLevel.size; x++) {
+                const officePosition = new Vector3(x, y, 0);
+                if (officePosition.equals(this.missingOfficePosition)) {
+                    continue;
+                }
                 const office = new Office(new Vector2(0, 0), resources);
-                this.insert(office, new Vector3(x, y, 0));
-                this.offices.insert(office, new Vector2(x, y));
+                this.insert(office, officePosition.copy());
+                this.offices.insert(office, officePosition.to2d());
             }
         }
         objects.forEach((obj) => {
@@ -78,6 +83,13 @@ export class OfficeLevel extends IsometricFormation3
                     break;
             }
         });
+    }
+
+    addMissingOffice(office)
+    {    
+        office.position = new Vector2(0, 0);
+        this.insert(office, this.missingOfficePosition);
+        this.offices.insert(office, this.missingOfficePosition.to2d());
     }
 
     update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
