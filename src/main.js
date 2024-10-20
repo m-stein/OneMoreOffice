@@ -17,6 +17,7 @@ function randomIntInclusive(min, max)
 class Main extends GameObject
 {
     static numOfficeOptions = 4;
+    static drawButtonAlphaMaps = false;
 
     onMouseDown = (event) =>
     {
@@ -26,11 +27,20 @@ class Main extends GameObject
         console.log("MouseDown at: (" + x + ", " + y + ")");
     }
 
-    constructor()
+    onAllResourcesLoaded = () =>
+    {
+        this.officeOptions.forEach((office) => {
+            office.createAlphaMap(this.windowDocument);
+        });
+        this.gameEngine.start();
+    }
+
+    constructor(windowDocument)
     {
         super(new Vector2(0, 0), 'Main');
-        this.resources = new Resources();
-        this.canvas = document.querySelector('#gameCanvas');
+        this.windowDocument = windowDocument;
+        this.resources = new Resources(this.onAllResourcesLoaded);
+        this.canvas = windowDocument.querySelector('#gameCanvas');
         this.camera = new Camera(this.resources.imageRegistry.sky, this.canvas.width, this.canvas.height);
         this.officeLevelObjects = [];
         this.officeOptionsObjects = [];
@@ -145,7 +155,6 @@ class Main extends GameObject
             canvas: this.canvas,
             updatePeriodMs: 1000 / 60
         });
-        this.gameEngine.start();
     }
 
     update(deltaTimeMs)
@@ -157,6 +166,16 @@ class Main extends GameObject
     draw(drawingContext)
     {
         this.drawChildren(drawingContext);
+        if (Main.drawButtonAlphaMaps) {
+            drawingContext.canvasContext.globalAlpha = 0.5;
+            this.officeOptions.forEach((office) => {
+                drawingContext.canvasContext.drawImage(
+                    office.alphaMap,
+                    office.position.x + office.boundingRect.position.x,
+                    office.position.y + office.boundingRect.position.y);
+            });
+            drawingContext.canvasContext.globalAlpha = 1;
+        }
         /*
         this.levelFloor.tileMap.map.forEach((officeRow, row0) => {
             officeRow.forEach((office, col0) => {
@@ -180,4 +199,4 @@ class Main extends GameObject
     }
 }
 
-const main = new Main();
+const main = new Main(window.document);

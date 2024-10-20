@@ -1,3 +1,6 @@
+import { DrawingContext } from "./drawing_context";
+import { Vector2 } from "./vector_2";
+
 export class GameObject
 {
     constructor(position, label)
@@ -46,6 +49,29 @@ export class GameObject
         drawingContext.position.add(this.position);
         this.children.forEach((child) => { child.draw(drawingContext, level + 1); });
         drawingContext.position.subtract(this.position);
+    }
+    
+    createAlphaMap(windowDocument)
+    {
+        this.alphaMap = windowDocument.createElement("canvas");
+        const offset = new Vector2(
+            -this.position.x - this.boundingRect.position.x,
+            -this.position.y - this.boundingRect.position.y);
+
+        this.alphaMap.width = this.boundingRect.width;
+        this.alphaMap.height = this.boundingRect.height;
+        let drawingContext = new DrawingContext(this.alphaMap);
+        let context = drawingContext.canvasContext;
+        context.save();
+        context.translate(offset.x, offset.y);
+        this.draw(drawingContext, true);
+        context.restore();
+        context.globalCompositeOperation = 'source-in';
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, this.alphaMap.width, this.alphaMap.height);
+        context.globalCompositeOperation = 'destination-over';
+        context.fillStyle = '#000';
+        context.fillRect(0, 0, this.alphaMap.width, this.alphaMap.height);
     }
 
     numChildren() { return this.children.length; }

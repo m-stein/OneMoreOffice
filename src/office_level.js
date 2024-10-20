@@ -1,6 +1,6 @@
-import { GameObject } from "./game_object";
 import { IsometricFormation3 } from "./isometric_formation";
 import { Matrix2 } from "./matrix_3";
+import { Rectangle } from "./rectangle";
 import { Sprite } from "./sprite";
 import { Vector2 } from "./vector_2";
 import { Vector3 } from "./vector_3";
@@ -19,6 +19,14 @@ export class Office extends IsometricFormation3
                 this.insert(new Sprite({sourceImage: resources.imageRegistry.floor, position: new Vector2(0, -9)}), new Vector3(x, y, 0));
             }
         }
+        this.boundingRect = new Rectangle(
+            new Vector2(
+                -Office.tileIsoQuartWidth * 4 * Math.floor(Office.size / 2),
+                -Office.tileHeight / 2
+            ),
+            Office.tileIsoQuartWidth * 4 * Office.size,
+            Office.tileHeight * (Office.size + 1)
+        );
     }
 
     update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
