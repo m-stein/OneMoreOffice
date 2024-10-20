@@ -12,7 +12,7 @@ export class Sprite extends GameObject
         numRows,
         scaleFactor,
         drawFrameIndex,
-        position
+        position = new Vector2(0, 0)
     })
     {
         super(position, 'Sprite_' + sourceImage.src);

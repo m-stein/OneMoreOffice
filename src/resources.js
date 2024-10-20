@@ -1,7 +1,8 @@
 export class Resources
 {
-    constructor()
+    constructor(onAllLoaded)
     {
+        this.onAllLoaded = onAllLoaded;
         this.imageRegistry = {
             desk: { src: "/sprites/desk.png" },
             plant: { src: "/sprites/plant.png" },
@@ -11,7 +12,18 @@ export class Resources
         Object.values(this.imageRegistry).forEach(entry => {
             entry.image = new Image();
             entry.isLoaded = false;
-            entry.image.onload = () => { entry.isLoaded = true; };
+            entry.image.onload = () => {
+                entry.isLoaded = true;
+                let allLoaded = true;
+                Object.values(this.imageRegistry).forEach(otherEntry => {
+                    if (!otherEntry.isLoaded) {
+                        allLoaded = false;
+                    }
+                });
+                if (allLoaded) {
+                    onAllLoaded();
+                }
+            };
             entry.image.src = entry.src;
         });
     }
