@@ -11,7 +11,6 @@ export class DrawingContext
         this.canvasContext.webkitImageSmoothingEnabled = false;
         this.canvasContext.imageSmoothingEnabled = false;
         this.canvasContext.fillStyle = "white";
-        this.canvasContext.font = "8px serif";
         this.position = new Vector2(0, 0);
     }
     
@@ -22,8 +21,10 @@ export class DrawingContext
             this.position.x + dstRect.position.x, this.position.y + dstRect.position.y, dstRect.width, dstRect.height);
     }
 
-    drawText(text, position)
+    drawText(text, position, size, alignment)
     {
+        this.canvasContext.font = size + "px serif";
+        this.canvasContext.textAlign = alignment;
         this.canvasContext.fillText(text, position.x, position.y);
     }
 }

@@ -96,7 +96,7 @@ class Main extends GameObject
             ]
         };
 
-        const correctAnswerIdx = randomIntInclusive(0, Main.numOfficeOptions - 1);
+        this.correctAnswerIdx = randomIntInclusive(0, Main.numOfficeOptions - 1);
         this.state = Main.State.NoSelection;
         let officeX = 0;
         this.levelConfig["solution"].forEach((outerItem, outerIdx) => {
@@ -118,8 +118,8 @@ class Main extends GameObject
                            officeY == OfficeLevel.size - 1)
                 {
                     switch (innerItem) {
-                        case 1: this.officeOptionsObjects.push([ "plant", correctAnswerIdx, innerIdx, tileY ]); break;
-                        case 2: this.officeOptionsObjects.push([ "desk", correctAnswerIdx, innerIdx, tileY ]); break;
+                        case 1: this.officeOptionsObjects.push([ "plant", this.correctAnswerIdx, innerIdx, tileY ]); break;
+                        case 2: this.officeOptionsObjects.push([ "desk", this.correctAnswerIdx, innerIdx, tileY ]); break;
                     }
                 } else {
                     console.log("Warning: Malformed level config!");
@@ -127,7 +127,7 @@ class Main extends GameObject
             });
             officeX = (officeX + 1) % OfficeLevel.size;
         });
-        const officeLevelX = 200;
+        const officeLevelX = this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth;
         this.officeLevel = new OfficeLevel(this.resources, new Vector2(officeLevelX, 50), this.officeLevelObjects);
 
         this.officeOptions = [];
@@ -149,7 +149,7 @@ class Main extends GameObject
             this.baddieConfigs[idx % numBaddies].push(item);
         });
         
-        let officeIdx = correctAnswerIdx == 0 ? 1 : 0;
+        let officeIdx = this.correctAnswerIdx == 0 ? 1 : 0;
         this.baddieConfigs.forEach((baddie) => {
             baddie.forEach((row, y) => {
                 row.forEach((cell, x) => {
@@ -160,7 +160,7 @@ class Main extends GameObject
                 });
             });
             officeIdx++;
-            if (officeIdx == correctAnswerIdx) {
+            if (officeIdx == this.correctAnswerIdx) {
                 officeIdx++;
             }
         });
@@ -206,6 +206,15 @@ class Main extends GameObject
     draw(drawingContext)
     {
         this.drawChildren(drawingContext);
+        if (this.state == Main.State.SelectionApplied) {
+            const position = new Vector2(this.canvas.width / 2, 30);
+            console.log(this.selectedAnswerIdx, this.correctAnswerIdx);
+            if (this.selectedAnswerIdx == this.correctAnswerIdx) {
+                drawingContext.drawText("Correct office!", position, 16, "center");
+            } else {
+                drawingContext.drawText("Wrong office!", position, 16, "center");
+            }
+        }
         if (Main.drawButtonAlphaMaps) {
             drawingContext.canvasContext.globalAlpha = 0.5;
             this.officeOptions.forEach((office) => {
