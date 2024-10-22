@@ -1,5 +1,5 @@
 import './style.css';
-import { Resources } from './resources.js';
+import { Assets } from './assets.js';
 import { GameEngine } from './game_engine.js';
 import { GameObject } from './game_object.js';
 import { Vector2 } from './vector_2.js';
@@ -55,7 +55,7 @@ class Main extends GameObject
         });
     }
 
-    onAllResourcesLoaded = () =>
+    onAllAssetsLoaded = () =>
     {
         this.officeOptions.forEach((office) => {
             office.createAlphaMap(this.windowDocument);
@@ -66,10 +66,10 @@ class Main extends GameObject
     constructor(windowDocument)
     {
         super(new Vector2(0, 0), 'Main');
-        this.resources = new Resources(this.onAllResourcesLoaded);
+        this.assets = new Assets(this.onAllAssetsLoaded);
         this.windowDocument = windowDocument;
         this.canvas = windowDocument.querySelector('#gameCanvas');
-        this.camera = new Camera(this.resources.imageRegistry.sky, this.canvas.width, this.canvas.height);
+        this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.officeLevelObjects = [];
         this.officeOptionsObjects = [];
  
@@ -128,7 +128,7 @@ class Main extends GameObject
             officeX = (officeX + 1) % OfficeLevel.size;
         });
         const officeLevelX = this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth;
-        this.officeLevel = new OfficeLevel(this.resources, new Vector2(officeLevelX, 50), this.officeLevelObjects);
+        this.officeLevel = new OfficeLevel(this.assets, new Vector2(officeLevelX, 50), this.officeLevelObjects);
 
         this.officeOptions = [];
         const officeMargin = 2;
@@ -137,7 +137,7 @@ class Main extends GameObject
         const officeOptionsX = officeLevelX + (Office.tileIsoQuartWidth * 2) - officeOptionsWidth / 2;
         const officeOffset = Office.tileIsoQuartWidth * 4 * Math.floor(Office.size / 2);
         for (let idx = 0; idx < Main.numOfficeOptions; idx++) {
-            const office = new Office(new Vector2(officeOptionsX + idx * (officeWidth + officeMargin) + officeOffset, 230), this.resources);
+            const office = new Office(new Vector2(officeOptionsX + idx * (officeWidth + officeMargin) + officeOffset, 230), this.assets);
             this.officeOptions.push(office);
         }
         const numBaddies = Main.numOfficeOptions - 1;
@@ -167,10 +167,10 @@ class Main extends GameObject
         this.officeOptionsObjects.forEach((obj) => {
             switch(obj[0]) {
                 case "plant":
-                    this.officeOptions[obj[1]].insert(new Plant(this.resources), new Vector3(obj[2], obj[3], 1));
+                    this.officeOptions[obj[1]].insert(new Plant(this.assets), new Vector3(obj[2], obj[3], 1));
                     break;
                 case "desk":
-                    this.officeOptions[obj[1]].insert(new Desk(this.resources), new Vector3(obj[2], obj[3], 1));
+                    this.officeOptions[obj[1]].insert(new Desk(this.assets), new Vector3(obj[2], obj[3], 1));
                     break;
             }
         });
