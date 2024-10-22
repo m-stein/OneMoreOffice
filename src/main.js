@@ -190,12 +190,17 @@ class Main extends GameObject
     {
         this.updateChildren(deltaTimeMs);
         if (this.state == Main.State.SelectionRequested) {
-            const office = this.officeOptions.splice(this.selectedAnswerIdx, 1)[0];
-            this.removeChild(office);
-            this.officeLevel.addMissingOffice(office);
+            this.selectOfficeOption(this.selectedAnswerIdx);
             this.state = Main.State.SelectionApplied;
         }
         this.camera.position = new Vector2(0,0);
+    }
+
+    selectOfficeOption(idx)
+    {
+        const office = this.officeOptions.splice(idx, 1)[0];
+        this.removeChild(office);
+        this.officeLevel.addMissingOffice(office);
     }
 
     draw(drawingContext)
