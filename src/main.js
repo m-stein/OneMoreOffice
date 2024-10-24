@@ -1,4 +1,3 @@
-import './style.css';
 import { Assets } from './assets.js';
 import { GameEngine } from './game_engine.js';
 import { GameObject } from './game_object.js';
@@ -30,17 +29,14 @@ class Main extends GameObject
 
     onMouseDown = (event) =>
     {
-        console.log("1");
         if (this.state == Main.State.SelectionApplied) {
             this.unloadLevel();
             this.levelDb.withLevel(0, 1, (config) => { this.loadLevel(config) });
             return;
         }
-        console.log("2");
         if (this.state != Main.State.NoSelection) {
             return;
         }
-        console.log("3");
         const canvasRect = this.canvas.getBoundingClientRect();
         const mousePosition = new Vector2(
             (event.clientX - canvasRect.left) * (this.canvas.width / canvasRect.width),
@@ -75,7 +71,7 @@ class Main extends GameObject
         super(new Vector2(0, 0), 'Main');
         this.assets = new Assets(this.onAllAssetsLoaded);
         this.windowDocument = windowDocument;
-        this.canvas = windowDocument.querySelector('#gameCanvas');
+        this.canvas = windowDocument.querySelector('#mainCanvas');
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.canvas.addEventListener("mousedown", this.onMouseDown);
         this.levelDb = new LevelDatabase();

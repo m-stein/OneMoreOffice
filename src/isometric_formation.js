@@ -1,4 +1,4 @@
-import { GameObject } from "./game_object";
+import { GameObject } from "./game_object.js";
 import { Vector2 } from './vector_2.js';
 
 export class IsometricFormationTile extends GameObject
