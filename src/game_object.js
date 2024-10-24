@@ -1,5 +1,5 @@
-import { DrawingContext } from "./drawing_context";
-import { Vector2 } from "./vector_2";
+import { DrawingContext } from "./drawing_context.js";
+import { Vector2 } from "./vector_2.js";
 
 export class GameObject
 {

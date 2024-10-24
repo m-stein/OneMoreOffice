@@ -1,4 +1,4 @@
-import { DrawingContext } from "./drawing_context";
+import { DrawingContext } from "./drawing_context.js";
 
 export class GameEngine
 {

@@ -1,9 +1,9 @@
-import { IsometricFormation3 } from "./isometric_formation";
-import { Matrix2 } from "./matrix_3";
-import { Rectangle } from "./rectangle";
-import { Sprite } from "./sprite";
-import { Vector2 } from "./vector_2";
-import { Vector3 } from "./vector_3";
+import { IsometricFormation3 } from "./isometric_formation.js";
+import { Matrix2 } from "./matrix_3.js";
+import { Rectangle } from "./rectangle.js";
+import { Sprite } from "./sprite.js";
+import { Vector2 } from "./vector_2.js";
+import { Vector3 } from "./vector_3.js";
 
 export class Office extends IsometricFormation3
 {

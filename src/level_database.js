@@ -1,5 +1,5 @@
-import { Matrix2 } from "./matrix_3";
-import { Vector2 } from "./vector_2";
+import { Matrix2 } from "./matrix_3.js";
+import { Vector2 } from "./vector_2.js";
 
 export class LevelDatabase
 {

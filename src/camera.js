@@ -1,6 +1,6 @@
-import { GameObject } from "./game_object";
-import { Sprite } from "./sprite";
-import { Vector2 } from "./vector_2";
+import { GameObject } from "./game_object.js";
+import { Sprite } from "./sprite.js";
+import { Vector2 } from "./vector_2.js";
 
 export class Camera extends GameObject
 {
