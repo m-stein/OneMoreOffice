@@ -6,7 +6,7 @@ export class Sprite extends GameObject
 {
     constructor({
         sourceImage,
-        frameSize = new Vector2(sourceImage.image.width, sourceImage.image.height),
+        frameSize = new Vector2(sourceImage.htmlElement.width, sourceImage.htmlElement.height),
         framePadding,
         numColumns,
         numRows,
@@ -53,7 +53,7 @@ export class Sprite extends GameObject
         }
         const srcRect = new Rectangle(frame, this.frameSize.x, this.frameSize.y);
         const dstRect = new Rectangle(new Vector2(this.position.x - this.framePadding.x, this.position.y - this.framePadding.y), this.frameSize.x * this.scaleFactor, this.frameSize.y * this.scaleFactor)
-        drawingContext.drawImage(this.sourceImage.image, srcRect, dstRect);
+        drawingContext.drawImage(this.sourceImage.htmlElement, srcRect, dstRect);
         this.drawChildren(drawingContext);
     }
 }

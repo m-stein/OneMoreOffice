@@ -9,22 +9,27 @@ export class Assets
             floor: { src: "/sprites/floor.png" },
             sky: { src: "/sprites/sky.png" },
         };
-        Object.values(this.images).forEach(entry => {
-            entry.image = new Image();
-            entry.isLoaded = false;
-            entry.image.onload = () => {
-                entry.isLoaded = true;
-                let allLoaded = true;
-                Object.values(this.images).forEach(otherEntry => {
-                    if (!otherEntry.isLoaded) {
-                        allLoaded = false;
-                    }
-                });
-                if (allLoaded) {
-                    onAllLoaded();
-                }
+        Object.values(this.images).forEach((asset) => {
+            asset.isLoaded = false;
+            asset.htmlElement = document.createElement("img");
+            asset.htmlElement.onload = () => {
+                asset.isLoaded = true;
+                this.onAssetLoaded();
             };
-            entry.image.src = entry.src;
+            asset.htmlElement.src = asset.src;
         });
+    }
+
+    onAssetLoaded()
+    {    
+        let allLoaded = true;
+        Object.values(this.images).forEach(asset => {
+            if (!asset.isLoaded) {
+                allLoaded = false;
+            }
+        });
+        if (allLoaded) {
+            this.onAllLoaded();
+        }
     }
 };
