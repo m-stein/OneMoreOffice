@@ -1,4 +1,4 @@
-export class Matrix3
+export class Matrix2
 {
     constructor() { }
 
@@ -10,10 +10,7 @@ export class Matrix3
         if (typeof this.array[at.x] === 'undefined') {
             this.array[at.x] = [];
         }
-        if (typeof this.array[at.x][at.y] === 'undefined') {
-            this.array[at.x][at.y] = [];
-        }
-        this.array[at.x][at.y][at.z] = object;
+        this.array[at.x][at.y] = object;
     }
 
     item(at)
@@ -24,9 +21,6 @@ export class Matrix3
         if (typeof this.array[at.x] === 'undefined') {
             return undefined;
         }
-        if (typeof this.array[at.x][at.y] === 'undefined') {
-            return undefined;
-        }
-        return this.array[at.x][at.y][at.z];
+        return this.array[at.x][at.y];
     }
-} 
+}
