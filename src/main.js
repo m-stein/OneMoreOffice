@@ -31,7 +31,8 @@ class Main extends GameObject
     {
         if (this.state == Main.State.SelectionApplied) {
             this.unloadLevel();
-            this.levelDb.withLevel(0, 1, (config) => { this.loadLevel(config) });
+            this.levelIdx = (this.levelIdx + 1) % this.numLevels;
+            this.levelDb.withLevel(0, this.levelIdx, (config) => { this.loadLevel(config) });
             return;
         }
         if (this.state != Main.State.NoSelection) {
@@ -62,7 +63,7 @@ class Main extends GameObject
 
     onAllAssetsLoaded = () =>
     {
-        this.levelDb.withLevel(0, 0, (config) => { this.loadLevel(config) });
+        this.levelDb.withLevel(0, this.levelIdx, (config) => { this.loadLevel(config) });
         this.gameEngine.start();
     }
 
@@ -75,6 +76,8 @@ class Main extends GameObject
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.canvas.addEventListener("mousedown", this.onMouseDown);
         this.levelDb = new LevelDatabase();
+        this.levelIdx = 0;
+        this.numLevels = 2;
         this.addChild(this.camera);
         this.gameEngine = new GameEngine
         ({
@@ -207,9 +210,9 @@ class Main extends GameObject
         if (this.state == Main.State.SelectionApplied) {
             const position = new Vector2(this.canvas.width / 2, 30);
             if (this.selectedAnswerIdx == this.correctAnswerIdx) {
-                drawingContext.drawText("Correct office!", position, 16, "center");
+                drawingContext.drawText("Marvellous!", position, 16, "center");
             } else {
-                drawingContext.drawText("Wrong office!", position, 16, "center");
+                drawingContext.drawText("Well, that'll do...", position, 16, "center");
             }
         }
         if (Main.drawButtonAlphaMaps) {
