@@ -15,6 +15,23 @@ function randomIntInclusive(min, max)
     return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
 
+/*
+function fetchJSONFile(path, callback) {
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState === 4) {
+            if (httpRequest.status === 200) {
+                var data = JSON.parse(httpRequest.responseText);
+                if (callback) callback(data);
+            }
+        }
+        
+    };
+    httpRequest.open('GET', path);
+    httpRequest.send();
+}
+    */
+
 class Main extends GameObject
 {
     static numOfficeOptions = 4;
@@ -70,7 +87,7 @@ class Main extends GameObject
     constructor(windowDocument)
     {
         super(new Vector2(0, 0), 'Main');
-        this.assets = new Assets(this.onAllAssetsLoaded);
+        this.assets = new Assets(this.onAllAssetsLoaded, { difficulty: 0, index: 1 });
         this.windowDocument = windowDocument;
         this.canvas = windowDocument.querySelector('#mainCanvas');
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
@@ -229,3 +246,4 @@ class Main extends GameObject
 }
 
 const main = new Main(window.document);
+
