@@ -6,7 +6,6 @@ import { Camera } from './camera.js';
 import { OfficeLevel, Office, Desk, Plant } from './office_level.js';
 import { Vector3 } from './vector_3.js';
 import { Rectangle } from './rectangle.js';
-import { LevelDatabase } from './level_database.js';
 
 function randomIntInclusive(min, max)
 {
@@ -37,6 +36,7 @@ class Main extends GameObject
     static numOfficeOptions = 4;
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
+    static numLevelsPerDifficulty = 2;
     
     static State = {
         NoSelection: 0,
@@ -48,8 +48,8 @@ class Main extends GameObject
     {
         if (this.state == Main.State.SelectionApplied) {
             this.unloadLevel();
-            this.levelIdx = (this.levelIdx + 1) % this.numLevels;
-            this.levelDb.withLevel(0, this.levelIdx, (config) => { this.loadLevel(config) });
+            this.level.index = (this.level.index + 1) % Main.numLevelsPerDifficulty;
+            this.assets = new Assets(this.onAllAssetsLoaded, this.level);
             return;
         }
         if (this.state != Main.State.NoSelection) {
@@ -80,21 +80,19 @@ class Main extends GameObject
 
     onAllAssetsLoaded = () =>
     {
-        this.levelDb.withLevel(0, this.levelIdx, (config) => { this.loadLevel(config) });
+        this.loadLevel(this.assets.json.level.data);
         this.gameEngine.start();
     }
 
     constructor(windowDocument)
     {
         super(new Vector2(0, 0), 'Main');
-        this.assets = new Assets(this.onAllAssetsLoaded, { difficulty: 0, index: 1 });
+        this.level = { difficulty: 0, index: 0 };
+        this.assets = new Assets(this.onAllAssetsLoaded, this.level);
         this.windowDocument = windowDocument;
         this.canvas = windowDocument.querySelector('#mainCanvas');
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.canvas.addEventListener("mousedown", this.onMouseDown);
-        this.levelDb = new LevelDatabase();
-        this.levelIdx = 0;
-        this.numLevels = 2;
         this.addChild(this.camera);
         this.gameEngine = new GameEngine
         ({
