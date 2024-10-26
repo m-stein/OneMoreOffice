@@ -4,13 +4,13 @@ export class Assets
     {
         this.onAllLoaded = onAllLoaded;
         this.images = {
-            desk: { src: "../public/sprites/desk.png" },
-            plant: { src: "../public/sprites/plant.png" },
-            floor: { src: "../public/sprites/floor.png" },
-            sky: { src: "../public/sprites/sky.png" },
+            desk: { src: "../sprites/desk.png" },
+            plant: { src: "../sprites/plant.png" },
+            floor: { src: "../sprites/floor.png" },
+            sky: { src: "../sprites/sky.png" },
         };
         this.json = {
-            level: { src: "../public/levels/difficulty_" + level.difficulty + "/" + level.index + ".json" },
+            level: { src: "../levels/difficulty_" + level.difficulty + "/" + level.index + ".json" },
         };
         Object.values(this.images).forEach((asset) => {
             asset.isLoaded = false;
