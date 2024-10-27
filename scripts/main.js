@@ -6,6 +6,7 @@ import { Camera } from './camera.js';
 import { OfficeLevel, Office, Desk, Plant } from './office_level.js';
 import { Vector3 } from './vector_3.js';
 import { Rectangle } from './rectangle.js';
+import { Menu } from './menu.js';
 
 function randomIntInclusive(min, max)
 {
@@ -29,7 +30,7 @@ class Main extends GameObject
 
     onMouseDown = (event) =>
     {
-        if (this.showMenu) {
+        if (this.menu.enabled) {
 
         } else {
             if (this.state == Main.State.SelectionApplied) {
@@ -67,21 +68,22 @@ class Main extends GameObject
 
     onAllAssetsLoaded = () =>
     {
+        this.addChild(this.camera);
         this.loadLevel(this.assets.json.level.data);
+        this.addChild(this.menu);
         this.gameEngine.start();
     }
 
     constructor(windowDocument)
     {
         super(new Vector2(0, 0), 'Main');
-        this.showMenu = true;
+        this.menu = new Menu(new Vector2(0, 0));
         this.level = { difficulty: 0, index: 0 };
         this.assets = new Assets(this.onAllAssetsLoaded, this.level);
         this.windowDocument = windowDocument;
         this.canvas = windowDocument.querySelector('#mainCanvas');
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.canvas.addEventListener("mousedown", this.onMouseDown);
-        this.addChild(this.camera);
         this.gameEngine = new GameEngine
         ({
             rootGameObj: this,
@@ -227,24 +229,6 @@ class Main extends GameObject
                     office.position.y + office.boundingRect.position.y);
             });
             drawingContext.canvasContext.globalAlpha = 1;
-        }
-        if (this.showMenu) {
-            console.log("xxx");
-            let ctx = drawingContext.canvasContext;
-            ctx.fillStyle = "black";
-            ctx.globalAlpha = 0.6;
-            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            ctx.fillStyle = "white";
-            ctx.globalAlpha = 1;
-            const position = new Vector2(this.canvas.width / 2, 60);
-            drawingContext.drawText("ONE MORE OFFICE!", position, 32, "center");
-            position.y += 60;
-            ctx.globalAlpha = 0.7;
-            drawingContext.drawText("NEW GAME", position, 16, "center");
-            position.y += 35;
-            drawingContext.drawText("HIGHSCORE", position, 16, "center");
-            position.y += 35;
-            drawingContext.drawText("CREDITS", position, 16, "center");
         }
     }
 }
