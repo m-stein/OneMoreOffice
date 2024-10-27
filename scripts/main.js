@@ -29,36 +29,40 @@ class Main extends GameObject
 
     onMouseDown = (event) =>
     {
-        if (this.state == Main.State.SelectionApplied) {
-            this.unloadLevel();
-            this.level.index = (this.level.index + 1) % Main.numLevelsPerDifficulty;
-            this.assets = new Assets(this.onAllAssetsLoaded, this.level);
-            return;
-        }
-        if (this.state != Main.State.NoSelection) {
-            return;
-        }
-        const canvasRect = this.canvas.getBoundingClientRect();
-        const mousePosition = new Vector2(
-            (event.clientX - canvasRect.left) * (this.canvas.width / canvasRect.width),
-            (event.clientY - canvasRect.top) * (this.canvas.height / canvasRect.height)
-        );
-        this.officeOptions.forEach((office, idx) => {
-            const officeBoundingRect = new Rectangle(
-                office.position.copy().add(office.boundingRect.position),
-                office.boundingRect.width,
-                office.boundingRect.height
-            );
-            if (officeBoundingRect.isInside(mousePosition)) {
-                const offset = mousePosition.copy().subtract(officeBoundingRect.position);
-                const imgData = office.alphaMap.getContext('2d').getImageData(offset.x, offset.y, 1, 1).data;
-                if (imgData[0] >= Main.hoverAlphaThreshold) {
-                    this.selectedAnswerIdx = idx;
-                    this.state = Main.State.SelectionRequested;
-                    return;
-                }
+        if (this.showMenu) {
+
+        } else {
+            if (this.state == Main.State.SelectionApplied) {
+                this.unloadLevel();
+                this.level.index = (this.level.index + 1) % Main.numLevelsPerDifficulty;
+                this.assets = new Assets(this.onAllAssetsLoaded, this.level);
+                return;
             }
-        });
+            if (this.state != Main.State.NoSelection) {
+                return;
+            }
+            const canvasRect = this.canvas.getBoundingClientRect();
+            const mousePosition = new Vector2(
+                (event.clientX - canvasRect.left) * (this.canvas.width / canvasRect.width),
+                (event.clientY - canvasRect.top) * (this.canvas.height / canvasRect.height)
+            );
+            this.officeOptions.forEach((office, idx) => {
+                const officeBoundingRect = new Rectangle(
+                    office.position.copy().add(office.boundingRect.position),
+                    office.boundingRect.width,
+                    office.boundingRect.height
+                );
+                if (officeBoundingRect.isInside(mousePosition)) {
+                    const offset = mousePosition.copy().subtract(officeBoundingRect.position);
+                    const imgData = office.alphaMap.getContext('2d').getImageData(offset.x, offset.y, 1, 1).data;
+                    if (imgData[0] >= Main.hoverAlphaThreshold) {
+                        this.selectedAnswerIdx = idx;
+                        this.state = Main.State.SelectionRequested;
+                        return;
+                    }
+                }
+            });
+        }
     }
 
     onAllAssetsLoaded = () =>
@@ -70,6 +74,7 @@ class Main extends GameObject
     constructor(windowDocument)
     {
         super(new Vector2(0, 0), 'Main');
+        this.showMenu = true;
         this.level = { difficulty: 0, index: 0 };
         this.assets = new Assets(this.onAllAssetsLoaded, this.level);
         this.windowDocument = windowDocument;
@@ -222,6 +227,24 @@ class Main extends GameObject
                     office.position.y + office.boundingRect.position.y);
             });
             drawingContext.canvasContext.globalAlpha = 1;
+        }
+        if (this.showMenu) {
+            console.log("xxx");
+            let ctx = drawingContext.canvasContext;
+            ctx.fillStyle = "black";
+            ctx.globalAlpha = 0.6;
+            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            ctx.fillStyle = "white";
+            ctx.globalAlpha = 1;
+            const position = new Vector2(this.canvas.width / 2, 60);
+            drawingContext.drawText("ONE MORE OFFICE!", position, 32, "center");
+            position.y += 60;
+            ctx.globalAlpha = 0.7;
+            drawingContext.drawText("NEW GAME", position, 16, "center");
+            position.y += 35;
+            drawingContext.drawText("HIGHSCORE", position, 16, "center");
+            position.y += 35;
+            drawingContext.drawText("CREDITS", position, 16, "center");
         }
     }
 }
