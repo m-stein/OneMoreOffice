@@ -3,19 +3,44 @@ The user can play the game with all the basioc logic in a GUI that reflects
 the basic design decisions. Developers can easily add levels.
 
     Feature:
-    When the user clicks on one of the additional 4 offices, the game
-    gives feedback whether it is the correct one.
+    There is a main menu that the game starts in and to which the user can return
+    whith a certain key. The menu contains these elements:
+        * The game title
+        * Button: Continue (if in a game)
+        * Button: New game (aborts current game)
+        * Button: Highscore (aborts current game; dummy for now)
+        * Button: Credits (aborts current game; dummy for now)
 
     Feature:
-    Levels are loaded from dedicated text files.
+    The game is accompanied by a relaxing background music.
 
     Feature:
-    When the user has found the correct missing office, a new level is
-    loaded.
+    Correct choices and wrong choices are accompanied by an appropriate
+    sound effect.
 
     Feature:
     Levels are grouped by their difficulty and the player has a
     difficulty-level state that affects which levels are choosen.
+
+    Feature:
+    The user goes through a set number of levels with rising difficulty
+    and then the game ends. When the game has ended, the user is lead back
+    to the main menu.
+
+    Feature:
+    The user earns points. His score is displayed in a corner of the screen
+    during the whole game and his total score is displayed dominantly when
+    the game ends.
+
+    Feature:
+    At the end of a game, the user can enter his name in order to let his
+    score enter a permanent and user-global highscore list.
+
+    Feature:
+    The user can actually switch to the highscore screen via the main menu.
+
+    Feature:
+    The user can actually switch to the credits screen via the main menu.
 
 Milestone:
 The user experiences the look and feel of the game as homogenous, streamlined,
