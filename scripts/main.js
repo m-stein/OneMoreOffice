@@ -77,11 +77,11 @@ class Main extends GameObject
     constructor(windowDocument)
     {
         super(new Vector2(0, 0), 'Main');
-        this.menu = new Menu(new Vector2(0, 0));
         this.level = { difficulty: 0, index: 0 };
         this.assets = new Assets(this.onAllAssetsLoaded, this.level);
         this.windowDocument = windowDocument;
         this.canvas = windowDocument.querySelector('#mainCanvas');
+        this.menu = new Menu(new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height));
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.canvas.addEventListener("mousedown", this.onMouseDown);
         this.gameEngine = new GameEngine

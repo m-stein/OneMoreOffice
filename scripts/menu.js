@@ -1,33 +1,37 @@
+import { Button } from "./button.js";
 import { GameObject } from "./game_object.js"
 import { Vector2 } from "./vector_2.js";
 
 export class Menu extends GameObject
 {
-    constructor(position)
+    constructor(rect)
     {
-        super(position, "Menu");
+        super(rect.position, "Menu");
+        this.rect = rect;
         this.enabled = true;
+        let y = 120;
+        this.newGame = new Button(new Vector2(rect.width / 2, y), "NEW GAME");
+        y += 35;
+        this.highscore = new Button(new Vector2(rect.width / 2, y), "HIGHSCORE");
+        y += 35;
+        this.credits = new Button(new Vector2(rect.width / 2, y), "CREDITS");
+        this.addChild(this.newGame);
+        this.addChild(this.highscore);
+        this.addChild(this.credits);
     }
 
-    update() { }
+    update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
 
     draw(drawingContext)
     {
         let ctx = drawingContext.canvasContext;
         ctx.fillStyle = "black";
         ctx.globalAlpha = 0.6;
-        ctx.fillRect(0, 0, drawingContext.canvas.width, drawingContext.canvas.height);
+        ctx.fillRect(0, 0, this.rect.width, this.rect.height);
         ctx.fillStyle = "white";
         ctx.globalAlpha = 1;
-        const position = new Vector2(drawingContext.canvas.width / 2, 60);
+        const position = new Vector2(this.rect.width / 2, 60);
         drawingContext.drawText("ONE MORE OFFICE!", position, 32, "center");
-        position.y += 60;
-        ctx.globalAlpha = 0.7;
-        drawingContext.drawText("NEW GAME", position, 16, "center");
-        position.y += 35;
-        drawingContext.drawText("HIGHSCORE", position, 16, "center");
-        position.y += 35;
-        drawingContext.drawText("CREDITS", position, 16, "center");
-        ctx.globalAlpha = 1;
+        this.drawChildren(drawingContext);
     }
 }
