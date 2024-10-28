@@ -28,7 +28,9 @@ class Main extends GameObject
         SelectionApplied: 2,
     };
 
-    onMouseMove = (event) =>
+    onMouseMove = (event) => { this.updateRawMousePosition(event); }
+
+    updateRawMousePosition(event)
     {
         this.rawMouseX = event.clientX;
         this.rawMouseY = event.clientY;
@@ -38,7 +40,8 @@ class Main extends GameObject
     onMouseDown = (event) =>
     {
         if (this.menu.enabled) {
-
+            this.updateRawMousePosition(event);
+            this.mouseDownHandlers.forEach((handler) => { handler(); });
         } else {
             if (this.state == Main.State.SelectionApplied) {
                 this.unloadLevel();
@@ -81,22 +84,37 @@ class Main extends GameObject
         this.gameEngine.start();
     }
 
+    onNewGamePressed = () =>
+    {
+        if (this.menu.enabled) {
+            this.menu.enabled = false;
+        }
+    }
+
     constructor(windowDocument)
     {
         super(new Vector2(0, 0), 'Main');
         this.canvas = windowDocument.querySelector('#mainCanvas');
 
         /* Initialize mouse position tracking */
+        this.mouseDown = false;
         this.mousePosition = new Vector2(-1, -1);
         this.mousePositionOutdated = false;
         this.canvas.addEventListener("mousemove", this.onMouseMove);
 
+        /* Initialize handling of mouse clicks */
+        this.mouseDownHandlers = [];
+        this.canvas.addEventListener("mousedown", this.onMouseDown);
+
         this.level = { difficulty: 0, index: 0 };
         this.assets = new Assets(this.onAllAssetsLoaded, this.level);
         this.windowDocument = windowDocument;
-        this.menu = new Menu(new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height), this.mousePosition);
+        this.menu = new Menu(
+            new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
+            this.mousePosition, this.mouseDownHandlers
+        );
+        this.menu.newGame.pressedHandlers.push(this.onNewGamePressed);
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
-        this.canvas.addEventListener("mousedown", this.onMouseDown);
         this.gameEngine = new GameEngine
         ({
             rootGameObj: this,

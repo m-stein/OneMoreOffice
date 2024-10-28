@@ -5,18 +5,18 @@ import { Vector2 } from "./vector_2.js";
 
 export class Menu extends GameObject
 {
-    constructor(rect, mousePosition)
+    constructor(rect, mousePosition, mouseDownHandlers)
     {
         super(rect.position, "Menu");
         this.rect = rect;
         this.enabled = true;
         const buttonWidth = 100;
         let buttonRect = new Rectangle(new Vector2(rect.width / 2 - buttonWidth / 2, 120), buttonWidth, 20);
-        this.newGame = new Button(buttonRect.copy(), "NEW GAME", mousePosition);
+        this.newGame = new Button(buttonRect.copy(), "NEW GAME", mousePosition, mouseDownHandlers);
         buttonRect.position.y += 35;
-        this.highscore = new Button(buttonRect.copy(), "HIGHSCORE", mousePosition);
+        this.highscore = new Button(buttonRect.copy(), "HIGHSCORE", mousePosition, mouseDownHandlers);
         buttonRect.position.y += 35;
-        this.credits = new Button(buttonRect.copy(), "CREDITS", mousePosition);
+        this.credits = new Button(buttonRect.copy(), "CREDITS", mousePosition, mouseDownHandlers);
         this.addChild(this.newGame);
         this.addChild(this.highscore);
         this.addChild(this.credits);
@@ -26,6 +26,9 @@ export class Menu extends GameObject
 
     draw(drawingContext)
     {
+        if (!this.enabled) {
+            return;
+        }
         let ctx = drawingContext.canvasContext;
         ctx.fillStyle = "black";
         ctx.globalAlpha = 0.6;
