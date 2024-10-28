@@ -1,20 +1,22 @@
 import { Button } from "./button.js";
 import { GameObject } from "./game_object.js"
+import { Rectangle } from "./rectangle.js";
 import { Vector2 } from "./vector_2.js";
 
 export class Menu extends GameObject
 {
-    constructor(rect)
+    constructor(rect, mousePosition)
     {
         super(rect.position, "Menu");
         this.rect = rect;
         this.enabled = true;
-        let y = 120;
-        this.newGame = new Button(new Vector2(rect.width / 2, y), "NEW GAME");
-        y += 35;
-        this.highscore = new Button(new Vector2(rect.width / 2, y), "HIGHSCORE");
-        y += 35;
-        this.credits = new Button(new Vector2(rect.width / 2, y), "CREDITS");
+        const buttonWidth = 100;
+        let buttonRect = new Rectangle(new Vector2(rect.width / 2 - buttonWidth / 2, 120), buttonWidth, 20);
+        this.newGame = new Button(buttonRect.copy(), "NEW GAME", mousePosition);
+        buttonRect.position.y += 35;
+        this.highscore = new Button(buttonRect.copy(), "HIGHSCORE", mousePosition);
+        buttonRect.position.y += 35;
+        this.credits = new Button(buttonRect.copy(), "CREDITS", mousePosition);
         this.addChild(this.newGame);
         this.addChild(this.highscore);
         this.addChild(this.credits);

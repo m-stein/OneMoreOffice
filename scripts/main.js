@@ -28,6 +28,13 @@ class Main extends GameObject
         SelectionApplied: 2,
     };
 
+    onMouseMove = (event) =>
+    {
+        this.rawMouseX = event.clientX;
+        this.rawMouseY = event.clientY;
+        this.mousePositionOutdated = true;
+    }
+
     onMouseDown = (event) =>
     {
         if (this.menu.enabled) {
@@ -77,11 +84,17 @@ class Main extends GameObject
     constructor(windowDocument)
     {
         super(new Vector2(0, 0), 'Main');
+        this.canvas = windowDocument.querySelector('#mainCanvas');
+
+        /* Initialize mouse position tracking */
+        this.mousePosition = new Vector2(-1, -1);
+        this.mousePositionOutdated = false;
+        this.canvas.addEventListener("mousemove", this.onMouseMove);
+
         this.level = { difficulty: 0, index: 0 };
         this.assets = new Assets(this.onAllAssetsLoaded, this.level);
         this.windowDocument = windowDocument;
-        this.canvas = windowDocument.querySelector('#mainCanvas');
-        this.menu = new Menu(new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height));
+        this.menu = new Menu(new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height), this.mousePosition);
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.canvas.addEventListener("mousedown", this.onMouseDown);
         this.gameEngine = new GameEngine
@@ -194,6 +207,13 @@ class Main extends GameObject
 
     update(deltaTimeMs)
     {
+        /* Update mouse position if necessary */
+        if (this.mousePositionOutdated) {
+            const canvasRect = this.canvas.getBoundingClientRect();
+            this.mousePosition.x = (this.rawMouseX - canvasRect.left) * (this.canvas.width / canvasRect.width);
+            this.mousePosition.y = (this.rawMouseY - canvasRect.top) * (this.canvas.height / canvasRect.height);
+            this.mousePositionOutdated = false;
+        }
         this.updateChildren(deltaTimeMs);
         if (this.state == Main.State.SelectionRequested) {
             this.selectOfficeOption(this.selectedAnswerIdx);
