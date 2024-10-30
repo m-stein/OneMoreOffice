@@ -9,6 +9,9 @@ export class Assets
             floor: { src: "../sprites/floor.png" },
             sky: { src: "../sprites/sky.png" },
         };
+        this.music = {
+            poorButHappy: { htmlElement: new Audio("../music/poor_but_happy.ogg") },
+        };
         this.json = {
             level: { src: "../levels/difficulty_" + level.difficulty + "/" + level.index + ".json" },
         };

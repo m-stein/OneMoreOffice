@@ -88,6 +88,10 @@ class Main extends GameObject
     {
         if (this.menu.enabled) {
             this.menu.enabled = false;
+            let music = this.assets.music.poorButHappy.htmlElement;
+            music.volume = 0.1;
+            music.loop = true;
+            music.play();
         }
     }
 
