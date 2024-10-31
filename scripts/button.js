@@ -2,14 +2,16 @@ import { GameObject } from "./game_object.js";
 
 export class Button extends GameObject
 {
-    constructor(rect, label, mousePosition, mouseDownHandlers)
+    constructor(rect, label, mousePosition, mouseDownHandlers, mouseEntersButtonAudio)
     {
         super(rect.position, label);
         this.rect = rect;
         this.pressedHandlers = [];
+        this.mouseEntersButtonAudio = mouseEntersButtonAudio;
         this.mousePosition = mousePosition;
         this.mouseDownHandlers = mouseDownHandlers;
         this.mouseDownHandlers.push(this.onMouseDown);
+        this.wasHovered = this.hovered();
     }
 
     destroy() { this.mouseDownHandlers.remove(this.onMouseDown); }
@@ -24,7 +26,19 @@ export class Button extends GameObject
         this.pressedHandlers.forEach((handler) => { handler(); });
     }
     
-    update(deltaTimeMs) { }
+    update(deltaTimeMs)
+    {
+        if (this.hovered()) {
+            if (!this.wasHovered) {
+                this.wasHovered = true;
+                this.mouseEntersButtonAudio.play();
+            }
+        } else {
+            if (this.wasHovered) {
+                this.wasHovered = false;
+            }
+        }
+    }
 
     draw(drawingContext)
     {

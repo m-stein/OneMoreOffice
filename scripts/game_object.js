@@ -10,6 +10,11 @@ export class GameObject
         this.position = position;
     }
 
+    removeAllChildren()
+    {
+        this.children = [];
+    }
+
     addChild(child, index)
     {
         if (typeof index === 'undefined') {

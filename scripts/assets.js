@@ -10,10 +10,8 @@ export class Assets
             sky: { src: "../sprites/sky.png" },
         };
         this.music = {
-            poorButHappy: { htmlElement: new Audio("../music/poor_but_happy.ogg") },
-        };
-        this.json = {
-            level: { src: "../levels/difficulty_" + level.difficulty + "/" + level.index + ".json" },
+            poorButHappy: { src: "../music/poor_but_happy.ogg" },
+            softKeyPress: { src: "../music/soft_keypress.ogg" },
         };
         Object.values(this.images).forEach((asset) => {
             asset.isLoaded = false;
@@ -24,21 +22,16 @@ export class Assets
             };
             asset.htmlElement.src = asset.src;
         });
-        Object.values(this.json).forEach((asset) => {
+        Object.values(this.music).forEach((asset) => {
             asset.isLoaded = false;
-            asset.httpRequest = new XMLHttpRequest();
-            asset.httpRequest.onreadystatechange = () => {
-                if (asset.httpRequest.readyState === 4) {
-                    if (asset.httpRequest.status === 200) {
-                        asset.data = JSON.parse(asset.httpRequest.responseText);
-                        asset.isLoaded = true;
-                        this.onAssetLoaded();
-                    }
-                }
-            };
-            asset.url = new URL(asset.src, document.baseURI);
-            asset.httpRequest.open('GET', asset.url.href);
-            asset.httpRequest.send();
+            asset.htmlElement = new Audio(asset.src);
+            const onCanPlayThrough = (event) => {
+                asset.htmlElement.removeEventListener('canplaythrough', onCanPlayThrough);
+                asset.isLoaded = true;
+                this.onAssetLoaded();
+            }
+            asset.htmlElement.addEventListener('canplaythrough', onCanPlayThrough);
+            asset.htmlElement.load();
         });
     }
 
@@ -50,7 +43,7 @@ export class Assets
                 allLoaded = false;
             }
         });
-        Object.values(this.json).forEach(asset => {
+        Object.values(this.music).forEach(asset => {
             if (!asset.isLoaded) {
                 allLoaded = false;
             }

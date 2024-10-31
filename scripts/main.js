@@ -7,6 +7,7 @@ import { OfficeLevel, Office, Desk, Plant } from './office_level.js';
 import { Vector3 } from './vector_3.js';
 import { Rectangle } from './rectangle.js';
 import { Menu } from './menu.js';
+import { JsonFile } from './json_file.js';
 
 function randomIntInclusive(min, max)
 {
@@ -37,6 +38,51 @@ class Main extends GameObject
         this.mousePositionOutdated = true;
     }
 
+    removeFromLoadingAsset(asset)
+    {
+        const index = this.loadingAssets.indexOf(asset);
+        if (index < 0) {
+            return;
+        }
+        this.loadingAssets.splice(index, 1);
+    }
+
+    onInitialLevelConfigLoaded = () =>
+    {
+        this.removeFromLoadingAsset(this.levelConfig);
+        if (this.loadingAssets.length == 0) {
+            this.onAssetsAndLevelConfigLoaded();
+        }
+    }
+
+    onAssetsLoaded = () =>
+    {
+        this.removeFromLoadingAsset(this.assets);
+        if (this.loadingAssets.length == 0) {
+            this.onAssetsAndLevelConfigLoaded();
+        }
+    }
+
+    onNewLevelConfigLoaded = () =>
+    {
+        this.removeFromLoadingAsset(this.levelConfig);
+        if (this.loadingAssets.length == 0) {
+            console.warn("Unexpected assets loading while loading a new level config!");
+        }
+        this.unloadLevel();
+        this.loadLevel(this.levelConfig.data);
+    }
+
+    loadLevelConfig(onLevelConfigLoaded)
+    {
+        this.levelConfig = new JsonFile(
+            this.windowDocument, this.jsonParser,
+            "../levels/difficulty_" + this.level.difficulty + "/" + this.level.index + ".json",
+            onLevelConfigLoaded
+        );
+        this.loadingAssets.push(this.levelConfig);
+    }
+
     onMouseDown = (event) =>
     {
         if (this.menu.enabled) {
@@ -44,9 +90,8 @@ class Main extends GameObject
             this.mouseDownHandlers.forEach((handler) => { handler(); });
         } else {
             if (this.state == Main.State.SelectionApplied) {
-                this.unloadLevel();
                 this.level.index = (this.level.index + 1) % Main.numLevelsPerDifficulty;
-                this.assets = new Assets(this.onAllAssetsLoaded, this.level);
+                this.loadLevelConfig(this.onNewLevelConfigLoaded);
                 return;
             }
             if (this.state != Main.State.NoSelection) {
@@ -76,11 +121,15 @@ class Main extends GameObject
         }
     }
 
-    onAllAssetsLoaded = () =>
+    onAssetsAndLevelConfigLoaded()
     {
-        this.addChild(this.camera);
-        this.loadLevel(this.assets.json.level.data);
-        this.addChild(this.menu);
+        this.assets.music.softKeyPress.htmlElement.volume = 0.2;
+        this.menu = new Menu(
+            new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
+            this.mousePosition, this.mouseDownHandlers, this.assets.music.softKeyPress.htmlElement
+        );
+        this.menu.newGame.pressedHandlers.push(this.onNewGamePressed);
+        this.loadLevel(this.levelConfig.data);
         this.gameEngine.start();
     }
 
@@ -95,7 +144,7 @@ class Main extends GameObject
         }
     }
 
-    constructor(windowDocument)
+    constructor(windowDocument, jsonParser)
     {
         super(new Vector2(0, 0), 'Main');
         this.canvas = windowDocument.querySelector('#mainCanvas');
@@ -111,13 +160,12 @@ class Main extends GameObject
         this.canvas.addEventListener("mousedown", this.onMouseDown);
 
         this.level = { difficulty: 0, index: 0 };
-        this.assets = new Assets(this.onAllAssetsLoaded, this.level);
+        this.assets = new Assets(this.onAssetsLoaded, this.level);
+        this.loadingAssets = [];
+        this.loadingAssets.push(this.assets);
+        this.jsonParser = jsonParser;
         this.windowDocument = windowDocument;
-        this.menu = new Menu(
-            new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
-            this.mousePosition, this.mouseDownHandlers
-        );
-        this.menu.newGame.pressedHandlers.push(this.onNewGamePressed);
+        this.loadLevelConfig(this.onInitialLevelConfigLoaded);
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.gameEngine = new GameEngine
         ({
@@ -130,8 +178,7 @@ class Main extends GameObject
 
     unloadLevel()
     {
-        this.officeOptions.forEach((office) => { this.removeChild(office); });
-        this.removeChild(this.officeLevel);
+        this.removeAllChildren();
     }
 
     parseLevelSolutionConfig(solutionConfig, officeLevelObjects, officeOptionsObjects)
@@ -223,8 +270,10 @@ class Main extends GameObject
         this.officeOptions.forEach((office) => {
             office.createAlphaMap(this.windowDocument);
         });
+        this.addChild(this.camera);
         this.addChild(this.officeLevel);
         this.officeOptions.forEach((office) => { this.addChild(office); });
+        this.addChild(this.menu);
     }
 
     update(deltaTimeMs)
@@ -275,5 +324,5 @@ class Main extends GameObject
     }
 }
 
-const main = new Main(window.document);
+const main = new Main(window.document, JSON);
 
