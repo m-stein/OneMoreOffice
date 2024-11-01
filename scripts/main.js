@@ -1,4 +1,3 @@
-import { Assets } from './assets.js';
 import { GameEngine } from './game_engine.js';
 import { GameObject } from './game_object.js';
 import { Vector2 } from './vector_2.js';
@@ -145,13 +144,14 @@ class Main extends GameObject
 
         /* Start loading common assets */
         this.loadingAssets = [];
-        this.assets = new Assets(this.onAssetLoaded);
         this.backgroundMusic = new AudioFile(this.windowDocument, "../music/poor_but_happy.ogg", this.onAssetLoaded);
         this.buttonHoverSound = new AudioFile(this.windowDocument, "../music/soft_keypress.ogg", this.onAssetLoaded);
         this.images = {
             desk: new ImageFile(this.windowDocument, "../sprites/desk.png", this.onAssetLoaded),
+            plant: new ImageFile(this.windowDocument, "../sprites/plant.png", this.onAssetLoaded),
+            floor: new ImageFile(this.windowDocument, "../sprites/floor.png", this.onAssetLoaded),
+            sky: new ImageFile(this.windowDocument, "../sprites/sky.png", this.onAssetLoaded),
         };
-        this.loadingAssets.push(this.assets);
         this.loadingAssets.push(this.backgroundMusic);
         this.loadingAssets.push(this.buttonHoverSound);
         Object.values(this.images).forEach((image) => { this.loadingAssets.push(image); });
@@ -160,7 +160,7 @@ class Main extends GameObject
         this.levelId = { difficulty: 0, index: 0 };
         this.startLoadingLevelAssets(this.levelId);
 
-        this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
+        this.camera = new Camera(this.images.sky, this.canvas.width, this.canvas.height);
         this.gameEngine = new GameEngine
         ({
             rootGameObj: this,
@@ -228,7 +228,7 @@ class Main extends GameObject
         this.parseLevelSolutionConfig(levelConfig["solution"], this.officeLevelObjects, this.officeOptionsObjects);
 
         const officeLevelX = this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth;
-        this.officeLevel = new OfficeLevel(this.assets, new Vector2(officeLevelX, 50), this.officeLevelObjects);
+        this.officeLevel = new OfficeLevel(this.images, new Vector2(officeLevelX, 50), this.officeLevelObjects);
         this.officeOptions = [];
         const officeMargin = 2;
         const officeWidth = Office.tileIsoQuartWidth * 4 * Office.size;
@@ -236,7 +236,7 @@ class Main extends GameObject
         const officeOptionsX = officeLevelX + (Office.tileIsoQuartWidth * 2) - officeOptionsWidth / 2;
         const officeOffset = Office.tileIsoQuartWidth * 4 * Math.floor(Office.size / 2);
         for (let idx = 0; idx < Main.numOfficeOptions; idx++) {
-            const office = new Office(new Vector2(officeOptionsX + idx * (officeWidth + officeMargin) + officeOffset, 230), this.assets);
+            const office = new Office(new Vector2(officeOptionsX + idx * (officeWidth + officeMargin) + officeOffset, 230), this.images);
             this.officeOptions.push(office);
         }
         const numBaddies = Main.numOfficeOptions - 1;
@@ -265,10 +265,10 @@ class Main extends GameObject
         this.officeOptionsObjects.forEach((obj) => {
             switch(obj[0]) {
                 case "plant":
-                    this.officeOptions[obj[1]].insert(new Plant(this.assets), new Vector3(obj[2], obj[3], 1));
+                    this.officeOptions[obj[1]].insert(new Plant(this.images), new Vector3(obj[2], obj[3], 1));
                     break;
                 case "desk":
-                    this.officeOptions[obj[1]].insert(new Desk(this.assets), new Vector3(obj[2], obj[3], 1));
+                    this.officeOptions[obj[1]].insert(new Desk(this.images), new Vector3(obj[2], obj[3], 1));
                     break;
             }
         });

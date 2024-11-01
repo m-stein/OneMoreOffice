@@ -15,7 +15,7 @@ export class Sprite extends GameObject
         position = new Vector2(0, 0)
     })
     {
-        super(position, 'Sprite_' + sourceImage.src);
+        super(position, 'Sprite_' + sourceImage.relPath);
         this.sourceImage = sourceImage;
         this.frameSize = frameSize;
         this.framePadding = framePadding ?? new Vector2(0, 0)
@@ -43,9 +43,6 @@ export class Sprite extends GameObject
 
     draw(drawingContext)
     {
-        if (!this.sourceImage.isLoaded)
-            return;
-
         const frame = this.frameMap.get(this.currFrameIndex);
         if (!frame) {
             console.warn("failed to get frame from map");
