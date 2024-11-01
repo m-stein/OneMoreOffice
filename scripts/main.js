@@ -38,47 +38,29 @@ class Main extends GameObject
         this.mousePositionOutdated = true;
     }
 
-    removeFromLoadingAsset(asset)
+    removeFromArray(array, item)
     {
-        const index = this.loadingAssets.indexOf(asset);
+        const index = array.indexOf(item);
         if (index < 0) {
             return;
         }
-        this.loadingAssets.splice(index, 1);
+        array.splice(index, 1);
     }
 
-    onInitialLevelConfigLoaded = () =>
+    onAssetLoaded = (asset) =>
     {
-        this.removeFromLoadingAsset(this.levelConfig);
+        this.removeFromArray(this.loadingAssets, asset);
         if (this.loadingAssets.length == 0) {
-            this.onAssetsAndLevelConfigLoaded();
+            this.onAllAssetsLoaded();
         }
     }
 
-    onAssetsLoaded = () =>
-    {
-        this.removeFromLoadingAsset(this.assets);
-        if (this.loadingAssets.length == 0) {
-            this.onAssetsAndLevelConfigLoaded();
-        }
-    }
-
-    onNewLevelConfigLoaded = () =>
-    {
-        this.removeFromLoadingAsset(this.levelConfig);
-        if (this.loadingAssets.length == 0) {
-            console.warn("Unexpected assets loading while loading a new level config!");
-        }
-        this.unloadLevel();
-        this.loadLevel(this.levelConfig.data);
-    }
-
-    loadLevelConfig(onLevelConfigLoaded)
+    startLoadingLevelConfig(levelId)
     {
         this.levelConfig = new JsonFile(
             this.windowDocument, this.jsonParser,
-            "../levels/difficulty_" + this.level.difficulty + "/" + this.level.index + ".json",
-            onLevelConfigLoaded
+            "../levels/difficulty_" + levelId.difficulty + "/" + levelId.index + ".json",
+            this.onAssetLoaded
         );
         this.loadingAssets.push(this.levelConfig);
     }
@@ -90,8 +72,13 @@ class Main extends GameObject
             this.mouseDownHandlers.forEach((handler) => { handler(); });
         } else {
             if (this.state == Main.State.SelectionApplied) {
-                this.level.index = (this.level.index + 1) % Main.numLevelsPerDifficulty;
-                this.loadLevelConfig(this.onNewLevelConfigLoaded);
+                this.levelId.index = (this.levelId.index + 1) % Main.numLevelsPerDifficulty;
+                this.startLoadingLevelConfig(this.levelId);
+                this.onAllAssetsLoaded = () =>
+                { 
+                    this.unloadLevel();
+                    this.loadLevel(this.levelConfig.data);
+                }
                 return;
             }
             if (this.state != Main.State.NoSelection) {
@@ -121,18 +108,6 @@ class Main extends GameObject
         }
     }
 
-    onAssetsAndLevelConfigLoaded()
-    {
-        this.assets.music.softKeyPress.htmlElement.volume = 0.2;
-        this.menu = new Menu(
-            new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
-            this.mousePosition, this.mouseDownHandlers, this.assets.music.softKeyPress.htmlElement
-        );
-        this.menu.newGame.pressedHandlers.push(this.onNewGamePressed);
-        this.loadLevel(this.levelConfig.data);
-        this.gameEngine.start();
-    }
-
     onNewGamePressed = () =>
     {
         if (this.menu.enabled) {
@@ -159,13 +134,13 @@ class Main extends GameObject
         this.mouseDownHandlers = [];
         this.canvas.addEventListener("mousedown", this.onMouseDown);
 
-        this.level = { difficulty: 0, index: 0 };
-        this.assets = new Assets(this.onAssetsLoaded, this.level);
+        this.levelId = { difficulty: 0, index: 0 };
+        this.assets = new Assets(this.onAssetLoaded);
         this.loadingAssets = [];
         this.loadingAssets.push(this.assets);
         this.jsonParser = jsonParser;
         this.windowDocument = windowDocument;
-        this.loadLevelConfig(this.onInitialLevelConfigLoaded);
+        this.startLoadingLevelConfig(this.levelId);
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.gameEngine = new GameEngine
         ({
@@ -174,6 +149,17 @@ class Main extends GameObject
             canvas: this.canvas,
             updatePeriodMs: 1000 / 60,
         });
+        this.onAllAssetsLoaded = () =>
+        {
+            this.assets.music.softKeyPress.htmlElement.volume = 0.2;
+            this.menu = new Menu(
+                new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
+                this.mousePosition, this.mouseDownHandlers, this.assets.music.softKeyPress.htmlElement
+            );
+            this.menu.newGame.pressedHandlers.push(this.onNewGamePressed);
+            this.loadLevel(this.levelConfig.data);
+            this.gameEngine.start();
+        }
     }
 
     unloadLevel()

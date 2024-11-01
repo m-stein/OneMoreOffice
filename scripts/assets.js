@@ -1,6 +1,6 @@
 export class Assets
 {
-    constructor(onAllLoaded, level)
+    constructor(onAllLoaded)
     {
         this.onAllLoaded = onAllLoaded;
         this.images = {
@@ -49,7 +49,7 @@ export class Assets
             }
         });
         if (allLoaded) {
-            this.onAllLoaded();
+            this.onAllLoaded(this);
         }
     }
 };
