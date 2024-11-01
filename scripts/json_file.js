@@ -2,6 +2,7 @@ export class JsonFile
 {
     constructor(htmlDocument, jsonParser, relPath, onLoaded)
     {
+        this.relPath = relPath;
         this.onLoaded = onLoaded;
         this.jsonParser = jsonParser;
         this.httpRequest = new XMLHttpRequest();

@@ -2,7 +2,7 @@ export class Assets
 {
     constructor(onAllLoaded)
     {
-        this.htmlElement = {src: "assets"};
+        this.relPath = "assets";
         this.onAllLoaded = onAllLoaded;
         this.images = {
             desk: { src: "../sprites/desk.png" },

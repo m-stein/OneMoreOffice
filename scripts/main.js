@@ -9,6 +9,7 @@ import { Rectangle } from './rectangle.js';
 import { Menu } from './menu.js';
 import { JsonFile } from './json_file.js';
 import { AudioFile } from './audio_file.js';
+import { ImageFile } from './image_file.js';
 
 function randomIntInclusive(min, max)
 {
@@ -56,7 +57,7 @@ class Main extends GameObject
         }
     }
 
-    startLoadingLevelConfig(levelId)
+    startLoadingLevelAssets(levelId)
     {
         this.levelConfig = new JsonFile(
             this.windowDocument, this.jsonParser,
@@ -74,7 +75,7 @@ class Main extends GameObject
         } else {
             if (this.state == Main.State.SelectionApplied) {
                 this.levelId.index = (this.levelId.index + 1) % Main.numLevelsPerDifficulty;
-                this.startLoadingLevelConfig(this.levelId);
+                this.startLoadingLevelAssets(this.levelId);
                 this.onAllAssetsLoaded = () =>
                 { 
                     this.unloadLevel();
@@ -142,15 +143,23 @@ class Main extends GameObject
         this.mouseDownHandlers = [];
         this.canvas.addEventListener("mousedown", this.onMouseDown);
 
-        this.levelId = { difficulty: 0, index: 0 };
+        /* Start loading common assets */
         this.loadingAssets = [];
         this.assets = new Assets(this.onAssetLoaded);
         this.backgroundMusic = new AudioFile(this.windowDocument, "../music/poor_but_happy.ogg", this.onAssetLoaded);
         this.buttonHoverSound = new AudioFile(this.windowDocument, "../music/soft_keypress.ogg", this.onAssetLoaded);
+        this.images = {
+            desk: new ImageFile(this.windowDocument, "../sprites/desk.png", this.onAssetLoaded),
+        };
         this.loadingAssets.push(this.assets);
         this.loadingAssets.push(this.backgroundMusic);
         this.loadingAssets.push(this.buttonHoverSound);
-        this.startLoadingLevelConfig(this.levelId);
+        Object.values(this.images).forEach((image) => { this.loadingAssets.push(image); });
+
+        /* Start loading level-specific assets */
+        this.levelId = { difficulty: 0, index: 0 };
+        this.startLoadingLevelAssets(this.levelId);
+
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.gameEngine = new GameEngine
         ({
