@@ -13,6 +13,7 @@ Live Server extension for Visual Studio Code on the game's `index.html` or execu
 
 ## Credits
 
-### Music
+### Music and sound effects
 
 * "Poor, But Happy" from ["Happy Lo-Fi Collection"](https://opengameart.org/content/happy-lo-fi-lofi-collection) by Holizna
+* ["Keyboard Soundpack #1"](https://opengameart.org/content/keyboard-soundpack-1-typing-and-single-keystrokes) by unicaegames
