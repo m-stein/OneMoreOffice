@@ -8,6 +8,7 @@ import { Vector3 } from './vector_3.js';
 import { Rectangle } from './rectangle.js';
 import { Menu } from './menu.js';
 import { JsonFile } from './json_file.js';
+import { AudioFile } from './audio_file.js';
 
 function randomIntInclusive(min, max)
 {
@@ -108,20 +109,27 @@ class Main extends GameObject
         }
     }
 
+    startBackgroundMusic()
+    {
+        const bgMusic = this.backgroundMusic.htmlElement;
+        bgMusic.volume = 0.1;
+        bgMusic.loop = true;
+        bgMusic.play();
+    }
+
     onNewGamePressed = () =>
     {
         if (this.menu.enabled) {
             this.menu.enabled = false;
-            let music = this.assets.music.poorButHappy.htmlElement;
-            music.volume = 0.1;
-            music.loop = true;
-            music.play();
+            this.startBackgroundMusic();
         }
     }
 
     constructor(windowDocument, jsonParser)
     {
         super(new Vector2(0, 0), 'Main');
+        this.windowDocument = windowDocument;
+        this.jsonParser = jsonParser;
         this.canvas = windowDocument.querySelector('#mainCanvas');
 
         /* Initialize mouse position tracking */
@@ -135,11 +143,13 @@ class Main extends GameObject
         this.canvas.addEventListener("mousedown", this.onMouseDown);
 
         this.levelId = { difficulty: 0, index: 0 };
-        this.assets = new Assets(this.onAssetLoaded);
         this.loadingAssets = [];
+        this.assets = new Assets(this.onAssetLoaded);
+        this.backgroundMusic = new AudioFile(this.windowDocument, "../music/poor_but_happy.ogg", this.onAssetLoaded);
+        this.buttonHoverSound = new AudioFile(this.windowDocument, "../music/soft_keypress.ogg", this.onAssetLoaded);
         this.loadingAssets.push(this.assets);
-        this.jsonParser = jsonParser;
-        this.windowDocument = windowDocument;
+        this.loadingAssets.push(this.backgroundMusic);
+        this.loadingAssets.push(this.buttonHoverSound);
         this.startLoadingLevelConfig(this.levelId);
         this.camera = new Camera(this.assets.images.sky, this.canvas.width, this.canvas.height);
         this.gameEngine = new GameEngine
@@ -151,10 +161,10 @@ class Main extends GameObject
         });
         this.onAllAssetsLoaded = () =>
         {
-            this.assets.music.softKeyPress.htmlElement.volume = 0.2;
+            this.buttonHoverSound.htmlElement.volume = 0.2;
             this.menu = new Menu(
                 new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
-                this.mousePosition, this.mouseDownHandlers, this.assets.music.softKeyPress.htmlElement
+                this.mousePosition, this.mouseDownHandlers, this.buttonHoverSound.htmlElement
             );
             this.menu.newGame.pressedHandlers.push(this.onNewGamePressed);
             this.loadLevel(this.levelConfig.data);

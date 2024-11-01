@@ -1,21 +1,21 @@
 export class JsonFile
 {
-    constructor(doc, parser, relPath, onLoaded)
+    constructor(htmlDocument, jsonParser, relPath, onLoaded)
     {
         this.onLoaded = onLoaded;
-        this.parser = parser;
+        this.jsonParser = jsonParser;
         this.httpRequest = new XMLHttpRequest();
-        this.httpRequest.onreadystatechange = this.onreadystatechange;
-        this.url = new URL(relPath, doc.baseURI);
+        this.httpRequest.onreadystatechange = this.onReadyStateChange;
+        this.url = new URL(relPath, htmlDocument.baseURI);
         this.httpRequest.open('GET', this.url.href);
         this.httpRequest.send();
     }
 
-    onreadystatechange = () =>
+    onReadyStateChange = () =>
     {
         if (this.httpRequest.readyState === 4) {
             if (this.httpRequest.status === 200) {
-                this.data = this.parser.parse(this.httpRequest.responseText);
+                this.data = this.jsonParser.parse(this.httpRequest.responseText);
                 this.onLoaded(this);
             }
         }
