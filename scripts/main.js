@@ -9,6 +9,7 @@ import { Menu } from './menu.js';
 import { JsonFile } from './json_file.js';
 import { AudioFile } from './audio_file.js';
 import { ImageFile } from './image_file.js';
+import { removeFromArray } from './array_utilities.js';
 
 function randomIntInclusive(min, max)
 {
@@ -39,18 +40,9 @@ class Main extends GameObject
         this.mousePositionOutdated = true;
     }
 
-    removeFromArray(array, item)
-    {
-        const index = array.indexOf(item);
-        if (index < 0) {
-            return;
-        }
-        array.splice(index, 1);
-    }
-
     onAssetLoaded = (asset) =>
     {
-        this.removeFromArray(this.loadingAssets, asset);
+        removeFromArray(this.loadingAssets, asset);
         if (this.loadingAssets.length == 0) {
             this.onAllAssetsLoaded();
         }
@@ -173,9 +165,9 @@ class Main extends GameObject
             this.buttonHoverSound.htmlElement.volume = 0.2;
             this.menu = new Menu(
                 new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
-                this.mousePosition, this.mouseDownHandlers, this.buttonHoverSound.htmlElement
+                this.mousePosition, this.mouseDownHandlers, this.buttonHoverSound.htmlElement,
+                this.onNewGamePressed
             );
-            this.menu.newGame.pressedHandlers.push(this.onNewGamePressed);
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();
         }
