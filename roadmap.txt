@@ -3,18 +3,6 @@ The user can play the game with all the basioc logic in a GUI that reflects
 the basic design decisions. Developers can easily add levels.
 
     Feature:
-    There is a main menu that the game starts in and to which the user can return
-    whith a certain key. The menu contains these elements:
-        * The game title
-        * Button: Continue (if in a game)
-        * Button: New game (aborts current game)
-        * Button: Highscore (aborts current game; dummy for now)
-        * Button: Credits (aborts current game; dummy for now)
-
-    Feature:
-    The game is accompanied by a relaxing background music.
-
-    Feature:
     Correct choices and wrong choices are accompanied by an appropriate
     sound effect.
 

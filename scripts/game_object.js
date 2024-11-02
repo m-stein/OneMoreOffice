@@ -53,9 +53,9 @@ export class GameObject
         drawingContext.position.subtract(this.position);
     }
     
-    createAlphaMap(windowDocument)
+    createAlphaMap(htmlDocument)
     {
-        this.alphaMap = windowDocument.createElement("canvas");
+        this.alphaMap = htmlDocument.createElement("canvas");
         const offset = new Vector2(
             -this.position.x - this.boundingRect.position.x,
             -this.position.y - this.boundingRect.position.y);

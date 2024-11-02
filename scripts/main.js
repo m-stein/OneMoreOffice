@@ -10,6 +10,9 @@ import { JsonFile } from './json_file.js';
 import { AudioFile } from './audio_file.js';
 import { ImageFile } from './image_file.js';
 import { removeFromArray } from './array_utilities.js';
+import { createEnum } from './enum.js';
+import { KeyCode } from './keycode.js';
+import { SelectionFeedback } from './selection_feedback.js';
 
 function randomIntInclusive(min, max)
 {
@@ -24,12 +27,12 @@ class Main extends GameObject
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
     static numLevelsPerDifficulty = 2;
-    
-    static State = {
+
+    static State = createEnum({
         NoSelection: 0,
         SelectionRequested: 1,
         SelectionApplied: 2,
-    };
+    });
 
     onMouseMove = (event) => { this.updateRawMousePosition(event); }
 
@@ -51,11 +54,18 @@ class Main extends GameObject
     startLoadingLevelAssets(levelId)
     {
         this.levelConfig = new JsonFile(
-            this.windowDocument, this.jsonParser,
+            this.window.document, this.jsonParser,
             "../levels/difficulty_" + levelId.difficulty + "/" + levelId.index + ".json",
             this.onAssetLoaded
         );
         this.loadingAssets.push(this.levelConfig);
+    }
+
+    onKeyDown = (event) =>
+    {
+        if (event.keyCode == KeyCode.Escape && this.backgroundMusicPlaying) {
+            this.menu.enabled = !this.menu.enabled;
+        }
     }
 
     onMouseDown = (event) =>
@@ -101,28 +111,40 @@ class Main extends GameObject
         }
     }
 
-    startBackgroundMusic()
+    ensureBackgroundMusicPlaying()
     {
-        const bgMusic = this.backgroundMusic.htmlElement;
-        bgMusic.volume = 0.1;
-        bgMusic.loop = true;
-        bgMusic.play();
+        if (this.backgroundMusicPlaying) {
+            return;
+        }
+        const htmlElem = this.backgroundMusic.htmlElement;
+        htmlElem.volume = 0.1;
+        htmlElem.loop = true;
+        htmlElem.play();
+        this.backgroundMusicPlaying = true;
     }
 
-    onNewGamePressed = () =>
+    startNewGame = () =>
     {
         if (this.menu.enabled) {
-            this.menu.enabled = false;
-            this.startBackgroundMusic();
+            this.levelId = { difficulty: 0, index: 0 };
+            this.startLoadingLevelAssets(this.levelId);
+            this.onAllAssetsLoaded = () =>
+            { 
+                this.unloadLevel();
+                this.loadLevel(this.levelConfig.data);
+                this.ensureBackgroundMusicPlaying();
+                this.menu.enabled = false;
+            }
         }
     }
 
-    constructor(windowDocument, jsonParser)
+    constructor(mainWindow, jsonParser)
     {
         super(new Vector2(0, 0), 'Main');
-        this.windowDocument = windowDocument;
+        this.window = mainWindow;
         this.jsonParser = jsonParser;
-        this.canvas = windowDocument.querySelector('#mainCanvas');
+        this.backgroundMusicPlaying = false;
+        this.canvas = this.window.document.getElementById('mainCanvas');
 
         /* Initialize mouse position tracking */
         this.mouseDown = false;
@@ -133,16 +155,17 @@ class Main extends GameObject
         /* Initialize handling of mouse clicks */
         this.mouseDownHandlers = [];
         this.canvas.addEventListener("mousedown", this.onMouseDown);
+        this.window.addEventListener('keydown', this.onKeyDown);
 
         /* Start loading common assets */
         this.loadingAssets = [];
-        this.backgroundMusic = new AudioFile(this.windowDocument, "../audio/poor_but_happy.ogg", this.onAssetLoaded);
-        this.buttonHoverSound = new AudioFile(this.windowDocument, "../audio/soft_keypress.ogg", this.onAssetLoaded);
+        this.backgroundMusic = new AudioFile(this.window.document, "../audio/poor_but_happy.ogg", this.onAssetLoaded);
+        this.buttonHoverSound = new AudioFile(this.window.document, "../audio/soft_keypress.ogg", this.onAssetLoaded);
         this.images = {
-            desk: new ImageFile(this.windowDocument, "../images/desk.png", this.onAssetLoaded),
-            plant: new ImageFile(this.windowDocument, "../images/plant.png", this.onAssetLoaded),
-            floor: new ImageFile(this.windowDocument, "../images/floor.png", this.onAssetLoaded),
-            sky: new ImageFile(this.windowDocument, "../images/sky.png", this.onAssetLoaded),
+            desk: new ImageFile(this.window.document, "../images/desk.png", this.onAssetLoaded),
+            plant: new ImageFile(this.window.document, "../images/plant.png", this.onAssetLoaded),
+            floor: new ImageFile(this.window.document, "../images/floor.png", this.onAssetLoaded),
+            sky: new ImageFile(this.window.document, "../images/sky.png", this.onAssetLoaded),
         };
         this.loadingAssets.push(this.backgroundMusic);
         this.loadingAssets.push(this.buttonHoverSound);
@@ -152,6 +175,10 @@ class Main extends GameObject
         this.levelId = { difficulty: 0, index: 0 };
         this.startLoadingLevelAssets(this.levelId);
 
+        this.selectionFeedback = new SelectionFeedback(
+            new Vector2(this.canvas.width / 2, 30),
+            () => { return this.selectedAnswerIdx == this.correctAnswerIdx }
+        );
         this.camera = new Camera(this.images.sky, this.canvas.width, this.canvas.height);
         this.gameEngine = new GameEngine
         ({
@@ -166,7 +193,7 @@ class Main extends GameObject
             this.menu = new Menu(
                 new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
                 this.mousePosition, this.mouseDownHandlers, this.buttonHoverSound.htmlElement,
-                this.onNewGamePressed
+                this.startNewGame
             );
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();
@@ -176,6 +203,7 @@ class Main extends GameObject
     unloadLevel()
     {
         this.removeAllChildren();
+        this.selectionFeedback.enabled = false;
     }
 
     parseLevelSolutionConfig(solutionConfig, officeLevelObjects, officeOptionsObjects)
@@ -265,11 +293,12 @@ class Main extends GameObject
             }
         });
         this.officeOptions.forEach((office) => {
-            office.createAlphaMap(this.windowDocument);
+            office.createAlphaMap(this.window.document);
         });
         this.addChild(this.camera);
         this.addChild(this.officeLevel);
         this.officeOptions.forEach((office) => { this.addChild(office); });
+        this.addChild(this.selectionFeedback);
         this.addChild(this.menu);
     }
 
@@ -285,6 +314,7 @@ class Main extends GameObject
         this.updateChildren(deltaTimeMs);
         if (this.state == Main.State.SelectionRequested) {
             this.selectOfficeOption(this.selectedAnswerIdx);
+            this.selectionFeedback.enabled = true;
             this.state = Main.State.SelectionApplied;
         }
         this.camera.position = new Vector2(0,0);
@@ -300,14 +330,6 @@ class Main extends GameObject
     draw(drawingContext)
     {
         this.drawChildren(drawingContext);
-        if (this.state == Main.State.SelectionApplied) {
-            const position = new Vector2(this.canvas.width / 2, 30);
-            if (this.selectedAnswerIdx == this.correctAnswerIdx) {
-                drawingContext.drawText("Marvellous!", position, 16, "center");
-            } else {
-                drawingContext.drawText("Well, that'll do...", position, 16, "center");
-            }
-        }
         if (Main.drawButtonAlphaMaps) {
             drawingContext.canvasContext.globalAlpha = 0.5;
             this.officeOptions.forEach((office) => {
@@ -321,5 +343,5 @@ class Main extends GameObject
     }
 }
 
-const main = new Main(window.document, JSON);
+const main = new Main(window, JSON);
 

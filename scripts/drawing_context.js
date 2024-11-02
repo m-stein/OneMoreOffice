@@ -25,6 +25,6 @@ export class DrawingContext
     {
         this.canvasContext.font = size + "px serif";
         this.canvasContext.textAlign = alignment;
-        this.canvasContext.fillText(text, position.x, position.y);
+        this.canvasContext.fillText(text, this.position.x + position.x, this.position.y + position.y);
     }
 }
