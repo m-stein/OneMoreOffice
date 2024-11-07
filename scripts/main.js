@@ -55,7 +55,7 @@ class Main extends GameObject
     {
         this.levelConfig = new JsonFile(
             this.window.document, this.jsonParser,
-            "../levels/difficulty_" + levelId.difficulty + "/" + levelId.index + ".json",
+            this.rootPath + "/levels/difficulty_" + levelId.difficulty + "/" + levelId.index + ".json",
             this.onAssetLoaded
         );
         this.loadingAssets.push(this.levelConfig);
@@ -138,13 +138,14 @@ class Main extends GameObject
         }
     }
 
-    constructor(mainWindow, jsonParser)
+    constructor(mainWindow, jsonParser, rootPath, canvasId)
     {
         super(new Vector2(0, 0), 'Main');
+        this.rootPath = rootPath;
         this.window = mainWindow;
         this.jsonParser = jsonParser;
         this.backgroundMusicPlaying = false;
-        this.canvas = this.window.document.getElementById('mainCanvas');
+        this.canvas = this.window.document.getElementById(canvasId);
 
         /* Initialize mouse position tracking */
         this.mouseDown = false;
@@ -159,13 +160,13 @@ class Main extends GameObject
 
         /* Start loading common assets */
         this.loadingAssets = [];
-        this.backgroundMusic = new AudioFile(this.window.document, "../audio/poor_but_happy.ogg", this.onAssetLoaded);
-        this.buttonHoverSound = new AudioFile(this.window.document, "../audio/soft_keypress.ogg", this.onAssetLoaded);
+        this.backgroundMusic = new AudioFile(this.window.document, this.rootPath + "/audio/poor_but_happy.ogg", this.onAssetLoaded);
+        this.buttonHoverSound = new AudioFile(this.window.document, this.rootPath + "/audio/soft_keypress.ogg", this.onAssetLoaded);
         this.images = {
-            desk: new ImageFile(this.window.document, "../images/desk.png", this.onAssetLoaded),
-            plant: new ImageFile(this.window.document, "../images/plant.png", this.onAssetLoaded),
-            floor: new ImageFile(this.window.document, "../images/floor.png", this.onAssetLoaded),
-            sky: new ImageFile(this.window.document, "../images/sky.png", this.onAssetLoaded),
+            desk: new ImageFile(this.window.document, this.rootPath + "/images/desk.png", this.onAssetLoaded),
+            plant: new ImageFile(this.window.document, this.rootPath + "/images/plant.png", this.onAssetLoaded),
+            floor: new ImageFile(this.window.document, this.rootPath + "/images/floor.png", this.onAssetLoaded),
+            sky: new ImageFile(this.window.document, this.rootPath + "/images/sky.png", this.onAssetLoaded),
         };
         this.loadingAssets.push(this.backgroundMusic);
         this.loadingAssets.push(this.buttonHoverSound);
@@ -343,5 +344,4 @@ class Main extends GameObject
     }
 }
 
-const main = new Main(window, JSON);
-
+const main = new Main(window, JSON, "..", 'mainCanvas');
