@@ -3,9 +3,9 @@ html, body {
     margin: 0;
     overflow: hidden;
     image-rendering: pixelated;
+    background-color: #080808;
 }
 
-canvas {
+#mainCanvas {
     width: 100%;
-    background-color: #111d27;
 }
