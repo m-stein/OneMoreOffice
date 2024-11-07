@@ -138,14 +138,14 @@ class Main extends GameObject
         }
     }
 
-    constructor(mainWindow, jsonParser, rootPath, canvasId)
+    constructor(mainWindow, jsonParser, configTagId, canvasTagId)
     {
         super(new Vector2(0, 0), 'Main');
-        this.rootPath = rootPath;
         this.window = mainWindow;
+        this.rootPath = this.window.document.getElementById(configTagId).getAttribute('rootPath');
         this.jsonParser = jsonParser;
         this.backgroundMusicPlaying = false;
-        this.canvas = this.window.document.getElementById(canvasId);
+        this.canvas = this.window.document.getElementById(canvasTagId);
 
         /* Initialize mouse position tracking */
         this.mouseDown = false;
@@ -344,4 +344,4 @@ class Main extends GameObject
     }
 }
 
-const main = new Main(window, JSON, "..", 'mainCanvas');
+const main = new Main(window, JSON, 'mainScript', 'mainCanvas');
