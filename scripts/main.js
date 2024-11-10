@@ -138,6 +138,14 @@ class Main extends GameObject
         }
     }
 
+    withNewOfficeObject(id, lambda)
+    {
+        switch (id) {
+            case 1: lambda(new Plant(this.images)); break;
+            case 2: lambda(new Desk(this.images)); break;
+        }
+    }
+
     constructor(mainWindow, jsonParser, configTagId, canvasTagId)
     {
         super(new Vector2(0, 0), 'Main');
@@ -207,34 +215,30 @@ class Main extends GameObject
         this.selectionFeedback.enabled = false;
     }
 
-    parseLevelSolutionConfig(solutionConfig, officeLevelObjects, officeOptionsObjects)
+    parseLevelSolutionConfig(solutionConfig)
     {
         let officeX = 0;
         solutionConfig.forEach((outerItem, outerIdx) => {
             outerItem.forEach((innerItem, innerIdx) => {
-                if (innerItem == 0) {
-                    return;
-                }
-                const y = Math.floor(outerIdx / OfficeLevel.size);
-                const tileY = y % OfficeLevel.size;
-                const officeY = Math.floor(y / OfficeLevel.size);
-                if (officeX < OfficeLevel.size - 1 ||
-                    officeY < OfficeLevel.size - 1)
-                {
-                    switch (innerItem) {
-                        case 1: officeLevelObjects.push([ "plant", officeX, officeY, innerIdx, tileY ]); break;
-                        case 2: officeLevelObjects.push([ "desk", officeX, officeY, innerIdx, tileY ]); break;
+                this.withNewOfficeObject(innerItem, (obj) => {
+                    const y = Math.floor(outerIdx / OfficeLevel.size);
+                    const tileY = y % OfficeLevel.size;
+                    const officeY = Math.floor(y / OfficeLevel.size);
+                    const objAt = new Vector3(innerIdx, tileY, 1)
+                    if (officeX < OfficeLevel.size - 1 ||
+                        officeY < OfficeLevel.size - 1)
+                    {
+                        this.officeLevel.offices.item(new Vector2(officeX, officeY)).insert(obj, objAt);
+
+                    } else if (officeX == OfficeLevel.size - 1 &&
+                               officeY == OfficeLevel.size - 1)
+                    {
+                        this.officeOptions[this.correctAnswerIdx].insert(obj, objAt);
+
+                    } else {
+                        console.log("Warning: Malformed level config!");
                     }
-                } else if (officeX == OfficeLevel.size - 1 &&
-                           officeY == OfficeLevel.size - 1)
-                {
-                    switch (innerItem) {
-                        case 1: officeOptionsObjects.push([ "plant", this.correctAnswerIdx, innerIdx, tileY ]); break;
-                        case 2: officeOptionsObjects.push([ "desk", this.correctAnswerIdx, innerIdx, tileY ]); break;
-                    }
-                } else {
-                    console.log("Warning: Malformed level config!");
-                }
+                });
             });
             officeX = (officeX + 1) % OfficeLevel.size;
         });
@@ -244,14 +248,9 @@ class Main extends GameObject
     {
         this.correctAnswerIdx = randomIntInclusive(0, Main.numOfficeOptions - 1);
         this.state = Main.State.NoSelection;
-        this.officeLevelObjects = [];
-        this.officeOptionsObjects = [];
-        this.parseLevelSolutionConfig(levelConfig["solution"], this.officeLevelObjects, this.officeOptionsObjects);
-
-        const officeLevelX = this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth;
-        this.officeLevel = new OfficeLevel(this.images, new Vector2(officeLevelX, 50), this.officeLevelObjects);
         this.officeOptions = [];
         const officeMargin = 2;
+        const officeLevelX = this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth;
         const officeWidth = Office.tileIsoQuartWidth * 4 * Office.size;
         const officeOptionsWidth = Main.numOfficeOptions * officeWidth + (Main.numOfficeOptions - 1) * officeMargin;
         const officeOptionsX = officeLevelX + (Office.tileIsoQuartWidth * 2) - officeOptionsWidth / 2;
@@ -260,6 +259,9 @@ class Main extends GameObject
             const office = new Office(new Vector2(officeOptionsX + idx * (officeWidth + officeMargin) + officeOffset, 230), this.images);
             this.officeOptions.push(office);
         }
+
+        this.officeLevel = new OfficeLevel(this.images, new Vector2(officeLevelX, 50));
+        this.parseLevelSolutionConfig(levelConfig["solution"]);
         const numBaddies = Main.numOfficeOptions - 1;
         this.baddieConfigs = [];
         levelConfig["baddies"].forEach((item, idx) => {
@@ -272,25 +274,14 @@ class Main extends GameObject
         this.baddieConfigs.forEach((baddie) => {
             baddie.forEach((row, y) => {
                 row.forEach((cell, x) => {
-                    switch (cell) {
-                        case 1: this.officeOptionsObjects.push([ "plant", officeIdx, x, y ]); break;
-                        case 2: this.officeOptionsObjects.push([ "desk", officeIdx, x, y ]); break;
-                    }
+                    this.withNewOfficeObject(cell, (obj) => {
+                        this.officeOptions[officeIdx].insert(obj, new Vector3(x, y, 1));
+                    });
                 });
             });
             officeIdx++;
             if (officeIdx == this.correctAnswerIdx) {
                 officeIdx++;
-            }
-        });
-        this.officeOptionsObjects.forEach((obj) => {
-            switch(obj[0]) {
-                case "plant":
-                    this.officeOptions[obj[1]].insert(new Plant(this.images), new Vector3(obj[2], obj[3], 1));
-                    break;
-                case "desk":
-                    this.officeOptions[obj[1]].insert(new Desk(this.images), new Vector3(obj[2], obj[3], 1));
-                    break;
             }
         });
         this.officeOptions.forEach((office) => {

@@ -1,3 +1,4 @@
+import { GameObject } from "./game_object.js";
 import { IsometricFormation3 } from "./isometric_formation.js";
 import { Matrix2 } from "./matrix_2.js";
 import { Rectangle } from "./rectangle.js";
@@ -73,16 +74,6 @@ export class OfficeLevel extends IsometricFormation3
                 this.offices.insert(office, officePosition.to2d());
             }
         }
-        objects.forEach((obj) => {
-            switch(obj[0]) {
-                case "plant":
-                    this.offices.item(new Vector2(obj[1], obj[2])).insert(new Plant(images), new Vector3(obj[3], obj[4], 1));
-                    break;
-                case "desk":
-                    this.offices.item(new Vector2(obj[1], obj[2])).insert(new Desk(images), new Vector3(obj[3], obj[4], 1));
-                    break;
-            }
-        });
     }
 
     addMissingOffice(office)
