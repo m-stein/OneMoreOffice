@@ -138,17 +138,17 @@ class Main extends GameObject
         }
     }
 
-    withNewOfficeObject(id, lambda)
-    {
-        switch (id) {
-            case 1: lambda(new Plant(this.images)); break;
-            case 2: lambda(new Desk(this.images)); break;
-        }
-    }
-
     constructor(mainWindow, jsonParser, configTagId, canvasTagId)
     {
         super(new Vector2(0, 0), 'Main');
+        this.withNewOfficeObjectFunctions = {
+            "0": (id, lambda) => {
+                switch (id) {
+                    case 1: lambda(new Plant(this.images)); break;
+                    case 2: lambda(new Desk(this.images)); break;
+                }
+            }
+        }
         this.window = mainWindow;
         this.rootPath = this.window.document.getElementById(configTagId).getAttribute('rootPath');
         this.jsonParser = jsonParser;
@@ -246,6 +246,7 @@ class Main extends GameObject
 
     loadLevel(levelConfig)
     {
+        this.withNewOfficeObject = this.withNewOfficeObjectFunctions[levelConfig.theme];
         this.correctAnswerIdx = randomIntInclusive(0, Main.numOfficeOptions - 1);
         this.state = Main.State.NoSelection;
         this.officeOptions = [];
