@@ -1,5 +1,11 @@
 {
-    "theme": "extradave",
+    "objects": {
+        "v": { "class": "DeskPc", "args": { "heading": "down" } },
+        ">": { "class": "DeskPc", "args": { "heading": "right" } },
+        "^": { "class": "DeskPc", "args": { "heading": "up" } },
+        "<": { "class": "DeskPc", "args": { "heading": "left" } },
+        "m": { "class": "CupboardMachine" }
+    },
     "solution": [
         " . v . | . . . | . . . ",
         " . . . | > . . | . m . ",

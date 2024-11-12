@@ -1,5 +1,8 @@
 {
-    "theme": "simple",
+    "objects": {
+        "d": { "class": "Desk" },
+        "p": { "class": "Plant" }
+    },
     "solution": [
         " d . p | d . p | d . p ",
         " . . . | d . p | . . . ",

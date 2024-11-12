@@ -1,7 +1,10 @@
 {
-    "theme": "simple",
+    "objects": {
+        ">": { "class": "DeskPc", "args": { "heading": "right" } },
+        "m": { "class": "CupboardMachine" }
+    },
     "solution": [
-        " . . . | . . . | . . . ",
+        " > m . | . . . | . . . ",
         " . . . | . . . | . . . ",
         " . . . | . . . | . . . ",
         " ------+-------+------ ",

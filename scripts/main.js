@@ -13,9 +13,8 @@ import { removeFromArray } from './array_utilities.js';
 import { createEnum } from './enum.js';
 import { KeyCode } from './keycode.js';
 import { SelectionFeedback } from './selection_feedback.js';
-import { SimpleTheme } from './theme/simple.js';
-import { ExtradaveTheme } from './theme/extradave.js';
 import { Office } from "./office.js";
+import { OfficeObjects } from './office_objects.js';
 
 function randomIntInclusive(min, max)
 {
@@ -192,6 +191,7 @@ class Main extends GameObject
             canvas: this.canvas,
             updatePeriodMs: 1000 / 60,
         });
+        this.officeObjects = new OfficeObjects(this.images);
         this.onAllAssetsLoaded = () =>
         {
             this.buttonHoverSound.htmlElement.volume = 0.2;
@@ -203,10 +203,6 @@ class Main extends GameObject
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();
         }
-        this.withNewOfficeObjectFunctions = {
-            "simple": SimpleTheme.withNewOfficeObject(this.images),
-            "extradave": ExtradaveTheme.withNewOfficeObject(this.images),
-        }
     }
 
     unloadLevel()
@@ -215,18 +211,18 @@ class Main extends GameObject
         this.selectionFeedback.enabled = false;
     }
 
-    parseLevelSolutionConfig(config)
+    parseLevelSolutionConfig(objectsConfig, solutionConfig)
     {
         const Token = createEnum({
             Misc: 0,
             TileDescriptor: 1,
             VerticalSeparator: 2,
         });
-        const configString = config.join('\n');
+        const solutionConfigStr = solutionConfig.join('\n');
         let officeCoord = new Vector2(0, 0);
         let tileCoord = new Vector2(0, 0);
         let currToken = Token.Misc
-        for (const char of configString) {
+        for (const char of solutionConfigStr) {
             if (currToken == Token.VerticalSeparator) {
                 if (char != '\n') {
                     continue;
@@ -262,7 +258,7 @@ class Main extends GameObject
                 currToken = Token.VerticalSeparator;
                 continue;
             }
-            this.withNewOfficeObject(char, (obj) => {
+            this.officeObjects.withNewObject(objectsConfig[char], (obj) => {
                 const objCoord = new Vector3(tileCoord.x, tileCoord.y, 1);
                 if (officeCoord.x < OfficeLevel.size - 1 ||
                     officeCoord.y < OfficeLevel.size - 1)
@@ -282,17 +278,17 @@ class Main extends GameObject
         }
     }
 
-    parseLevelBaddiesConfig(config)
+    parseLevelBaddiesConfig(objectsConfig, baddiesConfig)
     {
         const Token = createEnum({
             Misc: 0,
             TileDescriptor: 1,
         });
-        const configString = config.join('\n');
+        const baddiesConfigStr = baddiesConfig.join('\n');
         let officeIdx = 0;
         let tileCoord = new Vector2(0, 0);
         let currToken = Token.Misc
-        for (const char of configString) {
+        for (const char of baddiesConfigStr) {
             if (officeIdx == this.correctAnswerIdx) {
                 officeIdx++;
             }
@@ -316,7 +312,7 @@ class Main extends GameObject
                 currToken = Token.Misc;
                 continue;
             }
-            this.withNewOfficeObject(char, (obj) => {
+            this.officeObjects.withNewObject(objectsConfig[char], (obj) => {
                 this.officeOptions[officeIdx].insert(obj, new Vector3(tileCoord.x, tileCoord.y, 1));
             });
             currToken = Token.TileDescriptor;
@@ -325,7 +321,6 @@ class Main extends GameObject
 
     loadLevel(levelConfig)
     {
-        this.withNewOfficeObject = this.withNewOfficeObjectFunctions[levelConfig.theme];
         this.correctAnswerIdx = randomIntInclusive(0, Main.numOfficeOptions - 1);
         this.state = Main.State.NoSelection;
         this.officeOptions = [];
@@ -341,8 +336,8 @@ class Main extends GameObject
         }
 
         this.officeLevel = new OfficeLevel(this.images, new Vector2(officeLevelX, 50));
-        this.parseLevelSolutionConfig(levelConfig["solution"]);
-        this.parseLevelBaddiesConfig(levelConfig["baddies"]);
+        this.parseLevelSolutionConfig(levelConfig.objects, levelConfig.solution);
+        this.parseLevelBaddiesConfig(levelConfig.objects, levelConfig.baddies);
         this.officeOptions.forEach((office) => {
             office.createAlphaMap(this.window.document);
         });
