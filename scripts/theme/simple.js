@@ -25,6 +25,8 @@ export class SimpleTheme
             switch (id) {
                 case 1: lambda(new Plant(images)); break;
                 case 2: lambda(new Desk(images)); break;
+                case 'p': lambda(new Plant(images)); break;
+                case 'd': lambda(new Desk(images)); break;
             }
         }
     }

@@ -140,6 +140,11 @@ export class ExtradaveTheme
                 case 3: lambda(new DeskPcNorth(images)); break;
                 case 4: lambda(new DeskPcWest(images)); break;
                 case 5: lambda(new CupboardMachine(images)); break;
+                case 'v': lambda(new DeskPcSouth(images)); break;
+                case '>': lambda(new DeskPcEast(images)); break;
+                case '^': lambda(new DeskPcNorth(images)); break;
+                case '<': lambda(new DeskPcWest(images)); break;
+                case 'm': lambda(new CupboardMachine(images)); break;
             }
         }
     }

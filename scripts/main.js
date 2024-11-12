@@ -215,33 +215,112 @@ class Main extends GameObject
         this.selectionFeedback.enabled = false;
     }
 
-    parseLevelSolutionConfig(solutionConfig)
+    parseLevelSolutionConfig(config)
     {
-        let officeX = 0;
-        solutionConfig.forEach((outerItem, outerIdx) => {
-            outerItem.forEach((innerItem, innerIdx) => {
-                this.withNewOfficeObject(innerItem, (obj) => {
-                    const y = Math.floor(outerIdx / OfficeLevel.size);
-                    const tileY = y % OfficeLevel.size;
-                    const officeY = Math.floor(y / OfficeLevel.size);
-                    const objAt = new Vector3(innerIdx, tileY, 1)
-                    if (officeX < OfficeLevel.size - 1 ||
-                        officeY < OfficeLevel.size - 1)
-                    {
-                        this.officeLevel.offices.item(new Vector2(officeX, officeY)).insert(obj, objAt);
-
-                    } else if (officeX == OfficeLevel.size - 1 &&
-                               officeY == OfficeLevel.size - 1)
-                    {
-                        this.officeOptions[this.correctAnswerIdx].insert(obj, objAt);
-
-                    } else {
-                        console.log("Warning: Malformed level config!");
-                    }
-                });
-            });
-            officeX = (officeX + 1) % OfficeLevel.size;
+        const Token = createEnum({
+            Misc: 0,
+            TileDescriptor: 1,
+            VerticalSeparator: 2,
         });
+        const configString = config.join('\n');
+        let officeCoord = new Vector2(0, 0);
+        let tileCoord = new Vector2(0, 0);
+        let currToken = Token.Misc
+        for (const char of configString) {
+            if (currToken == Token.VerticalSeparator) {
+                if (char != '\n') {
+                    continue;
+                }
+                officeCoord.x = 0;
+                officeCoord.y++;
+                tileCoord.x = 0;
+                tileCoord.y = 0;
+                currToken = Token.Misc;
+                continue;
+            }
+            if (char == ' ') {
+                if (currToken == Token.TileDescriptor) {
+                    tileCoord.x++;
+                    currToken = Token.Misc;
+                }
+                continue;
+            }
+            if (char == '|') {
+                officeCoord.x++;
+                tileCoord.x = 0;
+                currToken = Token.Misc;
+                continue;
+            }
+            if (char == '\n') {
+                officeCoord.x = 0;
+                tileCoord.x = 0;
+                tileCoord.y++;
+                currToken = Token.Misc;
+                continue;
+            }
+            if (char == '-') {
+                currToken = Token.VerticalSeparator;
+                continue;
+            }
+            this.withNewOfficeObject(char, (obj) => {
+                const objCoord = new Vector3(tileCoord.x, tileCoord.y, 1);
+                if (officeCoord.x < OfficeLevel.size - 1 ||
+                    officeCoord.y < OfficeLevel.size - 1)
+                {
+                    this.officeLevel.offices.item(officeCoord).insert(obj, objCoord);
+
+                } else if (officeCoord.x == OfficeLevel.size - 1 &&
+                        officeCoord.y == OfficeLevel.size - 1)
+                {
+                    this.officeOptions[this.correctAnswerIdx].insert(obj, objCoord);
+
+                } else {
+                    console.log("Warning: Malformed level config!");
+                }
+            });
+            currToken = Token.TileDescriptor;
+        }
+    }
+
+    parseLevelBaddiesConfig(config)
+    {
+        const Token = createEnum({
+            Misc: 0,
+            TileDescriptor: 1,
+        });
+        const configString = config.join('\n');
+        let officeIdx = 0;
+        let tileCoord = new Vector2(0, 0);
+        let currToken = Token.Misc
+        for (const char of configString) {
+            if (officeIdx == this.correctAnswerIdx) {
+                officeIdx++;
+            }
+            if (char == ' ') {
+                if (currToken == Token.TileDescriptor) {
+                    tileCoord.x++;
+                    currToken = Token.Misc;
+                }
+                continue;
+            }
+            if (char == '|') {
+                officeIdx++;
+                tileCoord.x = 0;
+                currToken = Token.Misc;
+                continue;
+            }
+            if (char == '\n') {
+                officeIdx = 0;
+                tileCoord.x = 0;
+                tileCoord.y++;
+                currToken = Token.Misc;
+                continue;
+            }
+            this.withNewOfficeObject(char, (obj) => {
+                this.officeOptions[officeIdx].insert(obj, new Vector3(tileCoord.x, tileCoord.y, 1));
+            });
+            currToken = Token.TileDescriptor;
+        }
     }
 
     loadLevel(levelConfig)
@@ -263,28 +342,7 @@ class Main extends GameObject
 
         this.officeLevel = new OfficeLevel(this.images, new Vector2(officeLevelX, 50));
         this.parseLevelSolutionConfig(levelConfig["solution"]);
-        const numBaddies = Main.numOfficeOptions - 1;
-        this.baddieConfigs = [];
-        levelConfig["baddies"].forEach((item, idx) => {
-            if (typeof this.baddieConfigs[idx % numBaddies] === "undefined") {
-                this.baddieConfigs[idx] = [];
-            }
-            this.baddieConfigs[idx % numBaddies].push(item);
-        });
-        let officeIdx = this.correctAnswerIdx == 0 ? 1 : 0;
-        this.baddieConfigs.forEach((baddie) => {
-            baddie.forEach((row, y) => {
-                row.forEach((cell, x) => {
-                    this.withNewOfficeObject(cell, (obj) => {
-                        this.officeOptions[officeIdx].insert(obj, new Vector3(x, y, 1));
-                    });
-                });
-            });
-            officeIdx++;
-            if (officeIdx == this.correctAnswerIdx) {
-                officeIdx++;
-            }
-        });
+        this.parseLevelBaddiesConfig(levelConfig["baddies"]);
         this.officeOptions.forEach((office) => {
             office.createAlphaMap(this.window.document);
         });
