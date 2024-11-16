@@ -45,7 +45,7 @@ export class Sprite extends GameObject
     {
         const frame = this.frameMap.get(this.currFrameIndex);
         if (!frame) {
-            console.warn("failed to get frame from map");
+            console.warn("Warning: Failed to get frame from map");
             return;
         }
         const srcRect = new Rectangle(frame, this.frameSize.x, this.frameSize.y);

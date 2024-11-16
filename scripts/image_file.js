@@ -9,6 +9,5 @@ export class ImageFile
             this.onLoaded(this);
         };
         this.htmlElement.src = relPath;
-        console.log("load "+ this.relPath)
     }
 }

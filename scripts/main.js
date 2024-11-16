@@ -280,7 +280,7 @@ class Main extends GameObject
                     this.officeOptions[this.correctAnswerIdx].insert(obj, objCoord);
 
                 } else {
-                    console.log("Warning: Malformed level config!");
+                    console.warn("Warning: Malformed level config");
                 }
             });
             currToken = Token.TileDescriptor;

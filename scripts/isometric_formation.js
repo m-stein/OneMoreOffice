@@ -36,7 +36,7 @@ export class IsometricFormation1 extends GameObject
     {
         let child = this.childAt(at);
         if (typeof child === 'undefined') {
-            console.log("Warning: Attempt to access tile at " + at + " that does not exist!");
+            console.warn("Warning: Attempt to access tile at " + at + " that does not exist");
             return;
         }
         func();
@@ -74,7 +74,7 @@ export class IsometricFormation2 extends GameObject
     {
         let child = this.childAt(at.y);
         if (typeof child === 'undefined') {
-            console.log("Warning: Attempt to access tile at " + at + " that does not exist!");
+            console.warn("Warning: Attempt to access tile at " + at + " that does not exist");
             return;
         }
         child.withTile(at.x, func);
@@ -114,7 +114,7 @@ export class IsometricFormation3 extends GameObject
     {
         let child = this.childAt(at.y);
         if (typeof child === 'undefined') {
-            console.log("Warning: Attempt to access tile at " + at + " that does not exist!");
+            console.warn("Warning: Attempt to access tile at " + at + " that does not exist");
             return;
         }
         child.withTile(new Vector2(at.x, at.z), func);
