@@ -25,10 +25,6 @@ Live Server extension for Visual Studio Code on the game's `index.html` or execu
 
 ### Images
 
-* ["Office Furniture"](https://opengameart.org/content/office-furniture-64-x-128-isometric)\
-  Author: extradave\
-  License: [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/)
-
 * ["Tiny Characters Set"](https://opengameart.org/content/tiny-characters-set)\
   Author: Fleurman\
   License: [CC0](https://creativecommons.org/publicdomain/zero/1.0/)

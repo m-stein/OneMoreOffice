@@ -165,7 +165,6 @@ class Main extends GameObject
             sky: new ImageFile(this.window.document, this.rootPath + "/images/sky.png", this.onAssetLoaded),
             humanShadow: new ImageFile(this.window.document, this.rootPath + "/images/human_shadow.png", this.onAssetLoaded),
             tableCake: new ImageFile(this.window.document, this.rootPath + "/images/table_cake.png", this.onAssetLoaded),
-            extradaveFurniture: new ImageFile(this.window.document, this.rootPath + "/images/extradaveFurniture.png", this.onAssetLoaded),
         };
         /* Register images for male characters */
         for (let idx = 1; idx <= 12; idx++) {

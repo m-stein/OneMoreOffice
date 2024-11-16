@@ -1,27 +1,28 @@
 {
     "objects": {
-        "v": { "class": "DeskPc", "args": { "heading": "down" } },
-        ">": { "class": "DeskPc", "args": { "heading": "right" } },
-        "^": { "class": "DeskPc", "args": { "heading": "up" } },
-        "<": { "class": "DeskPc", "args": { "heading": "left" } },
-        "m": { "class": "CupboardMachine" }
+        "v": { "class": "Desk", "args": { "heading": "down" } },
+        ">": { "class": "Desk", "args": { "heading": "right" } },
+        "^": { "class": "Desk", "args": { "heading": "up" } },
+        "<": { "class": "Desk", "args": { "heading": "left" } },
+        "h": { "class": "Human" },
+        "p": { "class": "Plant" }
     },
     "solution": [
-        " . v . | . . . | . . . ",
-        " . . . | > . . | . m . ",
+        " p v . | p . . | . . . ",
+        " . . . | > . . | . h . ",
         " . . . | . . . | . . . ",
         " ------|-------|------ ",
         " . . . | . . . | . . . ",
-        " . . < | . . . | m . . ",
-        " . . . | ^ . . | . . . ",
+        " . . < | . . . | h . . ",
+        " . . p | ^ p . | . . . ",
         " ------|-------|------ ",
-        " . . . | > . . | . . m ",
-        " . . . | . . . | . . . ",
-        " . . ^ | . . . | . . . "
+        " . . . | > . . | . . h ",
+        " . . . | p . . | . . . ",
+        " . p ^ | . . . | . . . "
     ],
     "baddies": [
-        " . m . | . . . | . . . ",
-        " . . . | m . . | . . . ",
-        " . . . | . . . | . . m "
+        " . h . | . . . | . . . ",
+        " . . . | h . . | . . . ",
+        " . . . | . . . | . . h "
     ]
 }
