@@ -22,7 +22,7 @@ class Main extends GameObject
     static numOfficeOptions = 4;
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
-    static numLevelsPerDifficulty = 4;
+    static numLevelsPerDifficulty = 5;
 
     static State = createEnum({
         NoSelection: 0,

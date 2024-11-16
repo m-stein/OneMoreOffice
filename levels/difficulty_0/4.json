@@ -1,0 +1,25 @@
+{
+    "objects": {
+        "b": { "class": "Machine", "args": { "color": "onyx" } },
+        "v": { "class": "Machine", "args": { "color": "violet" } },
+        "o": { "class": "Machine", "args": { "color": "orange" } }
+    },
+    "solution": [
+        " b . v | . b . | . . b ",
+        " v o o | . o . | o o b ",
+        " . b . | . o b | v . . ",
+        " ------+-------+------ ",
+        " v o b | . b v | b v . ",
+        " . o b | v o o | . o . ",
+        " . v . | . . b | . b v ",
+        " ------+-------+------ ",
+        " . . . | v o . | b . v ",
+        " b o v | b o . | v o o ",
+        " b . . | b v . | . b . "
+    ],
+    "baddies": [
+        " . . v | . v . | . b v ",
+        " b o o | b o . | v o o ",
+        " b . . | b o . | . . b "
+    ]
+}
