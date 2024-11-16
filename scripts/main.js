@@ -136,13 +136,13 @@ class Main extends GameObject
 
         /* Start loading common assets */
         this.loadingAssets = [];
-        this.backgroundMusic = new AudioFile(this.windowDocument, "../music/poor_but_happy.ogg", this.onAssetLoaded);
-        this.buttonHoverSound = new AudioFile(this.windowDocument, "../music/soft_keypress.ogg", this.onAssetLoaded);
+        this.backgroundMusic = new AudioFile(this.windowDocument, "../audio/poor_but_happy.ogg", this.onAssetLoaded);
+        this.buttonHoverSound = new AudioFile(this.windowDocument, "../audio/soft_keypress.ogg", this.onAssetLoaded);
         this.images = {
-            desk: new ImageFile(this.windowDocument, "../sprites/desk.png", this.onAssetLoaded),
-            plant: new ImageFile(this.windowDocument, "../sprites/plant.png", this.onAssetLoaded),
-            floor: new ImageFile(this.windowDocument, "../sprites/floor.png", this.onAssetLoaded),
-            sky: new ImageFile(this.windowDocument, "../sprites/sky.png", this.onAssetLoaded),
+            desk: new ImageFile(this.windowDocument, "../images/desk.png", this.onAssetLoaded),
+            plant: new ImageFile(this.windowDocument, "../images/plant.png", this.onAssetLoaded),
+            floor: new ImageFile(this.windowDocument, "../images/floor.png", this.onAssetLoaded),
+            sky: new ImageFile(this.windowDocument, "../images/sky.png", this.onAssetLoaded),
         };
         this.loadingAssets.push(this.backgroundMusic);
         this.loadingAssets.push(this.buttonHoverSound);
