@@ -115,11 +115,64 @@ class Desk extends GameObject
     draw(drawingContext) { this.drawChildren(drawingContext); }
 }
 
+class Machine extends GameObject
+{
+    static colorsAtIndex = 3;
+    static lightsAtIndex = 1;
+
+    constructor(images, args)
+    {
+        super(new Vector2(0, 0), "Machine");
+        this.body = new Sprite({
+            sourceImage: images.machine,
+            frameSize: new Vector2(32, 32),
+            numColumns: 12,
+        });
+        this.lights = new Sprite({
+            sourceImage: images.machine,
+            frameSize: new Vector2(32, 32),
+            numColumns: 12,
+        });
+        this.color = new Sprite({
+            sourceImage: images.machine,
+            frameSize: new Vector2(32, 32),
+            numColumns: 12,
+        });
+        if (args !== undefined) {
+            switch(args.color) {
+                case "petrol": this.color.currFrameIndex = Machine.colorsAtIndex + 0; break;
+                case "orange": this.color.currFrameIndex = Machine.colorsAtIndex + 1; break;
+                case "onyx": this.color.currFrameIndex = Machine.colorsAtIndex + 2; break;
+                case "violet": this.color.currFrameIndex = Machine.colorsAtIndex + 3; break;
+                case "red": this.color.currFrameIndex = Machine.colorsAtIndex + 4; break;
+                case "gray": this.color.currFrameIndex = Machine.colorsAtIndex + 5; break;
+            }
+        }
+        this.lightsFrameIdx = new TimedValue([
+            { ms: randomIntInclusive(100, 1000), value: Machine.lightsAtIndex },
+            { ms: randomIntInclusive(100, 1000), value: Machine.lightsAtIndex + 1 }
+        ]);
+        this.lightsFrameIdx.startPhase(randomIntInclusive(0, 1));
+        this.addChild(this.body);
+        this.addChild(this.color);
+        this.addChild(this.lights);
+        this.addChild(this.lightsFrameIdx);
+    }
+
+    update(deltaTimeMs)
+    {
+        this.updateChildren(deltaTimeMs);
+        this.lights.currFrameIndex = this.lightsFrameIdx.value();
+    }
+    
+    draw(drawingContext) { this.drawChildren(drawingContext); }
+}
+
 export class OfficeObjects
 {
     constructor(images)
     {
-        this.classes = { Desk, Plant, TableCake, Human };
+        this.classes = { Desk, Plant, TableCake, Human, Machine };
         this.images = images;
     }
 

@@ -163,6 +163,7 @@ class Main extends GameObject
             plant: new ImageFile(this.window.document, this.rootPath + "/images/plant.png", this.onAssetLoaded),
             floor: new ImageFile(this.window.document, this.rootPath + "/images/floor.png", this.onAssetLoaded),
             sky: new ImageFile(this.window.document, this.rootPath + "/images/sky.png", this.onAssetLoaded),
+            machine: new ImageFile(this.window.document, this.rootPath + "/images/machine.png", this.onAssetLoaded),
             humanShadow: new ImageFile(this.window.document, this.rootPath + "/images/human_shadow.png", this.onAssetLoaded),
             tableCake: new ImageFile(this.window.document, this.rootPath + "/images/table_cake.png", this.onAssetLoaded),
         };
