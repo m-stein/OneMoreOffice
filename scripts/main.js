@@ -2,7 +2,7 @@ import { GameEngine } from './game_engine.js';
 import { GameObject } from './game_object.js';
 import { Vector2 } from './vector_2.js';
 import { Camera } from './camera.js';
-import { OfficeLevel, Office, Desk, Plant } from './office_level.js';
+import { OfficeLevel } from './office_level.js';
 import { Vector3 } from './vector_3.js';
 import { Rectangle } from './rectangle.js';
 import { Menu } from './menu.js';
@@ -13,6 +13,9 @@ import { removeFromArray } from './array_utilities.js';
 import { createEnum } from './enum.js';
 import { KeyCode } from './keycode.js';
 import { SelectionFeedback } from './selection_feedback.js';
+import { SimpleTheme } from './theme/simple.js';
+import { ExtradaveTheme } from './theme/extradave.js';
+import { Office } from "./office.js";
 
 function randomIntInclusive(min, max)
 {
@@ -26,7 +29,7 @@ class Main extends GameObject
     static numOfficeOptions = 4;
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
-    static numLevelsPerDifficulty = 2;
+    static numLevelsPerDifficulty = 3;
 
     static State = createEnum({
         NoSelection: 0,
@@ -141,14 +144,6 @@ class Main extends GameObject
     constructor(mainWindow, jsonParser, configTagId, canvasTagId)
     {
         super(new Vector2(0, 0), 'Main');
-        this.withNewOfficeObjectFunctions = {
-            "0": (id, lambda) => {
-                switch (id) {
-                    case 1: lambda(new Plant(this.images)); break;
-                    case 2: lambda(new Desk(this.images)); break;
-                }
-            }
-        }
         this.window = mainWindow;
         this.rootPath = this.window.document.getElementById(configTagId).getAttribute('rootPath');
         this.jsonParser = jsonParser;
@@ -175,13 +170,14 @@ class Main extends GameObject
             plant: new ImageFile(this.window.document, this.rootPath + "/images/plant.png", this.onAssetLoaded),
             floor: new ImageFile(this.window.document, this.rootPath + "/images/floor.png", this.onAssetLoaded),
             sky: new ImageFile(this.window.document, this.rootPath + "/images/sky.png", this.onAssetLoaded),
+            extradaveFurniture: new ImageFile(this.window.document, this.rootPath + "/images/extradaveFurniture.png", this.onAssetLoaded),
         };
         this.loadingAssets.push(this.backgroundMusic);
         this.loadingAssets.push(this.buttonHoverSound);
         Object.values(this.images).forEach((image) => { this.loadingAssets.push(image); });
 
         /* Start loading level-specific assets */
-        this.levelId = { difficulty: 0, index: 0 };
+        this.levelId = { difficulty: 0, index: 2 };
         this.startLoadingLevelAssets(this.levelId);
 
         this.selectionFeedback = new SelectionFeedback(
@@ -206,6 +202,10 @@ class Main extends GameObject
             );
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();
+        }
+        this.withNewOfficeObjectFunctions = {
+            "simple": SimpleTheme.withNewOfficeObject(this.images),
+            "extradave": ExtradaveTheme.withNewOfficeObject(this.images),
         }
     }
 
