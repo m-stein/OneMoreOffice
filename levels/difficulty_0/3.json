@@ -1,0 +1,31 @@
+{
+    "objects": {
+        "1": { "class": "TableCake", "args": { "numCandles": 1 } },
+        "2": { "class": "TableCake", "args": { "numCandles": 2 } },
+        "3": { "class": "TableCake", "args": { "numCandles": 3 } },
+        "4": { "class": "TableCake", "args": { "numCandles": 4 } },
+        "5": { "class": "TableCake", "args": { "numCandles": 5 } },
+        "6": { "class": "TableCake", "args": { "numCandles": 6 } },
+        "7": { "class": "TableCake", "args": { "numCandles": 7 } },
+        "8": { "class": "TableCake", "args": { "numCandles": 8 } },
+        "h": { "class": "Human" }
+    },
+    "solution": [
+        " . 4 h | . . . | . . . ",
+        " . . . | 7 . . | . 5 h ",
+        " h h . | . . . | h . . ",
+        " ------|-------|------ ",
+        " . h . | . . h | . h . ",
+        " . . 6 | . h . | 1 h . ",
+        " . . . | 3 h h | . . 4 ",
+        " ------|-------|------ ",
+        " . 2 . | 6 . . | h . 5 ",
+        " . h h | . h . | . h . ",
+        " . . 3 | . . . | . . . "
+    ],
+    "baddies": [
+        " . 8 . | . h . | . h . ",
+        " . . h | h h 1 | 2 . . ",
+        " . . . | h . . | h . 4 "
+    ]
+}

@@ -19,3 +19,10 @@ export function clamp(value, min, max)
 {
     return Math.min(Math.max(value, min), max);
 }
+
+export function randomIntInclusive(min, max)
+{
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}

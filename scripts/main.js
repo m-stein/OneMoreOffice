@@ -15,20 +15,14 @@ import { KeyCode } from './keycode.js';
 import { SelectionFeedback } from './selection_feedback.js';
 import { Office } from "./office.js";
 import { OfficeObjects } from './office_objects.js';
-
-function randomIntInclusive(min, max)
-{
-    const minCeiled = Math.ceil(min);
-    const maxFloored = Math.floor(max);
-    return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-}
+import { randomIntInclusive } from './math.js';
 
 class Main extends GameObject
 {
     static numOfficeOptions = 4;
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
-    static numLevelsPerDifficulty = 3;
+    static numLevelsPerDifficulty = 4;
 
     static State = createEnum({
         NoSelection: 0,
@@ -169,14 +163,30 @@ class Main extends GameObject
             plant: new ImageFile(this.window.document, this.rootPath + "/images/plant.png", this.onAssetLoaded),
             floor: new ImageFile(this.window.document, this.rootPath + "/images/floor.png", this.onAssetLoaded),
             sky: new ImageFile(this.window.document, this.rootPath + "/images/sky.png", this.onAssetLoaded),
+            humanShadow: new ImageFile(this.window.document, this.rootPath + "/images/human_shadow.png", this.onAssetLoaded),
+            tableCake: new ImageFile(this.window.document, this.rootPath + "/images/table_cake.png", this.onAssetLoaded),
             extradaveFurniture: new ImageFile(this.window.document, this.rootPath + "/images/extradaveFurniture.png", this.onAssetLoaded),
         };
+        /* Register images for male characters */
+        for (let idx = 1; idx <= 12; idx++) {
+            this.images["man" + idx] = new ImageFile(
+                this.window.document,
+                this.rootPath + "/images/men/M_" + idx.toString().padStart(2, '0') + ".png",
+                this.onAssetLoaded);
+        }
+        /* Register images for female characters */
+        for (let idx = 1; idx <= 12; idx++) {
+            this.images["woman" + idx] = new ImageFile(
+                this.window.document,
+                this.rootPath + "/images/women/F_" + idx.toString().padStart(2, '0') + ".png",
+                this.onAssetLoaded);
+        }
         this.loadingAssets.push(this.backgroundMusic);
         this.loadingAssets.push(this.buttonHoverSound);
         Object.values(this.images).forEach((image) => { this.loadingAssets.push(image); });
 
         /* Start loading level-specific assets */
-        this.levelId = { difficulty: 0, index: 2 };
+        this.levelId = { difficulty: 0, index: 3 };
         this.startLoadingLevelAssets(this.levelId);
 
         this.selectionFeedback = new SelectionFeedback(
