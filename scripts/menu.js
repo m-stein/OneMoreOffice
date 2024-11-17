@@ -7,13 +7,14 @@ import { Vector2 } from "./vector_2.js";
 
 export class Menu extends GameObject
 {
-    constructor(rect, mousePosition, mouseDownHandlers, mouseEntersButtonAudio, onNewGamePressed)
+    constructor(rect, mousePosition, mouseDownHandlers, mouseEntersButtonAudio, onNewGamePressed, onCreditsPressed)
     {
         super(rect.position, "Menu");
         this.rect = rect;
         this.enabled = true;
         this.mouseEntersButtonAudio = mouseEntersButtonAudio;
         this.onNewGamePressed = onNewGamePressed;
+        this.onCreditsPressed = onCreditsPressed;
         this.mousePosition = mousePosition;
         this.mouseDownHandlers = mouseDownHandlers;
         this.mouseDownHandlers.push(this.onMouseDown);
@@ -44,6 +45,7 @@ export class Menu extends GameObject
         this.highscore = new Button(buttonRect.copy(), "HIGHSCORE", this.mousePosition, this.mouseDownHandlers, this.mouseEntersButtonAudio);
         buttonRect.position.y += 35;
         this.credits = new Button(buttonRect.copy(), "CREDITS", this.mousePosition, this.mouseDownHandlers, this.mouseEntersButtonAudio);
+        this.credits.pressedHandlers.push(this.onCreditsPressed);
         this.addChild(this.newGame);
         this.addChild(this.highscore);
         this.addChild(this.credits);

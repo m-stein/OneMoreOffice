@@ -16,6 +16,7 @@ import { SelectionFeedback } from './selection_feedback.js';
 import { Office } from "./office.js";
 import { OfficeObjects } from './office_objects.js';
 import { randomIntInclusive } from './math.js';
+import { Credits } from './credits.js';
 
 class Main extends GameObject
 {
@@ -61,11 +62,17 @@ class Main extends GameObject
     {
         if (event.keyCode == KeyCode.Escape && this.backgroundMusicPlaying) {
             this.menu.enabled = !this.menu.enabled;
+            if (this.credits.enabled) {
+                this.credits.disable();
+            }
         }
     }
 
     onMouseDown = (event) =>
     {
+        if (this.credits.enabled) {
+            return;
+        }
         if (this.menu.enabled) {
             this.updateRawMousePosition(event);
             this.mouseDownHandlers.forEach((handler) => { handler(); });
@@ -131,6 +138,16 @@ class Main extends GameObject
                 this.ensureBackgroundMusicPlaying();
                 this.menu.enabled = false;
             }
+        }
+    }
+
+    showCredits = () =>
+    {
+        console.log("Credits pressed");
+        if (this.menu.enabled) {
+            this.ensureBackgroundMusicPlaying();
+            this.menu.enabled = false;
+            this.credits.enable();
         }
     }
 
@@ -208,7 +225,11 @@ class Main extends GameObject
             this.menu = new Menu(
                 new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
                 this.mousePosition, this.mouseDownHandlers, this.buttonHoverSound.htmlElement,
-                this.startNewGame
+                this.startNewGame,
+                this.showCredits
+            );
+            this.credits = new Credits(
+                new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height)
             );
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();
@@ -356,6 +377,7 @@ class Main extends GameObject
         this.officeOptions.forEach((office) => { this.addChild(office); });
         this.addChild(this.selectionFeedback);
         this.addChild(this.menu);
+        this.addChild(this.credits);
     }
 
     update(deltaTimeMs)
