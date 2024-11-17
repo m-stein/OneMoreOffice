@@ -1,0 +1,30 @@
+{
+    "objects": {
+        "p": { "class": "Machine", "args": { "color": "petrol" } },
+        "g": { "class": "Machine", "args": { "color": "gray" } },
+        "r": { "class": "Machine", "args": { "color": "red" } },
+        "v": { "class": "Desk", "args": { "heading": "down" } },
+        ">": { "class": "Desk", "args": { "heading": "right" } },
+        "^": { "class": "Desk", "args": { "heading": "up" } },
+        "<": { "class": "Desk", "args": { "heading": "left" } },
+        "b": { "class": "Plant" }
+    },
+    "solution": [
+        " . . . | b . . | b . . ",
+        " < p > | . . . | . r . ",
+        " . . . | . . b | b . . ",
+        " ------+-------+------ ",
+        " . ^ . | b ^ . | b ^ . ",
+        " < p > | . g . | . r > ",
+        " b . b | b . b | b . b ",
+        " ------+-------+------ ",
+        " . ^ . | . ^ . | . ^ . ",
+        " . . . | . g . | . . > ",
+        " b . b | b . . | . . b "
+    ],
+    "baddies": [
+        " . ^ b | . . . | b ^ . ",
+        " . . > | . r > | . . . ",
+        " . . . | . v . | . v b "
+    ]
+}
