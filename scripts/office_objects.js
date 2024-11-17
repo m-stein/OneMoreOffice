@@ -11,7 +11,7 @@ class Human extends GameObject
         { imgPrefix: "man", numImages: 12 }
     ];
 
-    constructor(images)
+    constructor(images, args)
     {
         super(new Vector2(8, 8), "Human");
         const type = Human.types[randomIntInclusive(0, 1)];
@@ -23,7 +23,15 @@ class Human extends GameObject
             drawFrameIndex: 0,
         });
         this.shadowSprite = new Sprite({ sourceImage: images.humanShadow });
-        const animationIdx = randomIntInclusive(0, 3);
+        let animationIdx = randomIntInclusive(0, 3);
+        if (args !== undefined) {
+            switch (args.heading) {
+                case "down": animationIdx = 0; break;
+                case "right": animationIdx = 1; break;
+                case "up": animationIdx = 2; break;
+                case "left": animationIdx = 3; break;
+            }
+        }
         this.frameIdx = new TimedValue([
             { ms: randomIntInclusive(200, 400), value: animationIdx + 0 },
             { ms: randomIntInclusive(200, 400), value: animationIdx + 4 },

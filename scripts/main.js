@@ -22,7 +22,7 @@ class Main extends GameObject
     static numOfficeOptions = 4;
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
-    static numLevelsPerDifficulty = 5;
+    static numLevelsPerDifficulty = 6;
 
     static State = createEnum({
         NoSelection: 0,
@@ -122,7 +122,7 @@ class Main extends GameObject
     startNewGame = () =>
     {
         if (this.menu.enabled) {
-            this.levelId = { difficulty: 0, index: 0 };
+            this.levelId = { difficulty: 0, index: Main.numLevelsPerDifficulty - 1 };
             this.startLoadingLevelAssets(this.levelId);
             this.onAllAssetsLoaded = () =>
             { 
