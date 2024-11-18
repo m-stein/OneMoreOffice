@@ -17,6 +17,7 @@ import { Office } from "./office.js";
 import { OfficeObjects } from './office_objects.js';
 import { randomIntInclusive } from './math.js';
 import { Credits } from './credits.js';
+import { TextFile } from './text_file.js';
 
 class Main extends GameObject
 {
@@ -60,16 +61,36 @@ class Main extends GameObject
 
     onKeyDown = (event) =>
     {
-        if (event.keyCode == KeyCode.Escape && this.backgroundMusicPlaying) {
-            this.menu.enabled = !this.menu.enabled;
-            if (this.credits.enabled) {
-                this.credits.disable();
+        if (this.loadingAssets.length > 0) {
+            return;
+        }
+        if (this.credits.enabled && event.keyCode == KeyCode.Escape) {
+            this.credits.disable();
+            this.menu.enable();
+            return;
+        }
+        if (this.backgroundMusicPlaying && event.keyCode == KeyCode.Escape) {
+            if (this.menu.enabled) {
+                this.menu.disable();
+                return;
+            } else {
+                this.menu.enable();
+                return;
             }
         }
     }
 
+    leaveCredits = () =>
+    {
+        this.menu.enable();
+        this.credits.disable();
+    }
+
     onMouseDown = (event) =>
     {
+        if (this.loadingAssets.length > 0) {
+            return;
+        }
         if (this.credits.enabled) {
             return;
         }
@@ -143,7 +164,6 @@ class Main extends GameObject
 
     showCredits = () =>
     {
-        console.log("Credits pressed");
         if (this.menu.enabled) {
             this.ensureBackgroundMusicPlaying();
             this.menu.enabled = false;
@@ -184,6 +204,8 @@ class Main extends GameObject
             humanShadow: new ImageFile(this.window.document, this.rootPath + "/images/human_shadow.png", this.onAssetLoaded),
             tableCake: new ImageFile(this.window.document, this.rootPath + "/images/table_cake.png", this.onAssetLoaded),
         };
+        this.readme = new TextFile(this.window.document, this.rootPath + "/readme.md", this.onAssetLoaded);
+
         /* Register images for male characters */
         for (let idx = 1; idx <= 12; idx++) {
             this.images["man" + idx] = new ImageFile(
@@ -200,6 +222,7 @@ class Main extends GameObject
         }
         this.loadingAssets.push(this.backgroundMusic);
         this.loadingAssets.push(this.buttonHoverSound);
+        this.loadingAssets.push(this.readme);
         Object.values(this.images).forEach((image) => { this.loadingAssets.push(image); });
 
         /* Start loading level-specific assets */
@@ -229,7 +252,13 @@ class Main extends GameObject
                 this.showCredits
             );
             this.credits = new Credits(
-                new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height)
+                new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
+                this.leaveCredits,
+                this.readme.text.split('## Credits')[1] // remove everything that preceeds the credits body
+                                .replace(/\\/g, "") // remove markdown line-breaks
+                                .replace(/\[/g, "").replace(/\](.*)/g, "") // of each link keep only the label
+                                .split(/\r?\n/) // create array of lines
+                                .splice(2) // remove first two lines as they are expected to be empty
             );
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();

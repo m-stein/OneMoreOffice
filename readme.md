@@ -15,16 +15,24 @@ Live Server extension for Visual Studio Code on the game's `index.html` or execu
 
 ### Audio
 
-* ["Happy Lo-Fi Collection"](https://opengameart.org/content/happy-lo-fi-lofi-collection)\
-  Author: Holizna\
-  License: [CC0](https://creativecommons.org/publicdomain/zero/1.0/)
+#### ["Happy Lo-Fi Collection"](https:\\opengameart.org/content/happy-lo-fi-lofi-collection)
+Author: Holizna\
+License: [CC0](https://creativecommons.org/publicdomain/zero/1.0/)\
+Source: opengameart.org
 
-* ["Keyboard Soundpack #1"](https://opengameart.org/content/keyboard-soundpack-1-typing-and-single-keystrokes)\
-  Author: unicaegames\
-  License: [CC0](https://creativecommons.org/publicdomain/zero/1.0/)
+#### ["Keyboard Soundpack #1"](https:\\opengameart.org/content/keyboard-soundpack-1-typing-and-single-keystrokes)
+Author: unicaegames\
+License: [CC0](https://creativecommons.org/publicdomain/zero/1.0/)\
+Source: opengameart.org
 
 ### Images
 
-* ["Tiny Characters Set"](https://opengameart.org/content/tiny-characters-set)\
-  Author: Fleurman\
-  License: [CC0](https://creativecommons.org/publicdomain/zero/1.0/)
+#### ["Tiny Characters Set"](https:\\opengameart.org/content/tiny-characters-set)
+Author: Fleurman\
+License: [CC0](https://creativecommons.org/publicdomain/zero/1.0/)\
+Source: opengameart.org
+
+### Idea, scripts and other assets
+
+Martin Stein
+github.com/m-stein

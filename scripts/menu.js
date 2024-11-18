@@ -23,6 +23,10 @@ export class Menu extends GameObject
         this.titleMovement = new LinearMovement(new Vector2(rect.width / 2, 130));
     }
 
+    enable() { this.enabled = true; }
+    
+    disable() { this.enabled = false; }
+
     onMouseDown = () =>
     {
         this.clickedOnce = true;
