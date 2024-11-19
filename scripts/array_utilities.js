@@ -1,3 +1,5 @@
+import { randomIntInclusive } from "./math.js";
+
 export function removeFromArray(array, item)
 {
     const index = array.indexOf(item);
@@ -5,4 +7,9 @@ export function removeFromArray(array, item)
         return;
     }
     array.splice(index, 1);
+}
+
+export function getRandomItem(array)
+{
+    return array[randomIntInclusive(0, array.length - 1)];
 }

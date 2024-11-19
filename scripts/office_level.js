@@ -11,7 +11,7 @@ export class OfficeLevel extends IsometricFormation3
     static tileHeight = Office.tileHeight * OfficeLevel.size + OfficeLevel.officeMargin;
     static tileIsoQuartWidth = Office.tileIsoQuartWidth * OfficeLevel.size + OfficeLevel.officeMargin;
 
-    constructor(images, position, objects)
+    constructor(images, position)
     {
         super(position, "OfficeLevel", OfficeLevel.tileHeight, OfficeLevel.tileIsoQuartWidth);
         this.missingOfficePosition = new Vector3(OfficeLevel.size - 1, OfficeLevel.size - 1, 0);

@@ -39,7 +39,7 @@ export class IsometricFormation1 extends GameObject
             console.warn("Warning: Attempt to access tile at " + at + " that does not exist");
             return;
         }
-        func();
+        func(child);
     }
     
     update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }

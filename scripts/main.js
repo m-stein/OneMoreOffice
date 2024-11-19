@@ -112,7 +112,7 @@ class Main extends GameObject
                 this.startLoadingLevelAssets(this.levelId);
                 this.onAllAssetsLoaded = () =>
                 { 
-                    this.runningGame.completeLevel(this.selectedAnswerIdx == this.correctAnswerIdx);
+                    this.runningGame.endLevel();
                     this.unloadLevel();
                     this.loadLevel(this.levelConfig.data);
                 }
@@ -137,6 +137,7 @@ class Main extends GameObject
                     const imgData = office.alphaMap.getContext('2d').getImageData(offset.x, offset.y, 1, 1).data;
                     if (imgData[0] >= Main.hoverAlphaThreshold) {
                         this.selectedAnswerIdx = idx;
+                        this.selectionMousePosition = mousePosition;
                         this.state = Main.State.SelectionRequested;
                         return;
                     }
@@ -165,7 +166,7 @@ class Main extends GameObject
             this.onAllAssetsLoaded = () =>
             { 
                 this.unloadLevel();
-                this.runningGame = new RunningGame(this.onGameCompleted);
+                this.runningGame = new RunningGame(this.onGameOver);
                 this.loadLevel(this.levelConfig.data);
                 this.ensureBackgroundMusicPlaying();
                 this.menu.enabled = false;
@@ -173,7 +174,7 @@ class Main extends GameObject
         }
     }
 
-    onGameCompleted = (numPoints) =>
+    onGameOver = (numPoints) =>
     {
         this.gameOverScreen.enable(numPoints);
     }
@@ -246,10 +247,7 @@ class Main extends GameObject
         this.levelId = { difficulty: 0, index: 3 };
         this.startLoadingLevelAssets(this.levelId);
 
-        this.selectionFeedback = new SelectionFeedback(
-            new Vector2(this.canvas.width / 2, 30),
-            () => { return this.selectedAnswerIdx == this.correctAnswerIdx }
-        );
+        this.selectionFeedback = new SelectionFeedback(new Vector2(this.canvas.width / 2, 30));
         this.camera = new Camera(this.images.sky, this.canvas.width, this.canvas.height);
         this.gameEngine = new GameEngine
         ({
@@ -286,7 +284,7 @@ class Main extends GameObject
     unloadLevel()
     {
         this.removeAllChildren();
-        this.selectionFeedback.enabled = false;
+        this.selectionFeedback.disable();
     }
 
     parseLevelSolutionConfig(objectsConfig, solutionConfig)
@@ -440,7 +438,11 @@ class Main extends GameObject
         this.updateChildren(deltaTimeMs);
         if (this.state == Main.State.SelectionRequested) {
             this.selectOfficeOption(this.selectedAnswerIdx);
-            this.selectionFeedback.enabled = true;
+            this.selectionFeedback.enable(
+                this.selectedAnswerIdx == this.correctAnswerIdx,
+                this.runningGame.obtainPoints(this.selectedAnswerIdx == this.correctAnswerIdx),
+                this.selectionMousePosition
+            );
             this.state = Main.State.SelectionApplied;
         }
         this.camera.position = new Vector2(0,0);
