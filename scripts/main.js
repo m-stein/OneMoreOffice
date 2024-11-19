@@ -18,6 +18,8 @@ import { OfficeObjects } from './office_objects.js';
 import { randomIntInclusive } from './math.js';
 import { Credits } from './credits.js';
 import { TextFile } from './text_file.js';
+import { RunningGame } from './running_game.js';
+import { GameOverScreen } from './game_over_screen.js';
 
 class Main extends GameObject
 {
@@ -61,7 +63,9 @@ class Main extends GameObject
 
     onKeyDown = (event) =>
     {
-        if (this.loadingAssets.length > 0) {
+        if (this.loadingAssets.length > 0 ||
+            this.gameOverScreen.enabled)
+        {
             return;
         }
         if (this.credits.enabled && event.keyCode == KeyCode.Escape) {
@@ -69,7 +73,7 @@ class Main extends GameObject
             this.menu.enable();
             return;
         }
-        if (this.backgroundMusicPlaying && event.keyCode == KeyCode.Escape) {
+        if (this.runningGame !== undefined && event.keyCode == KeyCode.Escape) {
             if (this.menu.enabled) {
                 this.menu.disable();
                 return;
@@ -88,10 +92,15 @@ class Main extends GameObject
 
     onMouseDown = (event) =>
     {
-        if (this.loadingAssets.length > 0) {
+        if (this.loadingAssets.length > 0 ||
+            this.credits.enabled)
+        {
             return;
         }
-        if (this.credits.enabled) {
+        if (this.gameOverScreen.enabled) {
+            this.runningGame = undefined;
+            this.gameOverScreen.disable();
+            this.menu.enable();
             return;
         }
         if (this.menu.enabled) {
@@ -103,6 +112,7 @@ class Main extends GameObject
                 this.startLoadingLevelAssets(this.levelId);
                 this.onAllAssetsLoaded = () =>
                 { 
+                    this.runningGame.completeLevel(this.selectedAnswerIdx == this.correctAnswerIdx);
                     this.unloadLevel();
                     this.loadLevel(this.levelConfig.data);
                 }
@@ -155,11 +165,17 @@ class Main extends GameObject
             this.onAllAssetsLoaded = () =>
             { 
                 this.unloadLevel();
+                this.runningGame = new RunningGame(this.onGameCompleted);
                 this.loadLevel(this.levelConfig.data);
                 this.ensureBackgroundMusicPlaying();
                 this.menu.enabled = false;
             }
         }
+    }
+
+    onGameCompleted = (numPoints) =>
+    {
+        this.gameOverScreen.enable(numPoints);
     }
 
     showCredits = () =>
@@ -179,6 +195,7 @@ class Main extends GameObject
         this.jsonParser = jsonParser;
         this.backgroundMusicPlaying = false;
         this.canvas = this.window.document.getElementById(canvasTagId);
+        this.canvasRect = new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height);
 
         /* Initialize mouse position tracking */
         this.mouseDown = false;
@@ -246,13 +263,13 @@ class Main extends GameObject
         {
             this.buttonHoverSound.htmlElement.volume = 0.2;
             this.menu = new Menu(
-                new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
+                this.canvasRect,
                 this.mousePosition, this.mouseDownHandlers, this.buttonHoverSound.htmlElement,
                 this.startNewGame,
                 this.showCredits
             );
             this.credits = new Credits(
-                new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height),
+                this.canvasRect,
                 this.leaveCredits,
                 this.readme.text.split('## Credits')[1] // remove everything that preceeds the credits body
                                 .replace(/\\/g, "") // remove markdown line-breaks
@@ -260,6 +277,7 @@ class Main extends GameObject
                                 .split(/\r?\n/) // create array of lines
                                 .splice(2) // remove first two lines as they are expected to be empty
             );
+            this.gameOverScreen = new GameOverScreen(this.canvasRect);
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();
         }
@@ -407,6 +425,7 @@ class Main extends GameObject
         this.addChild(this.selectionFeedback);
         this.addChild(this.menu);
         this.addChild(this.credits);
+        this.addChild(this.gameOverScreen);
     }
 
     update(deltaTimeMs)
