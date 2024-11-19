@@ -174,9 +174,9 @@ class Main extends GameObject
         }
     }
 
-    onGameOver = (numPoints) =>
+    onGameOver = (points) =>
     {
-        this.gameOverScreen.enable(numPoints);
+        this.gameOverScreen.enable(points);
     }
 
     showCredits = () =>
@@ -424,6 +424,9 @@ class Main extends GameObject
         this.addChild(this.menu);
         this.addChild(this.credits);
         this.addChild(this.gameOverScreen);
+        if (this.runningGame !== undefined) {
+            this.addChild(this.runningGame);
+        }
     }
 
     update(deltaTimeMs)

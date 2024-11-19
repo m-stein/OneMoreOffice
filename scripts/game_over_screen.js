@@ -11,10 +11,10 @@ export class GameOverScreen extends GameObject
         this.textPosition = new Vector2(rect.width / 2, 130);
     }
 
-    enable(numPoints)
+    enable(points)
     {
         this.enabled = true;
-        this.numPoints = numPoints;
+        this.points = points;
     }
     
     disable() { this.enabled = false; }
@@ -38,7 +38,7 @@ export class GameOverScreen extends GameObject
         ctx.fillRect(0, 0, this.rect.width, this.rect.height);
         ctx.fillStyle = "white";
         ctx.globalAlpha = 1;
-        drawingContext.drawText("You scored " + this.numPoints + " points!", this.textPosition, 32, "center");
+        drawingContext.drawText("You scored " + this.points + " points!", this.textPosition, 32, "center");
         this.drawChildren(drawingContext);
     }
 }
