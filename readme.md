@@ -34,5 +34,5 @@ Source: opengameart.org
 
 ### Idea, scripts and other assets
 
-Martin Stein
+Martin Stein\
 github.com/m-stein
