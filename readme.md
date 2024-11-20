@@ -32,6 +32,16 @@ Author: Fleurman\
 License: [CC0](https://creativecommons.org/publicdomain/zero/1.0/)\
 Source: opengameart.org
 
+#### ["LPC Revised - The Office"](https://opengameart.org/content/lpc-revised-the-office)
+Author: Death's Darling\
+License: [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)\
+License: [OGA-BY 3.0](https://static.opengameart.org/OGA-BY-3.0.txt)\
+Source: opengameart.org
+
+### Play-Testing
+
+Daniel Martin
+
 ### Idea, scripts and other assets
 
 Martin Stein\
