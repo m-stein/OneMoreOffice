@@ -123,6 +123,38 @@ class Desk extends GameObject
     draw(drawingContext) { this.drawChildren(drawingContext); }
 }
 
+class CoffeeMaker extends GameObject
+{
+    constructor(images, args)
+    {
+        super(new Vector2(2, 0), "CoffeeMaker");
+        const firstFrameIdx = randomIntInclusive(0, 1) * 2;
+        const scaleFactor = 0.9;
+        this.machine = new Sprite({
+            sourceImage: images.coffeeMaker,
+            frameSize: new Vector2(32, 32),
+            numColumns: 2,
+            numRows: 2,
+            scaleFactor: scaleFactor,
+            drawFrameIndex: firstFrameIdx,
+        });
+        this.cups = new Sprite({
+            sourceImage: images.coffeeMaker,
+            frameSize: new Vector2(32, 32),
+            numColumns: 2,
+            numRows: 2,
+            scaleFactor: scaleFactor,
+            drawFrameIndex: firstFrameIdx + 1,
+        });
+        this.addChild(this.machine);
+        this.addChild(this.cups);
+    }
+
+    update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
+    
+    draw(drawingContext) { this.drawChildren(drawingContext); }
+}
+
 class Machine extends GameObject
 {
     static colorsAtIndex = 3;
@@ -180,7 +212,7 @@ export class OfficeObjects
 {
     constructor(images)
     {
-        this.classes = { Desk, Plant, TableCake, Human, Machine };
+        this.classes = { Desk, Plant, TableCake, Human, Machine, CoffeeMaker };
         this.images = images;
     }
 

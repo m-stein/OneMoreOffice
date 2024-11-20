@@ -26,7 +26,7 @@ class Main extends GameObject
     static numOfficeOptions = 4;
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
-    static numLevelsPerDifficulty = 9;
+    static numLevelsPerDifficulty = 10;
 
     static State = createEnum({
         NoSelection: 0,
@@ -221,6 +221,7 @@ class Main extends GameObject
             machine: new ImageFile(this.window.document, this.rootPath + "/images/machine.png", this.onAssetLoaded),
             humanShadow: new ImageFile(this.window.document, this.rootPath + "/images/human_shadow.png", this.onAssetLoaded),
             tableCake: new ImageFile(this.window.document, this.rootPath + "/images/table_cake.png", this.onAssetLoaded),
+            coffeeMaker: new ImageFile(this.window.document, this.rootPath + "/images/CoffeeMaker.png", this.onAssetLoaded),
         };
         this.readme = new TextFile(this.window.document, this.rootPath + "/readme.md", this.onAssetLoaded);
 
