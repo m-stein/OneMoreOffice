@@ -15,7 +15,7 @@ import { KeyCode } from './keycode.js';
 import { SelectionFeedback } from './selection_feedback.js';
 import { Office } from "./office.js";
 import { OfficeObjects } from './office_objects.js';
-import { randomIntInclusive } from './math.js';
+import { floorVec2, randomIntInclusive } from './math.js';
 import { Credits } from './credits.js';
 import { TextFile } from './text_file.js';
 import { RunningGame } from './running_game.js';
@@ -444,7 +444,7 @@ class Main extends GameObject
             this.selectionFeedback.enable(
                 this.selectedAnswerIdx == this.correctAnswerIdx,
                 this.runningGame.obtainPoints(this.selectedAnswerIdx == this.correctAnswerIdx),
-                this.selectionMousePosition
+                floorVec2(this.selectionMousePosition)
             );
             this.state = Main.State.SelectionApplied;
         }
