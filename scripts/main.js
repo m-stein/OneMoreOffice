@@ -214,14 +214,8 @@ class Main extends GameObject
         this.backgroundMusic = new AudioFile(this.window.document, this.rootPath + "/audio/poor_but_happy.ogg", this.onAssetLoaded);
         this.buttonHoverSound = new AudioFile(this.window.document, this.rootPath + "/audio/soft_keypress.ogg", this.onAssetLoaded);
         this.images = {
-            desk: new ImageFile(this.window.document, this.rootPath + "/images/desk.png", this.onAssetLoaded),
-            plant: new ImageFile(this.window.document, this.rootPath + "/images/plant.png", this.onAssetLoaded),
-            floor: new ImageFile(this.window.document, this.rootPath + "/images/floor.png", this.onAssetLoaded),
             sky: new ImageFile(this.window.document, this.rootPath + "/images/sky.png", this.onAssetLoaded),
-            machine: new ImageFile(this.window.document, this.rootPath + "/images/machine.png", this.onAssetLoaded),
-            humanShadow: new ImageFile(this.window.document, this.rootPath + "/images/human_shadow.png", this.onAssetLoaded),
-            tableCake: new ImageFile(this.window.document, this.rootPath + "/images/table_cake.png", this.onAssetLoaded),
-            coffeeMaker: new ImageFile(this.window.document, this.rootPath + "/images/CoffeeMaker.png", this.onAssetLoaded),
+            objects: new ImageFile(this.window.document, this.rootPath + "/images/objects.png", this.onAssetLoaded),
         };
         this.readme = new TextFile(this.window.document, this.rootPath + "/readme.md", this.onAssetLoaded);
 

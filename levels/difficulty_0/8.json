@@ -1,6 +1,6 @@
 {
     "objects": {
-        "c": { "class": "TableCake", "args": { "numCandles": 1 } },
+        "c": { "class": "Cake", "args": { "numCandles": 1 } },
         "p": { "class": "Plant" },
         "h": { "class": "Human" }
     },

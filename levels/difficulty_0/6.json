@@ -1,8 +1,8 @@
 {
     "objects": {
-        "p": { "class": "Machine", "args": { "color": "petrol" } },
-        "g": { "class": "Machine", "args": { "color": "gray" } },
-        "r": { "class": "Machine", "args": { "color": "red" } },
+        "p": { "class": "Server", "args": { "color": "petrol" } },
+        "g": { "class": "Server", "args": { "color": "gray" } },
+        "r": { "class": "Server", "args": { "color": "red" } },
         "v": { "class": "Desk", "args": { "heading": "down" } },
         ">": { "class": "Desk", "args": { "heading": "right" } },
         "^": { "class": "Desk", "args": { "heading": "up" } },

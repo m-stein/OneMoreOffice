@@ -1,27 +1,24 @@
 {
     "objects": {
-        "p": { "class": "Machine", "args": { "color": "petrol" } },
-        "o": { "class": "Machine", "args": { "color": "orange" } },
-        "v": { "class": "Machine", "args": { "color": "violet" } },
-        "x": { "class": "Machine", "args": { "color": "onyx" } },
+        "s": { "class": "Server", "args": { "color": "mint" } },
         "h": { "class": "Human" }
     },
     "solution": [
-        " x h . | x x . | x h x ",
+        " s h . | s s . | s h s ",
         " . h . | . h . | . h . ",
-        " x . . | x . . | x . . ",
+        " s . . | s . . | s . . ",
         " ------+-------+------ ",
-        " x h . | x h . | x h . ",
-        " . h . | . x . | . h x ",
-        " x . . | x . . | x . . ",
+        " s h . | s h . | s h . ",
+        " . h . | . s . | . h s ",
+        " s . . | s . . | s . . ",
         " ------+-------+------ ",
-        " x h . | x h . | x h . ",
+        " s h . | s h . | s h . ",
         " . h . | . h . | . h . ",
-        " x . . | x x . | x . x "
+        " s . . | s s . | s . s "
     ],
     "baddies": [
-        " x h . | x h x | . . x ",
+        " s h . | s h s | . . s ",
         " . h . | . h . | . h . ",
-        " x . . | x . . | x h x "
+        " s . . | s . . | s h s "
     ]
 }

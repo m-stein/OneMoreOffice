@@ -1,5 +1,6 @@
 import { GameObject } from "./game_object.js";
 import { randomIntInclusive } from "./math.js";
+import { ObjectsSpritesheet } from "./objects_spritesheet.js";
 import { Sprite } from "./sprite.js";
 import { TimedValue } from "./timed_value.js";
 import { Vector2 } from "./vector_2.js";
@@ -13,16 +14,18 @@ class Human extends GameObject
 
     constructor(images, args)
     {
-        super(new Vector2(8, 8), "Human");
+        super(new Vector2(0, 0), "Human");
         const type = Human.types[randomIntInclusive(0, 1)];
         this.humanSprite = new Sprite({
+            position: new Vector2(8, 8),
             sourceImage: images[type.imgPrefix + randomIntInclusive(1, type.numImages)],
             frameSize: new Vector2(16, 17),
             numColumns: 4,
             numRows: 3,
             drawFrameIndex: 0,
         });
-        this.shadowSprite = new Sprite({ sourceImage: images.humanShadow });
+        this.shadowSprite = new ObjectsSpritesheet(images.objects);
+        this.shadowSprite.currFrameIndex = 34;
         let animationIdx = randomIntInclusive(0, 3);
         if (args !== undefined) {
             switch (args.heading) {
@@ -52,23 +55,14 @@ class Human extends GameObject
     draw(drawingContext) { this.drawChildren(drawingContext); }
 }
 
-class TableCake extends GameObject
+class Cake extends GameObject
 {
     constructor(images, args)
     {
-        super(new Vector2(0, 6), "TableCake");
-        this.table = new Sprite({
-            sourceImage: images.tableCake,
-            frameSize: new Vector2(32, 288),
-            numColumns: 9,
-            drawFrameIndex: 0,
-        });
-        this.cake = new Sprite({
-            sourceImage: images.tableCake,
-            frameSize: new Vector2(32, 288),
-            numColumns: 9,
-            drawFrameIndex: args.numCandles,
-        });
+        super(new Vector2(0, 0), "Cake");
+        this.table = new ObjectsSpritesheet(images.objects);
+        this.cake = new ObjectsSpritesheet(images.objects);
+        this.cake.currFrameIndex = args.numCandles;
         this.addChild(this.table);
         this.addChild(this.cake);
     }
@@ -78,12 +72,19 @@ class TableCake extends GameObject
     draw(drawingContext) { this.drawChildren(drawingContext); }
 }
 
-class Plant extends Sprite
+class Plant extends GameObject
 {
     constructor(images)
     {
-        super({ sourceImage: images.plant });
+        super(new Vector2(0, 0), "Plant");
+        this.sprite = new ObjectsSpritesheet(images.objects);
+        this.sprite.currFrameIndex = 35;
+        this.addChild(this.sprite);
     }
+
+    update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
+
+    draw(drawingContext) { this.drawChildren(drawingContext); }
 }
 
 class Desk extends GameObject
@@ -91,18 +92,14 @@ class Desk extends GameObject
     constructor(images, args)
     {
         super(new Vector2(0, 0), "Desk");
-        this.sprite = new Sprite({
-            sourceImage: images.desk,
-            frameSize: new Vector2(32, 32),
-            numColumns: 8,
-        });
-        let firstFrameIdx = 0;
+        this.sprite = new ObjectsSpritesheet(images.objects);
+        let firstFrameIdx = 15;
         if (args !== undefined) {
             switch(args.heading) {
-                case "right": firstFrameIdx = 0; break;
-                case "down": firstFrameIdx = 2; break;
-                case "left": firstFrameIdx = 4; break;
-                case "up": firstFrameIdx = 6; break;
+                case "right": firstFrameIdx += 0; break;
+                case "down": firstFrameIdx += 2; break;
+                case "left": firstFrameIdx += 4; break;
+                case "up": firstFrameIdx += 6; break;
             }
         }
         this.frameIdx = new TimedValue([
@@ -125,72 +122,66 @@ class Desk extends GameObject
 
 class CoffeeMaker extends GameObject
 {
-    constructor(images, args)
+    static animationAt = 10;
+
+    constructor(images)
     {
-        super(new Vector2(2, 0), "CoffeeMaker");
-        const firstFrameIdx = randomIntInclusive(0, 1) * 2;
-        const scaleFactor = 0.9;
-        this.machine = new Sprite({
-            sourceImage: images.coffeeMaker,
-            frameSize: new Vector2(32, 32),
-            numColumns: 2,
-            numRows: 2,
-            scaleFactor: scaleFactor,
-            drawFrameIndex: firstFrameIdx,
-        });
-        this.cups = new Sprite({
-            sourceImage: images.coffeeMaker,
-            frameSize: new Vector2(32, 32),
-            numColumns: 2,
-            numRows: 2,
-            scaleFactor: scaleFactor,
-            drawFrameIndex: firstFrameIdx + 1,
-        });
-        this.addChild(this.machine);
-        this.addChild(this.cups);
+        super(new Vector2(0, 0), "CoffeeMaker");
+        this.table = new ObjectsSpritesheet(images.objects);
+        this.Server = new ObjectsSpritesheet(images.objects);
+        this.animation = new ObjectsSpritesheet(images.objects);
+        this.Server.currFrameIndex = 9;
+        const durations = [randomIntInclusive(1000, 2000), 300];
+        this.animationFrameIdx = new TimedValue([
+            { ms: durations[0], value: CoffeeMaker.animationAt },
+            { ms: durations[1], value: CoffeeMaker.animationAt + 1 },
+            { ms: durations[1], value: CoffeeMaker.animationAt + 2 },
+            { ms: durations[1], value: CoffeeMaker.animationAt + 3 },
+            { ms: durations[0], value: CoffeeMaker.animationAt + 4 },
+        ]);
+        this.animationFrameIdx.startPhase(randomIntInclusive(0, 4));
+        this.addChild(this.table);
+        this.addChild(this.Server);
+        this.addChild(this.animation);
+        this.addChild(this.animationFrameIdx);
     }
 
-    update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
+    update(deltaTimeMs)
+    {
+        this.updateChildren(deltaTimeMs);
+        this.animation.currFrameIndex = this.animationFrameIdx.value();
+    }
     
     draw(drawingContext) { this.drawChildren(drawingContext); }
 }
 
-class Machine extends GameObject
+class Server extends GameObject
 {
-    static colorsAtIndex = 3;
-    static lightsAtIndex = 1;
+    static bodyAtIndex = 23;
+    static colorsAtIndex = 26;
+    static lightsAtIndex = 24;
 
     constructor(images, args)
     {
-        super(new Vector2(0, 0), "Machine");
-        this.body = new Sprite({
-            sourceImage: images.machine,
-            frameSize: new Vector2(32, 32),
-            numColumns: 12,
-        });
-        this.lights = new Sprite({
-            sourceImage: images.machine,
-            frameSize: new Vector2(32, 32),
-            numColumns: 12,
-        });
-        this.color = new Sprite({
-            sourceImage: images.machine,
-            frameSize: new Vector2(32, 32),
-            numColumns: 12,
-        });
+        super(new Vector2(0, 0), "Server");
+        this.body = new ObjectsSpritesheet(images.objects);
+        this.lights = new ObjectsSpritesheet(images.objects);
+        this.color = new ObjectsSpritesheet(images.objects);
+        this.body.currFrameIndex = Server.bodyAtIndex
         if (args !== undefined) {
             switch(args.color) {
-                case "petrol": this.color.currFrameIndex = Machine.colorsAtIndex + 0; break;
-                case "orange": this.color.currFrameIndex = Machine.colorsAtIndex + 1; break;
-                case "onyx": this.color.currFrameIndex = Machine.colorsAtIndex + 2; break;
-                case "violet": this.color.currFrameIndex = Machine.colorsAtIndex + 3; break;
-                case "red": this.color.currFrameIndex = Machine.colorsAtIndex + 4; break;
-                case "gray": this.color.currFrameIndex = Machine.colorsAtIndex + 5; break;
+                case "petrol": this.color.currFrameIndex = Server.colorsAtIndex + 0; break;
+                case "orange": this.color.currFrameIndex = Server.colorsAtIndex + 1; break;
+                case "onyx": this.color.currFrameIndex = Server.colorsAtIndex + 2; break;
+                case "violet": this.color.currFrameIndex = Server.colorsAtIndex + 3; break;
+                case "red": this.color.currFrameIndex = Server.colorsAtIndex + 4; break;
+                case "gray": this.color.currFrameIndex = Server.colorsAtIndex + 5; break;
+                case "mint": this.color.currFrameIndex = Server.colorsAtIndex + 6; break;
             }
         }
         this.lightsFrameIdx = new TimedValue([
-            { ms: randomIntInclusive(100, 1000), value: Machine.lightsAtIndex },
-            { ms: randomIntInclusive(100, 1000), value: Machine.lightsAtIndex + 1 }
+            { ms: randomIntInclusive(100, 1000), value: Server.lightsAtIndex },
+            { ms: randomIntInclusive(100, 1000), value: Server.lightsAtIndex + 1 }
         ]);
         this.lightsFrameIdx.startPhase(randomIntInclusive(0, 1));
         this.addChild(this.body);
@@ -212,7 +203,7 @@ export class OfficeObjects
 {
     constructor(images)
     {
-        this.classes = { Desk, Plant, TableCake, Human, Machine, CoffeeMaker };
+        this.classes = { Desk, Plant, Cake, Human, Server, CoffeeMaker };
         this.images = images;
     }
 

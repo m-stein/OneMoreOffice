@@ -1,8 +1,8 @@
 {
     "objects": {
-        "b": { "class": "Machine", "args": { "color": "onyx" } },
-        "v": { "class": "Machine", "args": { "color": "violet" } },
-        "o": { "class": "Machine", "args": { "color": "orange" } }
+        "b": { "class": "Server", "args": { "color": "onyx" } },
+        "v": { "class": "Server", "args": { "color": "violet" } },
+        "o": { "class": "Server", "args": { "color": "orange" } }
     },
     "solution": [
         " b . v | . b . | . . b ",

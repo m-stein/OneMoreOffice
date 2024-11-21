@@ -1,6 +1,6 @@
 import { IsometricFormation3 } from "./isometric_formation.js";
+import { ObjectsSpritesheet } from "./objects_spritesheet.js";
 import { Rectangle } from "./rectangle.js";
-import { Sprite } from "./sprite.js";
 import { Vector2 } from "./vector_2.js";
 import { Vector3 } from "./vector_3.js";
 
@@ -15,7 +15,10 @@ export class Office extends IsometricFormation3
         super(position, "Office", Office.tileHeight, Office.tileIsoQuartWidth);
         for (let y = 0; y < Office.size; y++) {
             for (let x = 0; x < Office.size; x++) {
-                this.insert(new Sprite({sourceImage: images.floor, position: new Vector2(0, -9)}), new Vector3(x, y, 0));
+                const floor = new ObjectsSpritesheet(images.objects);
+                floor.position.y = -9;
+                floor.currFrameIndex = 33;
+                this.insert(floor, new Vector3(x, y, 0));
             }
         }
         this.boundingRect = new Rectangle(
