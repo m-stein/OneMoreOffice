@@ -5,6 +5,14 @@ import { Sprite } from "./sprite.js";
 import { TimedValue } from "./timed_value.js";
 import { Vector2 } from "./vector_2.js";
 
+function rotateHeadingClockwise(heading, numRotations)
+{
+    const headingsClockwise = ["down", "left", "up", "right"];
+    let idx = headingsClockwise.indexOf(heading);
+    idx = (idx + numRotations) % headingsClockwise.length;
+    return headingsClockwise[idx];
+}
+
 class Human extends GameObject
 {
     static types = [
@@ -12,7 +20,7 @@ class Human extends GameObject
         { imgPrefix: "man", numImages: 12 }
     ];
 
-    constructor(images, args)
+    constructor(images, numRotations, args)
     {
         super(new Vector2(0, 0), "Human");
         const type = Human.types[randomIntInclusive(0, 1)];
@@ -28,7 +36,7 @@ class Human extends GameObject
         this.shadowSprite.currFrameIndex = 34;
         let animationIdx = randomIntInclusive(0, 3);
         if (args !== undefined) {
-            switch (args.heading) {
+            switch (rotateHeadingClockwise(args.heading, numRotations)) {
                 case "down": animationIdx = 0; break;
                 case "right": animationIdx = 1; break;
                 case "up": animationIdx = 2; break;
@@ -57,7 +65,7 @@ class Human extends GameObject
 
 class Cake extends GameObject
 {
-    constructor(images, args)
+    constructor(images, numRotations, args)
     {
         super(new Vector2(0, 0), "Cake");
         this.table = new ObjectsSpritesheet(images.objects);
@@ -74,7 +82,7 @@ class Cake extends GameObject
 
 class Plant extends GameObject
 {
-    constructor(images)
+    constructor(images, numRotations)
     {
         super(new Vector2(0, 0), "Plant");
         this.sprite = new ObjectsSpritesheet(images.objects);
@@ -89,18 +97,20 @@ class Plant extends GameObject
 
 class Desk extends GameObject
 {
-    constructor(images, args)
+    constructor(images, numRotations, args)
     {
         super(new Vector2(0, 0), "Desk");
         this.sprite = new ObjectsSpritesheet(images.objects);
         let firstFrameIdx = 15;
+        let heading = "right";
         if (args !== undefined) {
-            switch(args.heading) {
-                case "right": firstFrameIdx += 0; break;
-                case "down": firstFrameIdx += 2; break;
-                case "left": firstFrameIdx += 4; break;
-                case "up": firstFrameIdx += 6; break;
-            }
+            heading = args.heading;
+        }
+        switch(rotateHeadingClockwise(heading, numRotations)) {
+            case "right": firstFrameIdx += 0; break;
+            case "down": firstFrameIdx += 2; break;
+            case "left": firstFrameIdx += 4; break;
+            case "up": firstFrameIdx += 6; break;
         }
         this.frameIdx = new TimedValue([
             { ms: randomIntInclusive(500, 2000), value: firstFrameIdx },
@@ -124,7 +134,7 @@ class CoffeeMaker extends GameObject
 {
     static animationAt = 10;
 
-    constructor(images)
+    constructor(images, numRotations)
     {
         super(new Vector2(0, 0), "CoffeeMaker");
         this.table = new ObjectsSpritesheet(images.objects);
@@ -161,13 +171,13 @@ class Server extends GameObject
     static colorsAtIndex = 26;
     static lightsAtIndex = 24;
 
-    constructor(images, args)
+    constructor(images, numRotations, args)
     {
         super(new Vector2(0, 0), "Server");
         this.body = new ObjectsSpritesheet(images.objects);
         this.lights = new ObjectsSpritesheet(images.objects);
         this.color = new ObjectsSpritesheet(images.objects);
-        this.body.currFrameIndex = Server.bodyAtIndex
+        this.body.currFrameIndex = Server.bodyAtIndex;
         if (args !== undefined) {
             switch(args.color) {
                 case "petrol": this.color.currFrameIndex = Server.colorsAtIndex + 0; break;
@@ -207,11 +217,11 @@ export class OfficeObjects
         this.images = images;
     }
 
-    withNewObject(objDescriptor, lambda)
+    withNewObject(objDescriptor, numRotations, lambda)
     {
         if (objDescriptor === undefined) {
             return;
         }
-        lambda(new this.classes[objDescriptor.class](this.images, objDescriptor.args));
+        lambda(new this.classes[objDescriptor.class](this.images, numRotations, objDescriptor.args));
     }
 }

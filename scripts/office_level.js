@@ -3,6 +3,7 @@ import { Matrix2 } from "./matrix_2.js";
 import { Vector2 } from "./vector_2.js";
 import { Vector3 } from "./vector_3.js";
 import { Office } from "./office.js";
+import { rotateQuadrMatrix2CoordClockwise } from "./math.js";
 
 export class OfficeLevel extends IsometricFormation3
 {
@@ -11,10 +12,12 @@ export class OfficeLevel extends IsometricFormation3
     static tileHeight = Office.tileHeight * OfficeLevel.size + OfficeLevel.officeMargin;
     static tileIsoQuartWidth = Office.tileIsoQuartWidth * OfficeLevel.size + OfficeLevel.officeMargin;
 
-    constructor(images, position)
+    constructor(images, position, numRotations)
     {
         super(position, "OfficeLevel", OfficeLevel.tileHeight, OfficeLevel.tileIsoQuartWidth);
-        this.missingOfficePosition = new Vector3(OfficeLevel.size - 1, OfficeLevel.size - 1, 0);
+        const v1 = new Vector2(OfficeLevel.size - 1, OfficeLevel.size - 1);
+        const v2 = rotateQuadrMatrix2CoordClockwise(v1, OfficeLevel.size, numRotations);
+        this.missingOfficePosition = new Vector3(v2.x, v2.y, 0);
         this.offices = new Matrix2();
         for (let y = 0; y < OfficeLevel.size; y++) {
             for (let x = 0; x < OfficeLevel.size; x++) {

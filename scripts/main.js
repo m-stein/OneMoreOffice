@@ -15,7 +15,7 @@ import { KeyCode } from './keycode.js';
 import { SelectionFeedback } from './selection_feedback.js';
 import { Office } from "./office.js";
 import { OfficeObjects } from './office_objects.js';
-import { floorVec2, randomIntInclusive } from './math.js';
+import { floorVec2, randomIntInclusive, rotateQuadrMatrix2CoordClockwise } from './math.js';
 import { Credits } from './credits.js';
 import { TextFile } from './text_file.js';
 import { RunningGame } from './running_game.js';
@@ -282,7 +282,7 @@ class Main extends GameObject
         this.selectionFeedback.disable();
     }
 
-    parseLevelSolutionConfig(objectsConfig, solutionConfig)
+    parseLevelSolutionConfig(objectsConfig, solutionConfig, numRotations)
     {
         const Token = createEnum({
             Misc: 0,
@@ -329,15 +329,22 @@ class Main extends GameObject
                 currToken = Token.VerticalSeparator;
                 continue;
             }
-            this.officeObjects.withNewObject(objectsConfig[char], (obj) => {
-                const objCoord = new Vector3(tileCoord.x, tileCoord.y, 1);
+            const rotatedOfficeCoord =
+                rotateQuadrMatrix2CoordClockwise(officeCoord, OfficeLevel.size, numRotations);
+
+            this.officeObjects.withNewObject(objectsConfig[char], numRotations, (obj) => {
+
+                const rotatedTileCoord =
+                    rotateQuadrMatrix2CoordClockwise(tileCoord, Office.size, numRotations);
+
+                const objCoord = new Vector3(rotatedTileCoord.x, rotatedTileCoord.y, 1);
                 if (officeCoord.x < OfficeLevel.size - 1 ||
                     officeCoord.y < OfficeLevel.size - 1)
                 {
-                    this.officeLevel.offices.item(officeCoord).insert(obj, objCoord);
-
-                } else if (officeCoord.x == OfficeLevel.size - 1 &&
-                        officeCoord.y == OfficeLevel.size - 1)
+                    this.officeLevel.offices.item(rotatedOfficeCoord).insert(obj, objCoord);
+                } else if (
+                    officeCoord.x == OfficeLevel.size - 1 &&
+                    officeCoord.y == OfficeLevel.size - 1)
                 {
                     this.officeOptions[this.correctAnswerIdx].insert(obj, objCoord);
 
@@ -349,7 +356,7 @@ class Main extends GameObject
         }
     }
 
-    parseLevelBaddiesConfig(objectsConfig, baddiesConfig)
+    parseLevelBaddiesConfig(objectsConfig, baddiesConfig, numRotations)
     {
         const Token = createEnum({
             Misc: 0,
@@ -383,8 +390,13 @@ class Main extends GameObject
                 currToken = Token.Misc;
                 continue;
             }
-            this.officeObjects.withNewObject(objectsConfig[char], (obj) => {
-                this.officeOptions[officeIdx].insert(obj, new Vector3(tileCoord.x, tileCoord.y, 1));
+            this.officeObjects.withNewObject(objectsConfig[char], numRotations, (obj) => {
+
+                const rotatedTileCoord =
+                    rotateQuadrMatrix2CoordClockwise(tileCoord, Office.size, numRotations);
+
+                this.officeOptions[officeIdx].insert(
+                    obj, new Vector3(rotatedTileCoord.x, rotatedTileCoord.y, 1));
             });
             currToken = Token.TileDescriptor;
         }
@@ -406,9 +418,10 @@ class Main extends GameObject
             this.officeOptions.push(office);
         }
 
-        this.officeLevel = new OfficeLevel(this.images, new Vector2(officeLevelX, 50));
-        this.parseLevelSolutionConfig(levelConfig.objects, levelConfig.solution);
-        this.parseLevelBaddiesConfig(levelConfig.objects, levelConfig.baddies);
+        const numRotations = randomIntInclusive(0, 3);
+        this.officeLevel = new OfficeLevel(this.images, new Vector2(officeLevelX, 50), numRotations);
+        this.parseLevelSolutionConfig(levelConfig.objects, levelConfig.solution, numRotations);
+        this.parseLevelBaddiesConfig(levelConfig.objects, levelConfig.baddies, numRotations);
         this.officeOptions.forEach((office) => {
             office.createAlphaMap(this.window.document);
         });
