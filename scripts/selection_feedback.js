@@ -13,7 +13,7 @@ export class SelectionFeedback extends GameObject
         "Well chosen!",
         "You solved it!",
         "You cracked it!",
-        "Fit perfectly!",
+        "Fits perfectly!",
         "This looks great!",
         "A perfect match!",
     ];
