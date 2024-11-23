@@ -1,0 +1,26 @@
+{
+    "objects": {
+        "v": { "class": "Server", "args": { "color": "violet" } },
+        "m": { "class": "Server", "args": { "color": "mint" } },
+        "p": { "class": "Plant" },
+        "h": { "class": "Human" }
+    },
+    "solution": [
+        " . p h | . p h | . p h ",
+        " . . . | . h h | . . . ",
+        " m . . | v . . | m . . ",
+        " ------+-------+------ ",
+        " . p h | . . h | . p h ",
+        " . . h | . . h | . . . ",
+        " v p . | m . . | m . . ",
+        " ------+-------+------ ",
+        " . p h | . . h | . p h ",
+        " . . . | . . . | . h h ",
+        " m . . | v . . | m p . "
+    ],
+    "baddies": [
+        " . p h | . p h | . p h ",
+        " . h h | h h h | . h h ",
+        " v p . | m p . | m . . "
+    ]
+}
