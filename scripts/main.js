@@ -26,7 +26,10 @@ class Main extends GameObject
     static numOfficeOptions = 4;
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
-    static numLevelsPerDifficulty = 14;
+    static availableLevels = [
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "10", "11", "12", "13",
+    ];
 
     static State = createEnum({
         NoSelection: 0,
@@ -51,11 +54,11 @@ class Main extends GameObject
         }
     }
 
-    startLoadingLevelAssets(levelId)
+    startLoadingLevelAssets(levelName)
     {
         this.levelConfig = new JsonFile(
             this.window.document, this.jsonParser,
-            this.rootPath + "/levels/difficulty_" + levelId.difficulty + "/" + levelId.index + ".json",
+            this.rootPath + "/levels/" + levelName + ".json",
             this.onAssetLoaded
         );
         this.loadingAssets.push(this.levelConfig);
@@ -108,13 +111,13 @@ class Main extends GameObject
             this.mouseDownHandlers.forEach((handler) => { handler(); });
         } else {
             if (this.state == Main.State.SelectionApplied) {
-                this.levelId.index = (this.levelId.index + 1) % Main.numLevelsPerDifficulty;
-                this.startLoadingLevelAssets(this.levelId);
-                this.onAllAssetsLoaded = () =>
-                { 
-                    this.runningGame.endLevel();
-                    this.unloadLevel();
-                    this.loadLevel(this.levelConfig.data);
+                this.runningGame.endLevel();
+                if (!this.gameOverScreen.enabled) {
+                    this.startLoadingLevelAssets(this.runningGame.currentLevelName());
+                    this.onAllAssetsLoaded = () => {
+                        this.unloadLevel();
+                        this.loadLevel(this.levelConfig.data);
+                    }
                 }
                 return;
             }
@@ -161,12 +164,11 @@ class Main extends GameObject
     startNewGame = () =>
     {
         if (this.menu.enabled) {
-            this.levelId = { difficulty: 0, index: Main.numLevelsPerDifficulty - 1 };
-            this.startLoadingLevelAssets(this.levelId);
+            this.runningGame = new RunningGame(this.onGameOver, Main.availableLevels);
+            this.startLoadingLevelAssets(this.runningGame.currentLevelName());
             this.onAllAssetsLoaded = () =>
             { 
                 this.unloadLevel();
-                this.runningGame = new RunningGame(this.onGameOver);
                 this.loadLevel(this.levelConfig.data);
                 this.ensureBackgroundMusicPlaying();
                 this.menu.enabled = false;
@@ -177,6 +179,7 @@ class Main extends GameObject
     onGameOver = (points) =>
     {
         this.gameOverScreen.enable(points);
+        this.selectionFeedback.disable();
     }
 
     showCredits = () =>
@@ -238,10 +241,7 @@ class Main extends GameObject
         this.loadingAssets.push(this.readme);
         Object.values(this.images).forEach((image) => { this.loadingAssets.push(image); });
 
-        /* Start loading level-specific assets */
-        this.levelId = { difficulty: 0, index: 3 };
-        this.startLoadingLevelAssets(this.levelId);
-
+        this.startLoadingLevelAssets("13");
         this.selectionFeedback = new SelectionFeedback(new Vector2(this.canvas.width / 2, 30));
         this.camera = new Camera(this.images.sky, this.canvas.width, this.canvas.height);
         this.gameEngine = new GameEngine

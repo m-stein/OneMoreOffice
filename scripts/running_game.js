@@ -1,4 +1,6 @@
+import { cloneArray, shuffleArray } from "./array_utilities.js";
 import { GameObject } from "./game_object.js";
+import { randomIntInclusive } from "./math.js";
 import { Vector2 } from "./vector_2.js";
 
 export class RunningGame extends GameObject
@@ -17,13 +19,29 @@ export class RunningGame extends GameObject
         RunningGame.minutesTillMaxLevelPointsLost * 60 * 1000 /
         RunningGame.maxLevelPointsLost;
 
-    constructor(onGameOver)
+    constructor(onGameOver, availableLevels)
     {
         super(new Vector2(0, 0), "RunningGame")
+        const unusedLevels = cloneArray(availableLevels);
+        this.levelSequence = [];
+        while (this.levelSequence.length < RunningGame.maxNumLevels) {
+            if (unusedLevels.length == 0) {
+                console.error("Error: Not enough levels available");
+            }
+            const randomLevelIdx = randomIntInclusive(0, unusedLevels.length - 1);
+            this.levelSequence.push(unusedLevels[randomLevelIdx]);
+            unusedLevels.splice(randomLevelIdx, 1);
+        }
+        console.log(this.levelSequence);
         this.points = 0;
         this.numLevels = 0;
         this.onGameOver = onGameOver;
         this.levelTimeMs = 0;
+    }
+
+    currentLevelName()
+    {
+        return this.levelSequence[this.numLevels];
     }
 
     update(deltaTimeMs)
