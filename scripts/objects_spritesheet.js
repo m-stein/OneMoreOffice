@@ -8,8 +8,8 @@ export class ObjectsSpritesheet extends Sprite
         super({
             sourceImage: image,
             frameSize: new Vector2(32, 32),
-            numColumns: 6,
-            numRows: 6,
+            numColumns: 7,
+            numRows: 7,
         });
     }
 }

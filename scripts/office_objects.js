@@ -20,7 +20,7 @@ class Human extends GameObject
         { imgPrefix: "man", numImages: 12 }
     ];
 
-    constructor(images, numRotations, args)
+    constructor(images, numRotations, configArgs)
     {
         super(new Vector2(0, 0), "Human");
         const type = Human.types[randomIntInclusive(0, 1)];
@@ -35,8 +35,8 @@ class Human extends GameObject
         this.shadowSprite = new ObjectsSpritesheet(images.objects);
         this.shadowSprite.currFrameIndex = 34;
         let animationIdx = randomIntInclusive(0, 3);
-        if (args !== undefined) {
-            switch (rotateHeadingClockwise(args.heading, numRotations)) {
+        if (configArgs !== undefined) {
+            switch (rotateHeadingClockwise(configArgs.heading, numRotations)) {
                 case "down": animationIdx = 0; break;
                 case "right": animationIdx = 1; break;
                 case "up": animationIdx = 2; break;
@@ -65,12 +65,12 @@ class Human extends GameObject
 
 class Cake extends GameObject
 {
-    constructor(images, numRotations, args)
+    constructor(images, numRotations, configArgs)
     {
         super(new Vector2(0, 0), "Cake");
         this.table = new ObjectsSpritesheet(images.objects);
         this.cake = new ObjectsSpritesheet(images.objects);
-        this.cake.currFrameIndex = args.numCandles;
+        this.cake.currFrameIndex = configArgs.numCandles;
         this.addChild(this.table);
         this.addChild(this.cake);
     }
@@ -82,7 +82,7 @@ class Cake extends GameObject
 
 class Plant extends GameObject
 {
-    constructor(images, numRotations)
+    constructor(images, numRotations, configArgs)
     {
         super(new Vector2(0, 0), "Plant");
         this.sprite = new ObjectsSpritesheet(images.objects);
@@ -95,16 +95,52 @@ class Plant extends GameObject
     draw(drawingContext) { this.drawChildren(drawingContext); }
 }
 
+class Present extends GameObject
+{
+    static firstFrame = 36;
+    static numColors = 6;
+
+    constructor(images, numRotations, configArgs)
+    {
+        super(new Vector2(0, 0), "Present");
+        this.body = new ObjectsSpritesheet(images.objects);
+        this.body.currFrameIndex = randomIntInclusive(Present.firstFrame, Present.firstFrame + Present.numColors - 1);
+        this.bodyYBase = this.body.position.y;
+        this.shadow = new ObjectsSpritesheet(images.objects);
+        this.shadow.currFrameIndex = Present.firstFrame + Present.numColors;
+        this.bodyYOffset = new TimedValue([
+            { ms: randomIntInclusive(2000, 8000), value: 0 },
+            { ms: 40, value: -4 },
+            { ms: 40, value: -6 },
+            { ms: 40, value: -7 },
+            { ms: 40, value: -6 },
+            { ms: 40, value: -4 }
+        ]);
+        this.bodyYOffset.startPhase(0);
+        this.addChild(this.shadow);
+        this.addChild(this.body);
+        this.addChild(this.bodyYOffset);
+    }
+
+    update(deltaTimeMs)
+    {
+        this.updateChildren(deltaTimeMs);
+        this.body.position.y = this.bodyYBase + this.bodyYOffset.value();
+    }
+
+    draw(drawingContext) { this.drawChildren(drawingContext); }
+}
+
 class Desk extends GameObject
 {
-    constructor(images, numRotations, args)
+    constructor(images, numRotations, configArgs)
     {
         super(new Vector2(0, 0), "Desk");
         this.sprite = new ObjectsSpritesheet(images.objects);
         let firstFrameIdx = 15;
         let heading = "right";
-        if (args !== undefined) {
-            heading = args.heading;
+        if (configArgs !== undefined) {
+            heading = configArgs.heading;
         }
         switch(rotateHeadingClockwise(heading, numRotations)) {
             case "right": firstFrameIdx += 0; break;
@@ -134,7 +170,7 @@ class CoffeeMaker extends GameObject
 {
     static animationAt = 10;
 
-    constructor(images, numRotations)
+    constructor(images, numRotations, configArgs)
     {
         super(new Vector2(0, 0), "CoffeeMaker");
         this.table = new ObjectsSpritesheet(images.objects);
@@ -171,15 +207,15 @@ class Server extends GameObject
     static colorsAtIndex = 26;
     static lightsAtIndex = 24;
 
-    constructor(images, numRotations, args)
+    constructor(images, numRotations, configArgs)
     {
         super(new Vector2(0, 0), "Server");
         this.body = new ObjectsSpritesheet(images.objects);
         this.lights = new ObjectsSpritesheet(images.objects);
         this.color = new ObjectsSpritesheet(images.objects);
         this.body.currFrameIndex = Server.bodyAtIndex;
-        if (args !== undefined) {
-            switch(args.color) {
+        if (configArgs !== undefined) {
+            switch(configArgs.color) {
                 case "petrol": this.color.currFrameIndex = Server.colorsAtIndex + 0; break;
                 case "orange": this.color.currFrameIndex = Server.colorsAtIndex + 1; break;
                 case "onyx": this.color.currFrameIndex = Server.colorsAtIndex + 2; break;
@@ -213,7 +249,7 @@ export class OfficeObjects
 {
     constructor(images)
     {
-        this.classes = { Desk, Plant, Cake, Human, Server, CoffeeMaker };
+        this.classes = { Desk, Plant, Cake, Human, Server, CoffeeMaker, Present };
         this.images = images;
     }
 
