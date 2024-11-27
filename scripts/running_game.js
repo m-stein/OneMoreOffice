@@ -22,7 +22,6 @@ export class RunningGame extends GameObject
     {
         super(new Vector2(0, 0), "RunningGame");
         this.levelSequence = makeRandomSelection(availableLevels, RunningGame.maxNumLevels);
-        console.log(this.levelSequence);
         this.points = 0;
         this.numLevels = 0;
         this.onGameOver = onGameOver;

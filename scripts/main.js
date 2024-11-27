@@ -20,6 +20,7 @@ import { Credits } from './credits.js';
 import { TextFile } from './text_file.js';
 import { RunningGame } from './running_game.js';
 import { GameOverScreen } from './game_over_screen.js';
+import { MusicPlayer } from './music_player.js';
 
 class Main extends GameObject
 {
@@ -29,6 +30,14 @@ class Main extends GameObject
     static availableLevels = [
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
         "10", "11", "12", "13", "14"
+    ];
+    static happyLofiCollection = [
+        "poor_but_happy",
+        "blue_skies",
+        "new_shoes",
+        "happy_but_a_little_off",
+        "clouds",
+        "letting_go_of_the_past",
     ];
 
     static State = createEnum({
@@ -149,18 +158,6 @@ class Main extends GameObject
         }
     }
 
-    ensureBackgroundMusicPlaying()
-    {
-        if (this.backgroundMusicPlaying) {
-            return;
-        }
-        const htmlElem = this.backgroundMusic.htmlElement;
-        htmlElem.volume = 0.1;
-        htmlElem.loop = true;
-        htmlElem.play();
-        this.backgroundMusicPlaying = true;
-    }
-
     startNewGame = () =>
     {
         if (this.menu.enabled) {
@@ -170,7 +167,7 @@ class Main extends GameObject
             { 
                 this.unloadLevel();
                 this.loadLevel(this.levelConfig.data);
-                this.ensureBackgroundMusicPlaying();
+                this.backgroundMusic.play();
                 this.menu.enabled = false;
             }
         }
@@ -185,7 +182,7 @@ class Main extends GameObject
     showCredits = () =>
     {
         if (this.menu.enabled) {
-            this.ensureBackgroundMusicPlaying();
+            this.backgroundMusic.play();
             this.menu.enabled = false;
             this.credits.enable();
         }
@@ -197,9 +194,9 @@ class Main extends GameObject
         this.window = mainWindow;
         this.rootPath = this.window.document.getElementById(configTagId).getAttribute('rootPath');
         this.jsonParser = jsonParser;
-        this.backgroundMusicPlaying = false;
         this.canvas = this.window.document.getElementById(canvasTagId);
         this.canvasRect = new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height);
+        this.backgroundMusic = new MusicPlayer();
 
         /* Initialize mouse position tracking */
         this.mouseDown = false;
@@ -214,7 +211,11 @@ class Main extends GameObject
 
         /* Start loading common assets */
         this.loadingAssets = [];
-        this.backgroundMusic = new AudioFile(this.window.document, this.rootPath + "/audio/poor_but_happy.ogg", this.onAssetLoaded);
+        this.backgroundMusicFiles = [];
+        Main.happyLofiCollection.forEach((name) => {
+            this.backgroundMusicFiles.push(new AudioFile(
+                this.window.document, this.rootPath + "/audio/happy_lofi_collection/" + name + ".ogg", this.onAssetLoaded));
+        });
         this.buttonHoverSound = new AudioFile(this.window.document, this.rootPath + "/audio/soft_keypress.ogg", this.onAssetLoaded);
         this.images = {
             sky: new ImageFile(this.window.document, this.rootPath + "/images/sky.png", this.onAssetLoaded),
@@ -236,7 +237,7 @@ class Main extends GameObject
                 this.rootPath + "/images/women/F_" + idx.toString().padStart(2, '0') + ".png",
                 this.onAssetLoaded);
         }
-        this.loadingAssets.push(this.backgroundMusic);
+        this.loadingAssets.push(...this.backgroundMusicFiles);
         this.loadingAssets.push(this.buttonHoverSound);
         this.loadingAssets.push(this.readme);
         Object.values(this.images).forEach((image) => { this.loadingAssets.push(image); });
@@ -273,6 +274,7 @@ class Main extends GameObject
             this.gameOverScreen = new GameOverScreen(this.canvasRect);
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();
+            this.backgroundMusicFiles.forEach((file) => { this.backgroundMusic.addItem(file.htmlElement); });
         }
     }
 
