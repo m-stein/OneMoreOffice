@@ -25,7 +25,7 @@ export function makeRandomSelection(availableItems, numItems)
     const unselectedItems = cloneArray(availableItems);
     if (numItems > unselectedItems.length) {
         numItems = unselectedItems.length;
-        console.error("Warning: Number of items to select is greater than number of available items");
+        console.warn("Warning: Number of items to select is greater than number of available items");
     }
     while (selectedItems.length < numItems) {
         const idx = randomIntInclusive(0, unselectedItems.length - 1);
