@@ -98,7 +98,7 @@ class Plant extends GameObject
 class Present extends GameObject
 {
     static firstFrame = 36;
-    static numColors = 6;
+    static numColors = 7;
 
     constructor(images, numRotations, configArgs)
     {
