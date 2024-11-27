@@ -1,4 +1,4 @@
-import { removeFromArray } from "./array_utilities.js";
+import { removeItem } from "./array_utilities.js";
 import { DrawingContext } from "./drawing_context.js";
 import { Vector2 } from "./vector_2.js";
 
@@ -32,7 +32,7 @@ export class GameObject
 
     removeChild(child)
     {
-        removeFromArray(this.children, child);
+        removeItem(this.children, child);
     }
 
     destroyRecursive()

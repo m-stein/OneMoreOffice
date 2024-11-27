@@ -9,7 +9,7 @@ import { Menu } from './menu.js';
 import { JsonFile } from './json_file.js';
 import { AudioFile } from './audio_file.js';
 import { ImageFile } from './image_file.js';
-import { removeFromArray } from './array_utilities.js';
+import { removeItem } from './array_utilities.js';
 import { createEnum } from './enum.js';
 import { KeyCode } from './keycode.js';
 import { SelectionFeedback } from './selection_feedback.js';
@@ -48,7 +48,7 @@ class Main extends GameObject
 
     onAssetLoaded = (asset) =>
     {
-        removeFromArray(this.loadingAssets, asset);
+        removeItem(this.loadingAssets, asset);
         if (this.loadingAssets.length == 0) {
             this.onAllAssetsLoaded();
         }

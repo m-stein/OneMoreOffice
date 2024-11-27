@@ -1,6 +1,5 @@
-import { cloneArray, makeRandomSelection, shuffleArray } from "./array_utilities.js";
+import { makeRandomSelection } from "./array_utilities.js";
 import { GameObject } from "./game_object.js";
-import { randomIntInclusive } from "./math.js";
 import { Vector2 } from "./vector_2.js";
 
 export class RunningGame extends GameObject

@@ -1,4 +1,4 @@
-import { removeFromArray } from "./array_utilities.js";
+import { removeItem } from "./array_utilities.js";
 import { Button } from "./button.js";
 import { GameObject } from "./game_object.js"
 import { LinearMovement } from "./linear_movement.js";
@@ -31,12 +31,12 @@ export class Menu extends GameObject
     {
         this.clickedOnce = true;
         this.titleMovement.startMovingTowards(new Vector2(this.rect.width / 2, 80), 0.002);
-        removeFromArray(this.mouseDownHandlers, this.onMouseDown);
+        removeItem(this.mouseDownHandlers, this.onMouseDown);
     }
 
     destroy()
     {
-        removeFromArray(this.mouseDownHandlers, this.onMouseDown);
+        removeItem(this.mouseDownHandlers, this.onMouseDown);
     }
 
     enableButtons()
