@@ -1,0 +1,28 @@
+{
+    "objects": {
+        "v": { "class": "Desk", "args": { "heading": "down" } },
+        ">": { "class": "Desk", "args": { "heading": "right" } },
+        "^": { "class": "Desk", "args": { "heading": "up" } },
+        "<": { "class": "Desk", "args": { "heading": "left" } },
+        "s": { "class": "Server", "args": { "color": "orange" } },
+        "h": { "class": "Human" }
+    },
+    "solution": [
+        " . s . | . . . | . . . ",
+        " . . . | . . s | . . . ",
+        " . . h | . . h | s . h ",
+        " ------|-------|------ ",
+        " > . . | . . v | . . . ",
+        " . h . | . h . | . h . ",
+        " . . . | . . . | . . < ",
+        " ------|-------|------ ",
+        " h . . | h . . | h . . ",
+        " . . . | . > . | v . . ",
+        " . ^ . | . . . | . . . "
+    ],
+    "baddies": [
+        " h v . | h . . | h . . ",
+        " . . . | s . . | . . . ",
+        " . . . | . . . | > . . "
+    ]
+}

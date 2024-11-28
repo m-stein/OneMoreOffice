@@ -1,3 +1,4 @@
+import { createEnum } from "./enum.js";
 import { GameObject } from "./game_object.js";
 import { randomIntInclusive } from "./math.js";
 import { ObjectsSpritesheet } from "./objects_spritesheet.js";
@@ -12,6 +13,17 @@ function rotateHeadingClockwise(heading, numRotations)
     idx = (idx + numRotations) % headingsClockwise.length;
     return headingsClockwise[idx];
 }
+
+const Color = createEnum({
+    petrol: 0,
+    orange: 1,
+    onyx: 2,
+    violet: 3,
+    red: 4,
+    gray: 5,
+    mint: 6,
+    count: 7
+});
 
 class Human extends GameObject
 {
@@ -98,21 +110,19 @@ class Plant extends GameObject
 class Present extends GameObject
 {
     static firstFrame = 36;
-    static red = 0;
-    static numColors = 7;
 
     constructor(images, numRotations, configArgs)
     {
         super(new Vector2(0, 0), "Present");
         this.body = new ObjectsSpritesheet(images.objects);
         if (configArgs === undefined) {
-            this.body.currFrameIndex = randomIntInclusive(Present.firstFrame, Present.firstFrame + Present.numColors - 1);
+            this.body.currFrameIndex = Present.firstFrame + randomIntInclusive(0, Color.count - 1);
         } else {
-            this.body.currFrameIndex = Present.firstFrame + Present[configArgs.color];
+            this.body.currFrameIndex = Present.firstFrame + Color[configArgs.color];
         }
         this.bodyYBase = this.body.position.y;
         this.shadow = new ObjectsSpritesheet(images.objects);
-        this.shadow.currFrameIndex = Present.firstFrame + Present.numColors;
+        this.shadow.currFrameIndex = Present.firstFrame + Color.count;
         this.bodyYOffset = new TimedValue([
             { ms: randomIntInclusive(2000, 8000), value: 0 },
             { ms: 40, value: -4 },
@@ -219,16 +229,10 @@ class Server extends GameObject
         this.lights = new ObjectsSpritesheet(images.objects);
         this.color = new ObjectsSpritesheet(images.objects);
         this.body.currFrameIndex = Server.bodyAtIndex;
-        if (configArgs !== undefined) {
-            switch(configArgs.color) {
-                case "petrol": this.color.currFrameIndex = Server.colorsAtIndex + 0; break;
-                case "orange": this.color.currFrameIndex = Server.colorsAtIndex + 1; break;
-                case "onyx": this.color.currFrameIndex = Server.colorsAtIndex + 2; break;
-                case "violet": this.color.currFrameIndex = Server.colorsAtIndex + 3; break;
-                case "red": this.color.currFrameIndex = Server.colorsAtIndex + 4; break;
-                case "gray": this.color.currFrameIndex = Server.colorsAtIndex + 5; break;
-                case "mint": this.color.currFrameIndex = Server.colorsAtIndex + 6; break;
-            }
+        if (configArgs === undefined) {
+            this.color.currFrameIndex = Server.colorsAtIndex + randomIntInclusive(0, Color.count - 1);
+        } else {
+            this.color.currFrameIndex = Server.colorsAtIndex + Color[configArgs.color];
         }
         this.lightsFrameIdx = new TimedValue([
             { ms: randomIntInclusive(100, 1000), value: Server.lightsAtIndex },

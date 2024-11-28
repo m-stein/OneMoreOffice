@@ -5,7 +5,7 @@ export function createEnum(baseEnum)
         get(target, name)
         {
             if (!baseEnum.hasOwnProperty(name)) {
-            throw new Error(`"${name}" value does not exist in the enum`)
+                throw new Error(`"${name}" value does not exist in the enum`)
             }
             return baseEnum[name]
         },
