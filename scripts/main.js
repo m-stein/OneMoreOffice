@@ -31,7 +31,8 @@ class Main extends GameObject
     static availableLevels = [
         "1a", "1b",
         "2a", "2b",
-        "3", "4", "5", "6", "7", "8", "9",
+        "3a", "3b",
+        "4", "5", "6", "7", "8", "9",
         "10", "11", "12", "13", "14", "15", "16"
     ];
     static happyLofiCollection = [
