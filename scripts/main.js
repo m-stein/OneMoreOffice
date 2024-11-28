@@ -21,7 +21,7 @@ import { TextFile } from './text_file.js';
 import { RunningGame } from './running_game.js';
 import { GameOverScreen } from './game_over_screen.js';
 import { MusicPlayer } from './music_player.js';
-import { Environment } from './environment.js';
+import { Server } from './server.js';
 
 class Main extends GameObject
 {
@@ -170,14 +170,14 @@ class Main extends GameObject
                 this.loadLevel(this.levelConfig.data);
                 this.backgroundMusic.play();
                 this.menu.enabled = false;
-                this.env.startGame();
+                this.env.logGameStart();
             }
         }
     }
 
     onGameOver = (points) =>
     {
-        this.env.endGame(points);
+        this.env.logGameEnd(points);
         this.gameOverScreen.enable(points);
         this.selectionFeedback.disable();
     }
@@ -191,14 +191,15 @@ class Main extends GameObject
         }
     }
 
-    constructor(env, mainWindow, jsonParser, configTagId, canvasTagId)
+    constructor(mainWindow, jsonParser, scriptElemId)
     {
         super(new Vector2(0, 0), 'Main');
-        this.env = env;
+        const scriptElem = mainWindow.document.getElementById(scriptElemId);
         this.window = mainWindow;
-        this.rootPath = this.window.document.getElementById(configTagId).getAttribute('rootPath');
+        this.env = new Server(Server.Type[scriptElem.getAttribute('serverType')]);
+        this.rootPath = scriptElem.getAttribute('rootPath');
         this.jsonParser = jsonParser;
-        this.canvas = this.window.document.getElementById(canvasTagId);
+        this.canvas = this.window.document.getElementById(scriptElem.getAttribute('canvasId'));
         this.canvasRect = new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height);
         this.backgroundMusic = new MusicPlayer();
 
@@ -488,5 +489,4 @@ class Main extends GameObject
     }
 }
 
-const mainEnv = new Environment(Environment.Type.Dummy);
-const main = new Main(mainEnv, window, JSON, 'mainScript', 'mainCanvas');
+const main = new Main(window, JSON, 'mainScript');
