@@ -98,13 +98,18 @@ class Plant extends GameObject
 class Present extends GameObject
 {
     static firstFrame = 36;
+    static red = 0;
     static numColors = 7;
 
     constructor(images, numRotations, configArgs)
     {
         super(new Vector2(0, 0), "Present");
         this.body = new ObjectsSpritesheet(images.objects);
-        this.body.currFrameIndex = randomIntInclusive(Present.firstFrame, Present.firstFrame + Present.numColors - 1);
+        if (configArgs === undefined) {
+            this.body.currFrameIndex = randomIntInclusive(Present.firstFrame, Present.firstFrame + Present.numColors - 1);
+        } else {
+            this.body.currFrameIndex = Present.firstFrame + Present[configArgs.color];
+        }
         this.bodyYBase = this.body.position.y;
         this.shadow = new ObjectsSpritesheet(images.objects);
         this.shadow.currFrameIndex = Present.firstFrame + Present.numColors;
@@ -116,7 +121,7 @@ class Present extends GameObject
             { ms: 40, value: -6 },
             { ms: 40, value: -4 }
         ]);
-        this.bodyYOffset.startPhase(0);
+        this.bodyYOffset.startPhaseWithRandomTimeOffset(0);
         this.addChild(this.shadow);
         this.addChild(this.body);
         this.addChild(this.bodyYOffset);
