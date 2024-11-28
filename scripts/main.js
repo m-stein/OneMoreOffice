@@ -488,5 +488,5 @@ class Main extends GameObject
     }
 }
 
-const mainEnv = new Environment(Environment.Type.AdventCalender);
+const mainEnv = new Environment(Environment.Type.Dummy);
 const main = new Main(mainEnv, window, JSON, 'mainScript', 'mainCanvas');
