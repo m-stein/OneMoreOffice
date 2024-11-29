@@ -1,0 +1,29 @@
+{
+    "objects": {
+        "v": { "class": "Desk", "args": { "heading": "down" } },
+        ">": { "class": "Desk", "args": { "heading": "right" } },
+        "^": { "class": "Desk", "args": { "heading": "up" } },
+        "<": { "class": "Desk", "args": { "heading": "left" } },
+        "h": { "class": "Human" },
+        "p": { "class": "Plant" },
+        "x": { "class": "Present", "args": { "color": "gray" } }
+    },
+    "solution": [
+        " . . . | . . . | . < . ",
+        " . . . | . . . | > . . ",
+        " x . . | . x . | . . . ",
+        " ------+-------+------ ",
+        " h h . | . . . | . . < ",
+        " . . . | . p h | . . . ",
+        " . . . | h . . | . ^ . ",
+        " ------+-------+------ ",
+        " . . x | h x . | . . ^ ",
+        " . p h | . p . | v > . ",
+        " . . . | . . . | . . . "
+    ],
+    "baddies": [
+        " . ^ . | . . . | > v . ",
+        " v . . | > . ^ | . . ^ ",
+        " . . > | . < . | . . . "
+    ]
+}

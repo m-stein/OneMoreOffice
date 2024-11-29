@@ -32,8 +32,11 @@ class Main extends GameObject
         "1a", "1b",
         "2a", "2b",
         "3a", "3b",
+        "13a", "13b",
+        "14a", "14b",
+        "15a", "15b",
         "4", "5", "6", "7", "8", "9",
-        "10", "11", "12", "13", "14", "15", "16"
+        "10", "11", "12", "16"
     ];
     static happyLofiCollection = [
         "poor_but_happy",
@@ -250,7 +253,7 @@ class Main extends GameObject
         this.loadingAssets.push(this.readme);
         Object.values(this.images).forEach((image) => { this.loadingAssets.push(image); });
 
-        this.startLoadingLevelAssets("13");
+        this.startLoadingLevelAssets("title_background");
         this.selectionFeedback = new SelectionFeedback(new Vector2(this.canvas.width / 2, 30));
         this.camera = new Camera(this.images.sky, this.canvas.width, this.canvas.height);
         this.gameEngine = new GameEngine
