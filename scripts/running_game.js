@@ -40,9 +40,9 @@ export class RunningGame extends GameObject
 
     draw(drawingContext) { }
 
-    obtainPoints(answerCorrect)
+    obtainPoints(selectedCorrectOffice)
     {
-        if (answerCorrect) {
+        if (selectedCorrectOffice) {
             let pointsLost = Math.floor(this.levelTimeMs / RunningGame.msPerLostLevelPoint);
             if (pointsLost > RunningGame.maxLevelPointsLost) {
                 pointsLost = RunningGame.maxLevelPointsLost;

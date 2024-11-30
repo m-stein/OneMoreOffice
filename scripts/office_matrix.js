@@ -5,22 +5,22 @@ import { Vector3 } from "./vector_3.js";
 import { Office } from "./office.js";
 import { rotateQuadrMatrix2CoordClockwise } from "./math.js";
 
-export class OfficeLevel extends IsometricFormation3
+export class OfficeMatrix extends IsometricFormation3
 {
     static size = 3;
     static officeMargin = 2;
-    static tileHeight = Office.tileHeight * OfficeLevel.size + OfficeLevel.officeMargin;
-    static tileIsoQuartWidth = Office.tileIsoQuartWidth * OfficeLevel.size + OfficeLevel.officeMargin;
+    static tileHeight = Office.tileHeight * OfficeMatrix.size + OfficeMatrix.officeMargin;
+    static tileIsoQuartWidth = Office.tileIsoQuartWidth * OfficeMatrix.size + OfficeMatrix.officeMargin;
 
     constructor(images, position, numRotations)
     {
-        super(position, "OfficeLevel", OfficeLevel.tileHeight, OfficeLevel.tileIsoQuartWidth);
-        const v1 = new Vector2(OfficeLevel.size - 1, OfficeLevel.size - 1);
-        const v2 = rotateQuadrMatrix2CoordClockwise(v1, OfficeLevel.size, numRotations);
+        super(position, "OfficeLevel", OfficeMatrix.tileHeight, OfficeMatrix.tileIsoQuartWidth);
+        const v1 = new Vector2(OfficeMatrix.size - 1, OfficeMatrix.size - 1);
+        const v2 = rotateQuadrMatrix2CoordClockwise(v1, OfficeMatrix.size, numRotations);
         this.missingOfficePosition = new Vector3(v2.x, v2.y, 0);
         this.offices = new Matrix2();
-        for (let y = 0; y < OfficeLevel.size; y++) {
-            for (let x = 0; x < OfficeLevel.size; x++) {
+        for (let y = 0; y < OfficeMatrix.size; y++) {
+            for (let x = 0; x < OfficeMatrix.size; x++) {
                 const officePosition = new Vector3(x, y, 0);
                 if (officePosition.equals(this.missingOfficePosition)) {
                     continue;
