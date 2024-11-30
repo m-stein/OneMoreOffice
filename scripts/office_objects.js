@@ -55,10 +55,12 @@ class Human extends GameObject
                 case "left": animationIdx = 3; break;
             }
         }
+        const ms = randomIntInclusive(200, 500);
         this.frameIdx = new TimedValue([
-            { ms: randomIntInclusive(200, 400), value: animationIdx + 0 },
-            { ms: randomIntInclusive(200, 400), value: animationIdx + 4 },
-            { ms: randomIntInclusive(200, 400), value: animationIdx + 8 }
+            { ms: ms, value: animationIdx + 0 },
+            { ms: ms, value: animationIdx + 4 },
+            { ms: ms, value: animationIdx + 0 },
+            { ms: ms, value: animationIdx + 8 }
         ]);
         this.frameIdx.startPhase(randomIntInclusive(0, 2));
         this.addChild(this.frameIdx);
