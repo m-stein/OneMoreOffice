@@ -22,6 +22,8 @@ import { RunningGame } from './running_game.js';
 import { GameOverScreen } from './game_over_screen.js';
 import { MusicPlayer } from './music_player.js';
 import { Server } from './server.js';
+import { Highscore } from './highscore.js';
+import { FontStyles } from './font_styles.js';
 
 class Main extends GameObject
 {
@@ -44,8 +46,7 @@ class Main extends GameObject
         "7",
         "8",
         "9",
-        "10",
-        "11"
+        "10"
     ];
     static happyLofiCollection = [
         "poor_but_happy",
@@ -97,7 +98,11 @@ class Main extends GameObject
             return;
         }
         if (this.credits.enabled && event.keyCode == KeyCode.Escape) {
-            this.credits.disable();
+            this.leaveCredits();
+            return;
+        }
+        if (this.highscore.enabled && event.keyCode == KeyCode.Escape) {
+            this.highscore.disable();
             this.menu.enable();
             return;
         }
@@ -114,14 +119,15 @@ class Main extends GameObject
 
     leaveCredits = () =>
     {
-        this.menu.enable();
         this.credits.disable();
+        this.menu.enable();
     }
 
     onMouseDown = (event) =>
     {
         if (this.loadingAssets.length > 0 ||
-            this.credits.enabled)
+            this.credits.enabled ||
+            this.highscore.enabled)
         {
             return;
         }
@@ -185,14 +191,14 @@ class Main extends GameObject
                 this.loadLevel(this.levelConfig.data);
                 this.backgroundMusic.play();
                 this.menu.enabled = false;
-                this.env.logGameStart();
+                this.server.logGameStart();
             }
         }
     }
 
     onGameOver = (points) =>
     {
-        this.env.logGameEnd(points);
+        this.server.logGameEnd(points);
         this.gameOverScreen.enable(points);
         this.selectionFeedback.disable();
     }
@@ -201,8 +207,31 @@ class Main extends GameObject
     {
         if (this.menu.enabled) {
             this.backgroundMusic.play();
-            this.menu.enabled = false;
+            this.menu.disable();
             this.credits.enable();
+        }
+    }
+
+    showHighscore = () =>
+    {
+        if (this.menu.enabled) {
+            this.backgroundMusic.play();
+            this.server.withHighscore((highscore) => {
+                this.menu.disable();
+                this.highscore.enable(highscore);
+                /*
+                highscore:
+                    Array [ {…}, {…} ]
+                        0: Object { rank: 1, userName: "Andreas Ecke", score: 500, … }
+                            rank: 1
+                            score: 500
+                            userName: "Andreas Ecke"
+                            userScore: true
+                            <prototype>: Object { … }
+                        1: Object { rank: 2, userName: "Martin Stein", score: 375 }
+                    length: 2
+                */
+            });
         }
     }
 
@@ -211,12 +240,13 @@ class Main extends GameObject
         super(new Vector2(0, 0), 'Main');
         const scriptElem = mainWindow.document.getElementById(scriptElemId);
         this.window = mainWindow;
-        this.env = new Server(Server.Type[scriptElem.getAttribute('serverType')]);
+        this.server = new Server(Server.Type[scriptElem.getAttribute('serverType')]);
         this.rootPath = scriptElem.getAttribute('rootPath');
         this.jsonParser = jsonParser;
         this.canvas = this.window.document.getElementById(scriptElem.getAttribute('canvasId'));
         this.canvasRect = new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height);
         this.backgroundMusic = new MusicPlayer();
+        this.fontStyles = new FontStyles();
 
         /* Initialize mouse position tracking */
         this.mouseDown = false;
@@ -277,20 +307,19 @@ class Main extends GameObject
         {
             this.buttonHoverSound.htmlElement.volume = 0.2;
             this.menu = new Menu(
-                this.canvasRect,
-                this.mousePosition, this.mouseDownHandlers, this.buttonHoverSound.htmlElement,
-                this.startNewGame,
-                this.showCredits
+                this.canvasRect, this.mousePosition, this.mouseDownHandlers,
+                this.buttonHoverSound.htmlElement, this.startNewGame,
+                this.showHighscore, this.showCredits
             );
             this.credits = new Credits(
-                this.canvasRect,
-                this.leaveCredits,
+                this.canvasRect, this.fontStyles, this.leaveCredits,
                 this.readme.text.split('## Credits')[1] // remove everything that preceeds the credits body
                                 .replace(/\\/g, "") // remove markdown line-breaks
                                 .replace(/\[/g, "").replace(/\](.*)/g, "") // of each link keep only the label
                                 .split(/\r?\n/) // create array of lines
                                 .splice(2) // remove first two lines as they are expected to be empty
             );
+            this.highscore = new Highscore(this.canvasRect, this.fontStyles);
             this.gameOverScreen = new GameOverScreen(this.canvasRect);
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();
@@ -453,6 +482,7 @@ class Main extends GameObject
         this.addChild(this.selectionFeedback);
         this.addChild(this.menu);
         this.addChild(this.credits);
+        this.addChild(this.highscore);
         this.addChild(this.gameOverScreen);
         if (this.runningGame !== undefined) {
             this.addChild(this.runningGame);
