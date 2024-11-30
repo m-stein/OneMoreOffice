@@ -1,44 +1,33 @@
-Milestone:
-The user can play the game with all the basioc logic in a GUI that reflects
-the basic design decisions. Developers can easily add levels.
+Milestone: Basic game mechanic
 
-    Feature:
-    Correct choices and wrong choices are accompanied by an appropriate
-    sound effect.
+    Feature: The highscore button works
 
-    Feature:
-    Levels are grouped by their difficulty and the player has a
-    difficulty-level state that affects which levels are choosen.
+    Feature: There are 32 levels available to the game
 
-    Feature:
-    The user goes through a set number of levels with rising difficulty
-    and then the game ends. When the game has ended, the user is lead back
-    to the main menu.
+Milestone: Polisihing the look and feel
 
-    Feature:
-    The user earns points. His score is displayed in a corner of the screen
-    during the whole game and his total score is displayed dominantly when
-    the game ends.
+    Feature: When opening the menu while playing a game, its titled "Game paused" instead of "One more office"
 
-    Feature:
-    At the end of a game, the user can enter his name in order to let his
-    score enter a permanent and user-global highscore list.
+    Feature: Draw office building around offices
 
-    Feature:
-    The user can actually switch to the highscore screen via the main menu.
+    Feature: Animate a change of level as a change of building level
 
-    Feature:
-    The user can actually switch to the credits screen via the main menu.
+    Feature: The offices in the array are slightly floating up and down
 
-Milestone:
-The user experiences the look and feel of the game as homogenous, streamlined,
-and immersive.
+    Feature: There is some kind of timeout that prevents users from brute-forcing the game
 
-    Bug:
-    Usually when loading the game from a vite server for the first time,
-    only the background image appears but not the offices and objects.
-    A reload of the page fixes the issue.
+    Feature: There is a character explaining the game before it starts
 
-Milestone:
-The user is hooked by the games challenges, wants to reach the end of the game,
-and wants to improve his score.
+    Feature: The character also tells you whether you succeeded or failed in a level
+
+Milestone: Create replayability
+
+    Feature: There is a difficulty level that rises only on correct answers
+
+    Feature: Levels of higher difficulty give more points
+
+Additional ideas:
+
+    Feature: A user selection triggers a sound effect according to whether it was correct
+
+    Feature: The clouds in the background are moving
