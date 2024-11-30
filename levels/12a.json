@@ -1,0 +1,27 @@
+
+{
+    "objects": {
+        "a": { "class": "Present", "args": { "color": "onyx" } },
+        "b": { "class": "Present", "args": { "color": "petrol" } },
+        "x": { "class": "Desk" },
+        "y": { "class": "Human" }
+    },
+    "solution": [
+        " . y . | . x . | . . x ",
+        " y a . | . b . | . b . ",
+        " x . y | y y . | . x . ",
+        " ------+-------+------ ",
+        " . x . | x . . | x . . ",
+        " . b y | . b . | . b . ",
+        " . x . | . . . | . . . ",
+        " ------+-------+------ ",
+        " . . . | y y . | y . . ",
+        " . b . | x a . | . a y ",
+        " . . . | . . . | . y . "
+    ],
+    "baddies": [
+        " y . . | . . . | . . . ",
+        " y a x | x a y | y b . ",
+        " y . . | . x . | y y . "
+    ]
+}
