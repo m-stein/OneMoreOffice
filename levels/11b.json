@@ -1,0 +1,27 @@
+{
+    "objects": { 
+        "p": { "class": "Present", "args": { "color": "petrol" } },
+        "m": { "class": "Present", "args": { "color": "mint" } },
+        "r": { "class": "Present", "args": { "color": "red" } },
+        "o": { "class": "Present", "args": { "color": "orange" } },
+        "d": { "class": "Cake", "args": { "numCandles": 3 } }
+    },
+    "solution": [
+        " r . . | . . . | o . d ",
+        " . . . | o . . | . . . ",
+        " . . d | d . . | . . . ",
+        " ------+-------+------ ",
+        " d . . | . . . | . . . ",
+        " . . . | . r . | d . m ",
+        " . . o | . d . | . . . ",
+        " ------+-------+------ ",
+        " m . . | . . . | . . . ",
+        " . . . | . . m | . . . ",
+        " . . d | . . d | r . d "
+    ],
+    "baddies": [
+        " . . . | . . . | . . . ",
+        " . . . | . . . | . . d ",
+        " d . r | p . d | . . m "
+    ]
+}

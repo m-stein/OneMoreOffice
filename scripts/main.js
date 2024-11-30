@@ -32,6 +32,7 @@ class Main extends GameObject
         "1a", "1b",
         "2a", "2b",
         "3a", "3b",
+        "11a", "11b",
         "12a", "12b",
         "13a", "13b",
         "14a", "14b",
