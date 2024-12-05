@@ -24,12 +24,14 @@ import { MusicPlayer } from './music_player.js';
 import { Server } from './server.js';
 import { Highscore } from './highscore.js';
 import { FontStyles } from './font_styles.js';
+import { OfficeBuildingFloor } from './office_building_floor.js';
 
 class Main extends GameObject
 {
     static officeArraySize = 4;
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
+    static numOfficeBuildingFloors = 4;
     static availableLevels = [
         "1a", "1b",
         "2a", "2b",
@@ -270,6 +272,7 @@ class Main extends GameObject
         this.images = {
             sky: new ImageFile(this.window.document, this.rootPath + "/images/sky.png", this.onAssetLoaded),
             objects: new ImageFile(this.window.document, this.rootPath + "/images/objects.png", this.onAssetLoaded),
+            building: new ImageFile(this.window.document, this.rootPath + "/images/building.png", this.onAssetLoaded),
         };
         this.readme = new TextFile(this.window.document, this.rootPath + "/readme.md", this.onAssetLoaded);
 
@@ -392,7 +395,8 @@ class Main extends GameObject
                 if (officeCoord.x < OfficeMatrix.size - 1 ||
                     officeCoord.y < OfficeMatrix.size - 1)
                 {
-                    this.officeLevel.offices.item(rotatedOfficeCoord).insert(obj, objCoord);
+                    this.officeBuildingFloors[Main.numOfficeBuildingFloors - 1]
+                        .officeMatrix.offices.item(rotatedOfficeCoord).insert(obj, objCoord);
                 } else if (
                     officeCoord.x == OfficeMatrix.size - 1 &&
                     officeCoord.y == OfficeMatrix.size - 1)
@@ -459,25 +463,33 @@ class Main extends GameObject
         this.state = Main.State.NoSelection;
         this.officeArray = [];
         const officeMargin = 2;
-        const officeLevelX = this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth;
+        const officeBuildingX = this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth;
         const officeWidth = Office.tileIsoQuartWidth * 4 * Office.size;
         const officeArrayWidth = Main.officeArraySize * officeWidth + (Main.officeArraySize - 1) * officeMargin;
-        const officeArrayX = officeLevelX + (Office.tileIsoQuartWidth * 2) - officeArrayWidth / 2;
+        const officeArrayX = officeBuildingX + (Office.tileIsoQuartWidth * 2) - officeArrayWidth / 2;
         const officeOffset = Office.tileIsoQuartWidth * 4 * Math.floor(Office.size / 2);
         for (let idx = 0; idx < Main.officeArraySize; idx++) {
             const office = new Office(new Vector2(officeArrayX + idx * (officeWidth + officeMargin) + officeOffset, 230), this.images);
             this.officeArray.push(office);
         }
-
+        this.officeBuildingFloors = [];
+        let officeBuildingFloorY = 50;
+        for (let idx = 0; idx < Main.numOfficeBuildingFloors; idx++) {
+            this.officeBuildingFloors.unshift(
+                new OfficeBuildingFloor(this.images, new Vector2(officeBuildingX, officeBuildingFloorY)));
+            officeBuildingFloorY += 78;
+        }
         const numRotations = randomIntInclusive(0, 3);
-        this.officeLevel = new OfficeMatrix(this.images, new Vector2(officeLevelX, 50), numRotations);
+        this.officeBuildingFloors[Main.numOfficeBuildingFloors - 1]
+            .officeMatrix.addInitialOffices(this.images, numRotations);
+
         this.parseLevelSolutionConfig(levelConfig.objects, levelConfig.solution, numRotations);
         this.parseLevelBaddiesConfig(levelConfig.objects, levelConfig.baddies, numRotations);
         this.officeArray.forEach((office) => {
             office.createAlphaMap(this.window.document);
         });
         this.addChild(this.camera);
-        this.addChild(this.officeLevel);
+        this.officeBuildingFloors.forEach((floor) => { this.addChild(floor); });
         this.officeArray.forEach((office) => { this.addChild(office); });
         this.addChild(this.selectionFeedback);
         this.addChild(this.menu);
@@ -515,7 +527,8 @@ class Main extends GameObject
     {
         const office = this.officeArray.splice(idx, 1)[0];
         this.removeChild(office);
-        this.officeLevel.addMissingOffice(office);
+        this.officeBuildingFloors[Main.numOfficeBuildingFloors - 1]
+            .officeMatrix.addMissingOffice(office);
     }
 
     draw(drawingContext)

@@ -12,9 +12,13 @@ export class OfficeMatrix extends IsometricFormation3
     static tileHeight = Office.tileHeight * OfficeMatrix.size + OfficeMatrix.officeMargin;
     static tileIsoQuartWidth = Office.tileIsoQuartWidth * OfficeMatrix.size + OfficeMatrix.officeMargin;
 
-    constructor(images, position, numRotations)
+    constructor(position)
     {
-        super(position, "OfficeLevel", OfficeMatrix.tileHeight, OfficeMatrix.tileIsoQuartWidth);
+        super(position, "OfficeMatrix", OfficeMatrix.tileHeight, OfficeMatrix.tileIsoQuartWidth);
+    }
+
+    addInitialOffices(images, numRotations)
+    {
         const v1 = new Vector2(OfficeMatrix.size - 1, OfficeMatrix.size - 1);
         const v2 = rotateQuadrMatrix2CoordClockwise(v1, OfficeMatrix.size, numRotations);
         this.missingOfficePosition = new Vector3(v2.x, v2.y, 0);
