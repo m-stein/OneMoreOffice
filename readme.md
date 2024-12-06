@@ -35,6 +35,8 @@ Source: opengameart.org
 ### Play-Testing
 
 Daniel Martin
+Martin Prussak
+Michael Kobert
 
 ### Idea, scripts and other assets
 
