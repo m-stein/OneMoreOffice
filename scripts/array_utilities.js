@@ -34,3 +34,8 @@ export function makeRandomSelection(availableItems, numItems)
     }
     return selectedItems;
 }
+
+export function lastItem(array)
+{
+    return array[array.length - 1];
+}
