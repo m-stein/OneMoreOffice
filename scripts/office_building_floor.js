@@ -1,3 +1,4 @@
+import { DrawingContext } from "./drawing_context.js";
 import { GameObject } from "./game_object.js"
 import { OfficeMatrix } from "./office_matrix.js";
 import { Sprite } from "./sprite.js";
@@ -5,7 +6,7 @@ import { Vector2 } from "./vector_2.js";
 
 export class OfficeBuildingFloor extends GameObject
 {
-    constructor(images, position)
+    constructor(images, position, htmlDocument)
     {
         super(position, "OfficeBuildingFloor");
         this.officeMatrix = new OfficeMatrix(new Vector2(0, 0));
@@ -26,6 +27,12 @@ export class OfficeBuildingFloor extends GameObject
             numRows: 2,
             drawFrameIndex: 1,
         });
+        /*
+        this.canvas = htmlDocument.createElement("canvas");
+        this.canvas.width = 300;
+        this.canvas.height = 300;
+        this.drawingContext = new DrawingContext(this.canvas);
+        */
         this.addAllChildren();
     }
 
@@ -50,6 +57,14 @@ export class OfficeBuildingFloor extends GameObject
 
     draw(drawingContext)
     {
+        drawingContext.canvasContext.globalAlpha = this.alpha;
         this.drawChildren(drawingContext);
+        drawingContext.canvasContext.globalAlpha = 1;
+        /*
+        this.drawChildren(this.drawingContext);
+        drawingContext.canvasContext.globalAlpha = this.alpha;
+        drawingContext.canvasContext.drawImage(this.canvas, 0, 0);
+        drawingContext.canvasContext.globalAlpha = 1;
+        */
     }
 }

@@ -154,8 +154,9 @@ class Main extends GameObject
                         const pos = this.buildingPosition.copy();
                         pos.y -= OfficeBuilding.floorHeight;
                         this.buildingMovement.jumpTo(pos);
+                        this.building.cycleFloorsDownwards();
                         this.buildingMovement.startMovingTowards(this.buildingPosition, 0.001);
-                        this.unloadLevel();
+                        this.unloadLevel(OfficeBuilding.numFloors - 3);
                         this.loadLevel(this.levelConfig.data);
                         this.state = Main.State.FadeInNextLevel;
                     }
@@ -202,7 +203,7 @@ class Main extends GameObject
             this.startLoadingLevelAssets(this.runningGame.currentLevelName());
             this.onAllAssetsLoaded = () =>
             { 
-                this.unloadLevel();
+                this.unloadLevel(OfficeBuilding.numFloors - 1);
                 this.loadLevel(this.levelConfig.data);
                 this.state = Main.State.NoSelection;
                 this.backgroundMusic.play();
@@ -328,16 +329,16 @@ class Main extends GameObject
             this.highscore = new Highscore(this.canvasRect, this.fontStyles);
             this.gameOverScreen = new GameOverScreen(this.canvasRect);
             this.buildingMovement = new LinearMovement(this.buildingPosition);
-            this.building = new OfficeBuilding(this.images, this.buildingMovement.at);
+            this.building = new OfficeBuilding(this.images, this.buildingMovement.at, this.window.document);
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();
             this.backgroundMusicFiles.forEach((file) => { this.backgroundMusic.addItem(file.htmlElement); });
         }
     }
 
-    unloadLevel()
+    unloadLevel(floorIdx)
     {
-        this.building.heighestFloor().removeAllOffices();
+        this.building.floors[floorIdx].removeAllOffices();
         this.removeAllChildren();
         this.selectionFeedback.disable();
     }
@@ -518,6 +519,9 @@ class Main extends GameObject
         if (this.state == Main.State.FadeInNextLevel) {
             this.buildingMovement.update(deltaTimeMs);
             this.building.position = this.buildingMovement.at;
+            this.building.heighestFloor().alpha =
+                (OfficeBuilding.floorHeight - (this.buildingPosition.y - this.building.position.y)) / OfficeBuilding.floorHeight;
+
             if (this.buildingMovement.arrived) {
                 this.state = Main.State.NoSelection;
             }
