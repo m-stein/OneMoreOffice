@@ -25,6 +25,7 @@ import { Server } from './server.js';
 import { Highscore } from './highscore.js';
 import { FontStyles } from './font_styles.js';
 import { OfficeBuilding } from './office_building.js';
+import { LinearMovement } from './linear_movement.js';
 
 class Main extends GameObject
 {
@@ -62,6 +63,7 @@ class Main extends GameObject
         NoSelection: 0,
         SelectionRequested: 1,
         SelectionApplied: 2,
+        FadeInNextLevel: 3,
     });
 
     onMouseMove = (event) => { this.updateRawMousePosition(event); }
@@ -142,42 +144,54 @@ class Main extends GameObject
             this.updateRawMousePosition(event);
             this.mouseDownHandlers.forEach((handler) => { handler(); });
         } else {
-            if (this.state == Main.State.SelectionApplied) {
+            switch (this.state) {
+            case Main.State.SelectionApplied:
+
                 this.runningGame.endLevel();
                 if (!this.gameOverScreen.enabled) {
                     this.startLoadingLevelAssets(this.runningGame.currentLevelName());
                     this.onAllAssetsLoaded = () => {
+                        const pos = this.buildingPosition.copy();
+                        pos.y -= OfficeBuilding.floorHeight;
+                        this.buildingMovement.jumpTo(pos);
+                        this.buildingMovement.startMovingTowards(this.buildingPosition, 0.001);
                         this.unloadLevel();
                         this.loadLevel(this.levelConfig.data);
+                        this.state = Main.State.FadeInNextLevel;
                     }
                 }
                 return;
-            }
-            if (this.state != Main.State.NoSelection) {
-                return;
-            }
-            const canvasRect = this.canvas.getBoundingClientRect();
-            const mousePosition = new Vector2(
-                (event.clientX - canvasRect.left) * (this.canvas.width / canvasRect.width),
-                (event.clientY - canvasRect.top) * (this.canvas.height / canvasRect.height)
-            );
-            this.officeArray.forEach((office, idx) => {
-                const officeBoundingRect = new Rectangle(
-                    office.position.copy().add(office.boundingRect.position),
-                    office.boundingRect.width,
-                    office.boundingRect.height
+            
+            case Main.State.FadeInNextLevel:
+
+                break;
+
+            case Main.State.NoSelection:
+
+                const canvasRect = this.canvas.getBoundingClientRect();
+                const mousePosition = new Vector2(
+                    (event.clientX - canvasRect.left) * (this.canvas.width / canvasRect.width),
+                    (event.clientY - canvasRect.top) * (this.canvas.height / canvasRect.height)
                 );
-                if (officeBoundingRect.isInside(mousePosition)) {
-                    const offset = mousePosition.copy().subtract(officeBoundingRect.position);
-                    const imgData = office.alphaMap.getContext('2d').getImageData(offset.x, offset.y, 1, 1).data;
-                    if (imgData[0] >= Main.hoverAlphaThreshold) {
-                        this.selectedOfficeIdx = idx;
-                        this.selectionMousePosition = mousePosition;
-                        this.state = Main.State.SelectionRequested;
-                        return;
+                this.officeArray.forEach((office, idx) => {
+                    const officeBoundingRect = new Rectangle(
+                        office.position.copy().add(office.boundingRect.position),
+                        office.boundingRect.width,
+                        office.boundingRect.height
+                    );
+                    if (officeBoundingRect.isInside(mousePosition)) {
+                        const offset = mousePosition.copy().subtract(officeBoundingRect.position);
+                        const imgData = office.alphaMap.getContext('2d').getImageData(offset.x, offset.y, 1, 1).data;
+                        if (imgData[0] >= Main.hoverAlphaThreshold) {
+                            this.selectedOfficeIdx = idx;
+                            this.selectionMousePosition = mousePosition;
+                            this.state = Main.State.SelectionRequested;
+                            return;
+                        }
                     }
-                }
-            });
+                });
+                break;
+            }
         }
     }
 
@@ -190,6 +204,7 @@ class Main extends GameObject
             { 
                 this.unloadLevel();
                 this.loadLevel(this.levelConfig.data);
+                this.state = Main.State.NoSelection;
                 this.backgroundMusic.play();
                 this.menu.enabled = false;
                 this.server.logGameStart();
@@ -220,18 +235,6 @@ class Main extends GameObject
             this.server.withHighscore((highscore) => {
                 this.menu.disable();
                 this.highscore.enable(highscore);
-                /*
-                highscore:
-                    Array [ {…}, {…} ]
-                        0: Object { rank: 1, userName: "Andreas Ecke", score: 500, … }
-                            rank: 1
-                            score: 500
-                            userName: "Andreas Ecke"
-                            userScore: true
-                            <prototype>: Object { … }
-                        1: Object { rank: 2, userName: "Martin Stein", score: 375 }
-                    length: 2
-                */
             });
         }
     }
@@ -248,6 +251,7 @@ class Main extends GameObject
         this.canvasRect = new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height);
         this.backgroundMusic = new MusicPlayer();
         this.fontStyles = new FontStyles();
+        this.buildingPosition = new Vector2(this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth, 50);
 
         /* Initialize mouse position tracking */
         this.mouseDown = false;
@@ -323,6 +327,8 @@ class Main extends GameObject
             );
             this.highscore = new Highscore(this.canvasRect, this.fontStyles);
             this.gameOverScreen = new GameOverScreen(this.canvasRect);
+            this.buildingMovement = new LinearMovement(this.buildingPosition);
+            this.building = new OfficeBuilding(this.images, this.buildingMovement.at);
             this.loadLevel(this.levelConfig.data);
             this.gameEngine.start();
             this.backgroundMusicFiles.forEach((file) => { this.backgroundMusic.addItem(file.htmlElement); });
@@ -331,6 +337,7 @@ class Main extends GameObject
 
     unloadLevel()
     {
+        this.building.heighestFloor().removeAllOffices();
         this.removeAllChildren();
         this.selectionFeedback.disable();
     }
@@ -458,19 +465,16 @@ class Main extends GameObject
     loadLevel(levelConfig)
     {
         this.correctOfficeIdx = randomIntInclusive(0, Main.officeArraySize - 1);
-        this.state = Main.State.NoSelection;
         this.officeArray = [];
         const officeMargin = 2;
-        const buildingX = this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth;
         const officeWidth = Office.tileIsoQuartWidth * 4 * Office.size;
         const officeArrayWidth = Main.officeArraySize * officeWidth + (Main.officeArraySize - 1) * officeMargin;
-        const officeArrayX = buildingX + (Office.tileIsoQuartWidth * 2) - officeArrayWidth / 2;
+        const officeArrayX = this.buildingPosition.x + (Office.tileIsoQuartWidth * 2) - officeArrayWidth / 2;
         const officeOffset = Office.tileIsoQuartWidth * 4 * Math.floor(Office.size / 2);
         for (let idx = 0; idx < Main.officeArraySize; idx++) {
             const office = new Office(new Vector2(officeArrayX + idx * (officeWidth + officeMargin) + officeOffset, 230), this.images);
             this.officeArray.push(office);
         }
-        this.building = new OfficeBuilding(this.images, new Vector2(buildingX, 50));
         const numRotations = randomIntInclusive(0, 3);
         this.building.heighestFloor().officeMatrix.addInitialOffices(this.images, numRotations);
         this.parseLevelSolutionConfig(levelConfig.objects, levelConfig.solution, numRotations);
@@ -511,6 +515,13 @@ class Main extends GameObject
             this.state = Main.State.SelectionApplied;
         }
         this.camera.position = new Vector2(0,0);
+        if (this.state == Main.State.FadeInNextLevel) {
+            this.buildingMovement.update(deltaTimeMs);
+            this.building.position = this.buildingMovement.at;
+            if (this.buildingMovement.arrived) {
+                this.state = Main.State.NoSelection;
+            }
+        }
     }
 
     selectOffice(idx)

@@ -26,9 +26,21 @@ export class OfficeBuildingFloor extends GameObject
             numRows: 2,
             drawFrameIndex: 1,
         });
+        this.addAllChildren();
+    }
+
+    addAllChildren()
+    {
         this.addChild(this.backWalls);
         this.addChild(this.officeMatrix);
         this.addChild(this.frontWalls);
+    }
+
+    removeAllOffices()
+    {
+        this.removeAllChildren();
+        this.officeMatrix = new OfficeMatrix(new Vector2(0, 0));
+        this.addAllChildren();
     }
     
     update(deltaTimeMs)

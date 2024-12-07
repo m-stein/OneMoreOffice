@@ -2,14 +2,9 @@ import { lerpVec2, clamp } from './math.js'
 
 export class LinearMovement
 {
-    constructor(at)
+    constructor(position)
     {
-        this.speed = 0.0;
-        this.from = at.copy();
-        this.to = at.copy();
-        this.at = at.copy();
-        this.amountOfDistTraveled = 0.0;
-        this.arrived = true;
+        this.jumpTo(position);
     }
 
     update(deltaTimeMs)
@@ -25,6 +20,16 @@ export class LinearMovement
             this.at = this.to.copy();
             this.arrived = true;
         }
+    }
+
+    jumpTo(position)
+    {
+        this.speed = 0.0;
+        this.from = position.copy();
+        this.to = position.copy();
+        this.at = position.copy();
+        this.amountOfDistTraveled = 0.0;
+        this.arrived = true;
     }
 
     startMovingTowards(to, speed)
