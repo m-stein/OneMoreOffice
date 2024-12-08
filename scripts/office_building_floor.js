@@ -1,6 +1,7 @@
 import { DrawingContext } from "./drawing_context.js";
 import { GameObject } from "./game_object.js"
 import { OfficeMatrix } from "./office_matrix.js";
+import { Rectangle } from "./rectangle.js";
 import { Sprite } from "./sprite.js";
 import { Vector2 } from "./vector_2.js";
 
@@ -10,29 +11,27 @@ export class OfficeBuildingFloor extends GameObject
     {
         super(position, "OfficeBuildingFloor");
         this.officeMatrix = new OfficeMatrix(new Vector2(0, 0));
+        this.wallsPosition = new Vector2(-144, -8);
         const wallsElem = images.building.htmlElement;
-        const wallsPosition = new Vector2(-144, -8);
         const wallsFrameSize = new Vector2(wallsElem.width, wallsElem.height / 2);
         this.backWalls = new Sprite({
             sourceImage: images.building,
-            position: wallsPosition,
+            position: this.wallsPosition,
             frameSize: wallsFrameSize,
             numRows: 2,
             drawFrameIndex: 0,
         });
         this.frontWalls = new Sprite({
             sourceImage: images.building,
-            position: wallsPosition,
+            position: this.wallsPosition,
             frameSize: wallsFrameSize,
             numRows: 2,
             drawFrameIndex: 1,
         });
-        /*
-        this.canvas = htmlDocument.createElement("canvas");
-        this.canvas.width = 300;
-        this.canvas.height = 300;
-        this.drawingContext = new DrawingContext(this.canvas);
-        */
+        const canvas = htmlDocument.createElement("canvas");
+        canvas.width = images.building.htmlElement.width;
+        canvas.height = images.building.htmlElement.height;
+        this.localDrawingContext = new DrawingContext(canvas);
         this.addAllChildren();
     }
 
@@ -55,16 +54,24 @@ export class OfficeBuildingFloor extends GameObject
         this.updateChildren(deltaTimeMs);
     }
 
+    drawChildrenToLocalDrawingContext()
+    {
+        const localCanvasCtx = this.localDrawingContext.canvasContext;
+        const localCanvas = this.localDrawingContext.canvas;
+        localCanvasCtx.clearRect(0, 0, localCanvas.width, localCanvas.height);
+        localCanvasCtx.save();
+        localCanvasCtx.translate(-this.wallsPosition.x, -this.wallsPosition.y);
+        this.drawChildren(this.localDrawingContext);
+        localCanvasCtx.restore();
+    }
+
     draw(drawingContext)
     {
-        drawingContext.canvasContext.globalAlpha = this.alpha;
-        this.drawChildren(drawingContext);
-        drawingContext.canvasContext.globalAlpha = 1;
-        /*
-        this.drawChildren(this.drawingContext);
-        drawingContext.canvasContext.globalAlpha = this.alpha;
-        drawingContext.canvasContext.drawImage(this.canvas, 0, 0);
-        drawingContext.canvasContext.globalAlpha = 1;
-        */
+        this.drawChildrenToLocalDrawingContext();
+        const canvasCtx = drawingContext.canvasContext;
+        canvasCtx.globalAlpha = this.alpha;
+        const position = drawingContext.position.copy().add(this.wallsPosition);
+        canvasCtx.drawImage(this.localDrawingContext.canvas, position.x, position.y);
+        canvasCtx.globalAlpha = 1;
     }
 }
