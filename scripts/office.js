@@ -1,3 +1,4 @@
+import { DrawingContext } from "./drawing_context.js";
 import { IsometricFormation3 } from "./isometric_formation.js";
 import { ObjectsSpritesheet } from "./objects_spritesheet.js";
 import { Rectangle } from "./rectangle.js";
@@ -10,7 +11,7 @@ export class Office extends IsometricFormation3
     static tileHeight = 16;
     static tileIsoQuartWidth = 8;
 
-    constructor(position, images)
+    constructor(position, images, hasAlpha = false, htmlDocument = undefined)
     {
         super(position, "Office", Office.tileHeight, Office.tileIsoQuartWidth);
         for (let y = 0; y < Office.size; y++) {
@@ -29,9 +30,37 @@ export class Office extends IsometricFormation3
             Office.tileIsoQuartWidth * 4 * Office.size,
             Office.tileHeight * (Office.size + 1)
         );
+        if (hasAlpha) {
+            const canvas = htmlDocument.createElement("canvas");
+            canvas.width = 640;
+            canvas.height = 320;
+            this.localDrawingContext = new DrawingContext(canvas);
+            this.alpha = 1;
+        }
+    }
+    
+    drawChildrenToLocalDrawingContext()
+    {
+        const localCanvasCtx = this.localDrawingContext.canvasContext;
+        const localCanvas = this.localDrawingContext.canvas;
+        localCanvasCtx.clearRect(0, 0, localCanvas.width, localCanvas.height);
+        this.drawChildren(this.localDrawingContext);
     }
 
     update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
 
-    draw(drawingContext) { this.drawChildren(drawingContext); }
+    draw(drawingContext)
+    {
+        if (this.alpha === undefined ||
+            this.alpha >= 1)
+        {
+            this.drawChildren(drawingContext);
+        } else {
+            this.drawChildrenToLocalDrawingContext();
+            const canvasCtx = drawingContext.canvasContext;
+            canvasCtx.globalAlpha = this.alpha;
+            canvasCtx.drawImage(this.localDrawingContext.canvas, 0, 0);
+            canvasCtx.globalAlpha = 1;
+        }
+    }
 }

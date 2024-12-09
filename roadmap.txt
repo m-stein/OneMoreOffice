@@ -26,8 +26,10 @@ Milestone: Create replayability
 
     Feature: Levels of higher difficulty give more points
 
-Additional ideas:
+Other issues:
 
     Feature: A user selection triggers a sound effect according to whether it was correct
 
     Feature: The clouds in the background are moving
+
+    Refactor: Extract combined alpha effect as tool from Office and OfficeBuildingFloor

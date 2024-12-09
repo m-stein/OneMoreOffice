@@ -147,6 +147,9 @@ class Main extends GameObject
             switch (this.state) {
             case Main.State.SelectionApplied:
 
+                if (!this.selectionFeedback.pointsMovement.arrived) {
+                    return;
+                }
                 this.runningGame.endLevel();
                 if (!this.gameOverScreen.enabled) {
                     this.startLoadingLevelAssets(this.runningGame.currentLevelName());
@@ -252,7 +255,7 @@ class Main extends GameObject
         this.canvasRect = new Rectangle(new Vector2(0, 0), this.canvas.width, this.canvas.height);
         this.backgroundMusic = new MusicPlayer();
         this.fontStyles = new FontStyles();
-        this.buildingPosition = new Vector2(this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth, 50);
+        this.buildingPosition = new Vector2(this.canvas.width / 2 - 2 * Office.tileIsoQuartWidth, 55);
 
         /* Initialize mouse position tracking */
         this.mouseDown = false;
@@ -473,7 +476,11 @@ class Main extends GameObject
         const officeArrayX = this.buildingPosition.x + (Office.tileIsoQuartWidth * 2) - officeArrayWidth / 2;
         const officeOffset = Office.tileIsoQuartWidth * 4 * Math.floor(Office.size / 2);
         for (let idx = 0; idx < Main.officeArraySize; idx++) {
-            const office = new Office(new Vector2(officeArrayX + idx * (officeWidth + officeMargin) + officeOffset, 230), this.images);
+
+            const office = new Office(
+                new Vector2(officeArrayX + idx * (officeWidth + officeMargin) + officeOffset, 230),
+                this.images, true, this.window.document);
+
             this.officeArray.push(office);
         }
         const numRotations = randomIntInclusive(0, 3);
@@ -506,6 +513,12 @@ class Main extends GameObject
             this.mousePositionOutdated = false;
         }
         this.updateChildren(deltaTimeMs);
+
+        if (this.state == Main.State.SelectionApplied)
+        {
+            const alpha = 1 - this.selectionFeedback.pointsMovement.amountOfDistTraveled;
+            this.officeArray.forEach((office) => { office.alpha = alpha; });
+        }
         if (this.state == Main.State.SelectionRequested) {
             this.selectOffice(this.selectedOfficeIdx);
             this.selectionFeedback.enable(

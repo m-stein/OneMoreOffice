@@ -11,7 +11,7 @@ export class OfficeBuildingFloor extends GameObject
     {
         super(position, "OfficeBuildingFloor");
         this.officeMatrix = new OfficeMatrix(new Vector2(0, 0));
-        this.wallsPosition = new Vector2(-144, -8);
+        this.wallsPosition = new Vector2(-145, -9);
         const wallsElem = images.building.htmlElement;
         const wallsFrameSize = new Vector2(wallsElem.width, wallsElem.height / 2);
         this.backWalls = new Sprite({
