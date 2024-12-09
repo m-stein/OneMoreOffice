@@ -32,6 +32,7 @@ class Main extends GameObject
     static officeArraySize = 4;
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
+    static officeArrayY = 225;
     static availableLevels = [
         "1a", "1b",
         "2a", "2b",
@@ -478,7 +479,7 @@ class Main extends GameObject
         for (let idx = 0; idx < Main.officeArraySize; idx++) {
 
             const office = new Office(
-                new Vector2(officeArrayX + idx * (officeWidth + officeMargin) + officeOffset, 230),
+                new Vector2(officeArrayX + idx * (officeWidth + officeMargin) + officeOffset, Main.officeArrayY),
                 this.images, true, this.window.document);
 
             this.officeArray.push(office);
@@ -532,9 +533,10 @@ class Main extends GameObject
         if (this.state == Main.State.FadeInNextLevel) {
             this.buildingMovement.update(deltaTimeMs);
             this.building.position = this.buildingMovement.at;
-            this.building.heighestFloor().alpha =
-                (OfficeBuilding.floorHeight - (this.buildingPosition.y - this.building.position.y)) / OfficeBuilding.floorHeight;
-
+            const progress = this.buildingMovement.amountOfDistTraveled;
+            const y = Main.officeArrayY + Math.floor((1 - progress) * 150);
+            this.building.heighestFloor().alpha = progress;
+            this.officeArray.forEach((office) => { office.position.y = y; });
             if (this.buildingMovement.arrived) {
                 this.state = Main.State.NoSelection;
             }
