@@ -1,0 +1,20 @@
+1a/1b:
+  The desks/plants in the right column are those that are in both the
+  middle and the left column.The plants/presents create a symmetric
+  pattern for each row.
+
+2a/2b:
+  The human/server in the right column / top row is always at the crossing
+  point of where the the desks in the left and middle column / bottom and
+  middle row are heading to.
+
+3a/3B
+  The sum of humans/presents and candles on cakes is the same for each cell.
+
+4:
+  The pattern of the violet servers in the upper left cell rotates 90°
+  clockwise for each successive cell (left-right, top-down).
+  The same applies for the pattern of the orange servers in the upper
+  left cell. The onyx-colored servers also rotate but each independently.
+  One clockwise, the other counter clockwise. The onyx-colored servers
+  furthermore overlay other servers if they are on the same tile.
