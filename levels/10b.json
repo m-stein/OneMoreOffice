@@ -1,0 +1,26 @@
+{
+    "objects": {
+        "l": { "class": "Human", "args": { "heading": "left" } },
+        "r": { "class": "Human", "args": { "heading": "right" } },
+        "c": { "class": "CoffeeMaker" },
+        "d": { "class": "Cake", "args": { "numCandles": 3 }  }
+    },
+    "solution": [
+        " . l . | . d . | . . l ",
+        " c . d | . . c | d . . ",
+        " . . . | . r . | c . . ",
+        " ------+-------+------ ",
+        " d . c | . c d | . . . ",
+        " . . . | r . . | . . l ",
+        " r . . | . . . | . c d ",
+        " ------+-------+------ ",
+        " . . l | . . c | . l . ",
+        " d . . | . . . | c . d ",
+        " c . . | r d . | . . . "
+    ],
+    "baddies": [
+        " . l . | . . c | . c . ",
+        " c . . | . . d | r . d ",
+        " . . d | r . . | . . . "
+    ]
+}

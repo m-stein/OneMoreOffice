@@ -1,0 +1,26 @@
+{
+    "objects": {
+        "U": { "class": "Human", "args": { "heading": "up" } },
+        "D": { "class": "Human", "args": { "heading": "down" } },
+        "x": { "class": "Present" },
+        "p": { "class": "Plant" }
+    },
+    "solution": [
+        " x . . | D . . | p . . ",
+        " . U . | . . . | . D . ",
+        " . . p | p . x | . . x ",
+        " ------+-------+------ ",
+        " . . . | x . . | D . p ",
+        " . x . | . U . | . . . ",
+        " p . U | . . p | . . x ",
+        " ------+-------+------ ",
+        " D . p | p . . | x . . ",
+        " . . . | . x . | . U . ",
+        " . . x | . . U | p . . "
+    ],
+    "baddies": [
+        " x . . | D . p | D . . ",
+        " . . . | . x . | . . . ",
+        " p . U | . . . | p . x "
+    ]
+}
