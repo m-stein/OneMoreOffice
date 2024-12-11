@@ -533,13 +533,18 @@ class Main extends GameObject
         if (this.state == Main.State.FadeInNextLevel) {
             this.buildingMovement.update(deltaTimeMs);
             this.building.position = this.buildingMovement.at;
-            const progress = this.buildingMovement.amountOfDistTraveled;
-            const y = Main.officeArrayY + Math.floor((1 - progress) * 150);
-            this.building.heighestFloor().alpha = progress;
-            this.officeArray.forEach((office) => { office.position.y = y; });
+            let floorAlpha, officeArrayY;
             if (this.buildingMovement.arrived) {
                 this.state = Main.State.NoSelection;
+                floorAlpha = 1;
+                officeArrayY = Main.officeArrayY;
+            } else {
+                floorAlpha = this.buildingMovement.amountOfDistTraveled;
+                officeArrayY = Main.officeArrayY + Math.floor((1 - floorAlpha) * 150);
+
             }
+            this.building.heighestFloor().alpha = floorAlpha;
+            this.officeArray.forEach((office) => { office.position.y = officeArrayY; });
         }
     }
 
