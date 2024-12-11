@@ -1,0 +1,25 @@
+{
+    "objects": {
+        "a": { "class": "Server", "args": { "color": "onyx" } },
+        "b": { "class": "Server", "args": { "color": "violet" } },
+        "c": { "class": "Human" }
+    },
+    "solution": [
+        " b c a | a c . | . c . ",
+        " . b . | a . b | . . . ",
+        " a . . | . . a | . . . ",
+        " ------+-------+------ ",
+        " . c a | . c b | b c . ",
+        " . b a | b . b | a a b ",
+        " b . . | . . a | b . . ",
+        " ------+-------+------ ",
+        " b c a | . c b | b c . ",
+        " . . . | b . . | . . b ",
+        " b . . | . . a | b . . "
+    ],
+    "baddies": [
+        " . c . | . c a | a c . ",
+        " a a . | a . . | . b a ",
+        " . . . | . . b | a . . "
+    ]
+}

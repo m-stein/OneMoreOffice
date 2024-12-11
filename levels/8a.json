@@ -1,0 +1,25 @@
+{
+    "objects": {
+        "a": { "class": "Cake", "args": { "numCandles": 1 } },
+        "b": { "class": "Plant" },
+        "c": { "class": "Human" }
+    },
+    "solution": [
+        " . . b | . . b | . . . ",
+        " a c . | . c a | . c . ",
+        " . a b | b a . | b a b ",
+        " ------+-------+------ ",
+        " b a . | b a . | . a . ",
+        " . c a | . c a | . c a ",
+        " . . b | b . a | b . b ",
+        " ------+-------+------ ",
+        " b . b | b . b | . . . ",
+        " a c . | . c . | . c . ",
+        " . . . | . a . | . . . "
+    ],
+    "baddies": [
+        " b . . | b . b | . . . ",
+        " a c . | a c a | a c . ",
+        " . a b | b . b | . a . "
+    ]
+}

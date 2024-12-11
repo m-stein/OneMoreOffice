@@ -1,0 +1,33 @@
+{
+    "objects": {
+        "a": { "class": "Plant" },
+        "b": { "class": "Server", "args": { "color": "red" } },
+        "c": { "class": "CoffeeMaker" },
+        "1": { "class": "Cake", "args": { "numCandles": 1 } },
+        "2": { "class": "Cake", "args": { "numCandles": 2 } },
+        "3": { "class": "Cake", "args": { "numCandles": 3 } },
+        "4": { "class": "Cake", "args": { "numCandles": 4 } },
+        "5": { "class": "Cake", "args": { "numCandles": 5 } },
+        "6": { "class": "Cake", "args": { "numCandles": 6 } },
+        "7": { "class": "Cake", "args": { "numCandles": 7 } },
+        "8": { "class": "Cake", "args": { "numCandles": 8 } }
+    },
+    "solution": [
+        " a . . | . . a | a . . ",
+        " . b c | a . 2 | . a . ",
+        " . 1 a | . b c | c 3 b ",
+        " ------+-------+------ ",
+        " c . b | b c . | . b c ",
+        " a . 4 | . a 5 | 6 . a ",
+        " . a . | . . a | a . . ",
+        " ------+-------+------ ",
+        " b c . | . . a | a . . ",
+        " . a . | b c 8 | . b c ",
+        " . 7 a | . a . | . . a "
+    ],
+    "baddies": [
+        " . a . | a . . | b c . ",
+        " . b c | . c b | . a . ",
+        " . . a | . . a | . . a "
+    ]
+}

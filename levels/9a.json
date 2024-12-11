@@ -1,0 +1,33 @@
+{
+    "objects": {
+        "a": { "class": "Present", "args": { "color": "red" } },
+        "b": { "class": "Present", "args": { "color": "petrol" } },
+        "c": { "class": "Present", "args": { "color": "gray" } },
+        "1": { "class": "Cake", "args": { "numCandles": 1 } },
+        "2": { "class": "Cake", "args": { "numCandles": 2 } },
+        "3": { "class": "Cake", "args": { "numCandles": 3 } },
+        "4": { "class": "Cake", "args": { "numCandles": 4 } },
+        "5": { "class": "Cake", "args": { "numCandles": 5 } },
+        "6": { "class": "Cake", "args": { "numCandles": 6 } },
+        "7": { "class": "Cake", "args": { "numCandles": 7 } },
+        "8": { "class": "Cake", "args": { "numCandles": 8 } }
+    },
+    "solution": [
+        " . . b | . b . | . . a ",
+        " b c . | c . b | . b . ",
+        " a 1 . | . 4 a | c 7 b ",
+        " ------+-------+------ ",
+        " a . . | . . a | c . b ",
+        " 2 . b | 5 b . | 8 . a ",
+        " b c . | c . b | . b . ",
+        " ------+-------+------ ",
+        " . 3 a | . a . | . b c ",
+        " . b . | b . 6 | . a . ",
+        " c . b | . b c | b . . "
+    ],
+    "baddies": [
+        " . b . | b . . | b . . ",
+        " . a c | a . c | c . a ",
+        " b . . | . b . | . . b "
+    ]
+}

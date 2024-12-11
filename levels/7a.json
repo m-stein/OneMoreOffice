@@ -1,0 +1,24 @@
+{
+    "objects": {
+        "s": { "class": "Server", "args": { "color": "mint" } },
+        "h": { "class": "Human" }
+    },
+    "solution": [
+        " h s . | h h . | s h s ",
+        " h h . | s h s | h h . ",
+        " s . s | s . . | . . s ",
+        " ------+-------+------ ",
+        " h h . | h h . | h s . ",
+        " s s s | h s . | h h . ",
+        " . . . | . s . | . s . ",
+        " ------+-------+------ ",
+        " s h s | h h . | s h s ",
+        " h h . | s h s | h h . ",
+        " . s . | . . s | s . . "
+    ],
+    "baddies": [
+        " h h s | s h s | s h s ",
+        " h h . | h h . | . h h ",
+        " s . s | . . . | s . . "
+    ]
+}
