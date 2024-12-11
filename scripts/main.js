@@ -517,7 +517,12 @@ class Main extends GameObject
 
         if (this.state == Main.State.SelectionApplied)
         {
-            const alpha = 1 - this.selectionFeedback.pointsMovement.amountOfDistTraveled;
+            let alpha;
+            if (this.selectionFeedback.pointsMovement.arrived) {
+                alpha = 0;
+            } else {
+                alpha = 1 - this.selectionFeedback.pointsMovement.amountOfDistTraveled;
+            }
             this.officeArray.forEach((office) => { office.alpha = alpha; });
         }
         if (this.state == Main.State.SelectionRequested) {
