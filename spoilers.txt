@@ -18,3 +18,26 @@
   left cell. The onyx-colored servers also rotate but each independently.
   One clockwise, the other counter clockwise. The onyx-colored servers
   furthermore overlay other servers if they are on the same tile.
+
+5:
+  Each human is looking at another human and vice-versa.
+
+6:
+  The object pattern in the bottom row is the difference between the
+  object patterns in the middle and the top row.
+
+7a/b:
+  From the top row towards the bottom row, one server/desk always cycles
+  in one direction (horizontally or vertically) through the cell while the other two
+  servers/desks cycle on the same axis in the opposite direction. The pattern of humans
+  is always the same but overlayed by servers/desks.
+
+8a/8b:
+  The pattern of a's in the third column / row shows the similarities of the patterns
+  of a's in two other columns / rows.
+  The pattern of b's in the third column / row shows the differences of the patterns
+  of b's in the other two columns / rows. The pattern of c's is the same for each cell.
+
+9a/9b:
+  The pattern of a's, b's, and c's always moves (cyclic) one tile in the direction of
+  the one remaining object in order to create the pattern in the successive cell.
