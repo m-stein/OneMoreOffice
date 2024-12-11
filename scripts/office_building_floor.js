@@ -67,11 +67,17 @@ export class OfficeBuildingFloor extends GameObject
 
     draw(drawingContext)
     {
-        this.drawChildrenToLocalDrawingContext();
-        const canvasCtx = drawingContext.canvasContext;
-        canvasCtx.globalAlpha = this.alpha;
-        const position = drawingContext.position.copy().add(this.wallsPosition);
-        canvasCtx.drawImage(this.localDrawingContext.canvas, position.x, position.y);
-        canvasCtx.globalAlpha = 1;
+        if (this.alpha === undefined ||
+            this.alpha >= 1)
+        {
+            this.drawChildren(drawingContext);
+        } else {
+            this.drawChildrenToLocalDrawingContext();
+            const canvasCtx = drawingContext.canvasContext;
+            canvasCtx.globalAlpha = this.alpha;
+            const position = drawingContext.position.copy().add(this.wallsPosition);
+            canvasCtx.drawImage(this.localDrawingContext.canvas, position.x, position.y);
+            canvasCtx.globalAlpha = 1;
+        }
     }
 }
