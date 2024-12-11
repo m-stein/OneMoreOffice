@@ -6,6 +6,12 @@ import { Vector2 } from "./vector_2.js";
 
 export class OfficeBuildingFloor extends GameObject
 {
+    /*
+     * Provide some extra room at the top of the local canvas for
+     * office objects of great height, such as servers.
+     */
+    static localCanvasTopMargin = 16;
+
     constructor(images, position, htmlDocument)
     {
         super(position, "OfficeBuildingFloor");
@@ -29,7 +35,7 @@ export class OfficeBuildingFloor extends GameObject
         });
         const canvas = htmlDocument.createElement("canvas");
         canvas.width = images.building.htmlElement.width;
-        canvas.height = images.building.htmlElement.height;
+        canvas.height = images.building.htmlElement.height / 2 + OfficeBuildingFloor.localCanvasTopMargin;
         this.localDrawingContext = new DrawingContext(canvas);
         this.addAllChildren();
     }
@@ -59,7 +65,7 @@ export class OfficeBuildingFloor extends GameObject
         const localCanvas = this.localDrawingContext.canvas;
         localCanvasCtx.clearRect(0, 0, localCanvas.width, localCanvas.height);
         localCanvasCtx.save();
-        localCanvasCtx.translate(-this.wallsPosition.x, -this.wallsPosition.y);
+        localCanvasCtx.translate(-this.wallsPosition.x, -this.wallsPosition.y + OfficeBuildingFloor.localCanvasTopMargin);
         this.drawChildren(this.localDrawingContext);
         localCanvasCtx.restore();
     }
@@ -79,7 +85,7 @@ export class OfficeBuildingFloor extends GameObject
         const canvasCtx = drawingContext.canvasContext;
         canvasCtx.globalAlpha = this.alpha;
         const position = drawingContext.position.copy().add(this.wallsPosition);
-        canvasCtx.drawImage(this.localDrawingContext.canvas, position.x, position.y);
+        canvasCtx.drawImage(this.localDrawingContext.canvas, position.x, position.y - OfficeBuildingFloor.localCanvasTopMargin);
         canvasCtx.globalAlpha = 1;
     }
 }
