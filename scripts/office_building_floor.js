@@ -1,7 +1,6 @@
 import { DrawingContext } from "./drawing_context.js";
 import { GameObject } from "./game_object.js"
 import { OfficeMatrix } from "./office_matrix.js";
-import { Rectangle } from "./rectangle.js";
 import { Sprite } from "./sprite.js";
 import { Vector2 } from "./vector_2.js";
 
@@ -71,13 +70,16 @@ export class OfficeBuildingFloor extends GameObject
             this.alpha >= 1)
         {
             this.drawChildren(drawingContext);
-        } else {
-            this.drawChildrenToLocalDrawingContext();
-            const canvasCtx = drawingContext.canvasContext;
-            canvasCtx.globalAlpha = this.alpha;
-            const position = drawingContext.position.copy().add(this.wallsPosition);
-            canvasCtx.drawImage(this.localDrawingContext.canvas, position.x, position.y);
-            canvasCtx.globalAlpha = 1;
+            return;
         }
+        if (this.alpha == 0) {
+            return;
+        }
+        this.drawChildrenToLocalDrawingContext();
+        const canvasCtx = drawingContext.canvasContext;
+        canvasCtx.globalAlpha = this.alpha;
+        const position = drawingContext.position.copy().add(this.wallsPosition);
+        canvasCtx.drawImage(this.localDrawingContext.canvas, position.x, position.y);
+        canvasCtx.globalAlpha = 1;
     }
 }

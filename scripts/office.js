@@ -55,12 +55,15 @@ export class Office extends IsometricFormation3
             this.alpha >= 1)
         {
             this.drawChildren(drawingContext);
-        } else {
-            this.drawChildrenToLocalDrawingContext();
-            const canvasCtx = drawingContext.canvasContext;
-            canvasCtx.globalAlpha = this.alpha;
-            canvasCtx.drawImage(this.localDrawingContext.canvas, 0, 0);
-            canvasCtx.globalAlpha = 1;
+            return;
         }
+        if (this.alpha == 0) {
+            return;
+        }
+        this.drawChildrenToLocalDrawingContext();
+        const canvasCtx = drawingContext.canvasContext;
+        canvasCtx.globalAlpha = this.alpha;
+        canvasCtx.drawImage(this.localDrawingContext.canvas, 0, 0);
+        canvasCtx.globalAlpha = 1;
     }
 }
