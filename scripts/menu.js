@@ -7,6 +7,9 @@ import { Vector2 } from "./vector_2.js";
 
 export class Menu extends GameObject
 {
+    static pauseMenuTitle = "Press [Esc] to continue!";
+    static mainMenuTitle = "ONE MORE OFFICE!";
+
     constructor(
         rect, mousePosition, mouseDownHandlers, mouseEntersButtonAudio,
         onNewGamePressed, onHighscorePressed, onCreditsPressed)
@@ -24,6 +27,7 @@ export class Menu extends GameObject
         this.buttonsEnabled = false;
         this.clickedOnce = false;
         this.titleMovement = new LinearMovement(new Vector2(rect.width / 2, 130));
+        this.title = Menu.mainMenuTitle;
     }
 
     enable() { this.enabled = true; }
@@ -86,11 +90,11 @@ export class Menu extends GameObject
         ctx.fillRect(0, 0, this.rect.width, this.rect.height);
         ctx.fillStyle = "white";
         ctx.globalAlpha = alpha;
-        let titleSize = 48;
+        let titleSize = 44;
         if (this.clickedOnce) {
             titleSize -= 16 * this.titleMovement.amountOfDistTraveled;
         }
-        drawingContext.drawText("ONE MORE OFFICE!", this.titleMovement.at, titleSize, "center");
+        drawingContext.drawText(this.title, this.titleMovement.at, titleSize, "center");
         this.drawChildren(drawingContext);
     }
 }

@@ -145,6 +145,7 @@ class Main extends GameObject
         if (this.gameOverScreen.enabled) {
             this.runningGame = undefined;
             this.gameOverScreen.disable();
+            this.menu.title = Menu.mainMenuTitle;
             this.menu.enable();
             return;
         }
@@ -213,12 +214,13 @@ class Main extends GameObject
             this.runningGame = new RunningGame(this.onGameOver, Main.easyLevels, Main.hardLevels, this.images, this.canvasRect);
             this.startLoadingLevelAssets(this.runningGame.currentLevelName());
             this.onAllAssetsLoaded = () =>
-            { 
+            {
                 this.unloadLevel(OfficeBuilding.numFloors - 1);
                 this.loadLevel(this.levelConfig.data);
                 this.state = Main.State.NoSelection;
                 this.backgroundMusic.play();
                 this.menu.enabled = false;
+                this.menu.title = Menu.pauseMenuTitle;
                 this.server.logGameStart();
             }
         }
