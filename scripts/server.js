@@ -12,15 +12,26 @@ export class Server
         this.type = type;
     }
 
-    logGameEnd(points)
+    logGameEnd()
     {
         switch(this.type) {
             case Server.Type.LiveServer:
-                console.log("Server log: The user finished a game with " + points + " points");
+                console.log("Server log: The player finished a game");
+                break;
+            case Server.Type.AdventCalendar:
+                logGameEnd(ttac.userHash, ttac.gameId);
+                break;
+        }
+    }
+    
+    logPlayerScoreChanged(points)
+    {
+        switch(this.type) {
+            case Server.Type.LiveServer:
+                console.log("Server log: The player's score is " + points + " points");
                 break;
             case Server.Type.AdventCalendar:
                 logScore(ttac.userHash, ttac.gameId, points);
-                logGameEnd(ttac.userHash, ttac.gameId);
                 break;
         }
     }
@@ -29,7 +40,7 @@ export class Server
     {
         switch(this.type) {
             case Server.Type.LiveServer:
-                console.log("Server log: The user started a game");
+                console.log("Server log: The player started a game");
                 break;
             case Server.Type.AdventCalendar:
                 logGameStart(ttac.userHash, ttac.gameId);

@@ -14,7 +14,6 @@ class FloorIndicator extends GameObject
     constructor(position, images, numEasyFloors, numHardFloors)
     {
         super(position, "FloorIndicator");
-        console.log(numEasyFloors, numHardFloors);
         this.floorHeight = 4;
         const hardFloorBack = new ObjectsSpritesheet(images.objects, 46);
         this.addChild(hardFloorBack);
@@ -74,7 +73,7 @@ export class RunningGame extends GameObject
         RunningGame.minutesTillMaxLevelPointsLost * 60 * 1000 /
         RunningGame.maxLevelPointsLost;
 
-    constructor(onGameOver, easyLevels, hardLevels, images, canvasRect)
+    constructor(onPlayerScoreChanged, onGameOver, easyLevels, hardLevels, images, canvasRect)
     {
         super(new Vector2(0, 0), "RunningGame");
         this.easyLevelSequence = makeRandomSelection(easyLevels, RunningGame.maxNumEasyLevels);
@@ -83,6 +82,7 @@ export class RunningGame extends GameObject
         this.numEasyLevels = 0;
         this.numHardLevels = 0;
         this.onGameOver = onGameOver;
+        this.onPlayerScoreChanged = onPlayerScoreChanged;
         this.levelTimeMs = 0;
         const floorIndicatorPadding = 5;
         this.floorIndicator = new FloorIndicator(
@@ -121,6 +121,7 @@ export class RunningGame extends GameObject
             }
             let pointsObtained = RunningGame.maxPointsPerLevel - pointsLost;
             this.points += pointsObtained;
+            this.onPlayerScoreChanged(this.points);
             return pointsObtained;
         }
         return 0;

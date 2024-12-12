@@ -211,7 +211,7 @@ class Main extends GameObject
     startNewGame = () =>
     {
         if (this.menu.enabled) {
-            this.runningGame = new RunningGame(this.onGameOver, Main.easyLevels, Main.hardLevels, this.images, this.canvasRect);
+            this.runningGame = new RunningGame(this.onPlayerScoreChanged, this.onGameOver, Main.easyLevels, Main.hardLevels, this.images, this.canvasRect);
             this.startLoadingLevelAssets(this.runningGame.currentLevelName());
             this.onAllAssetsLoaded = () =>
             {
@@ -226,9 +226,14 @@ class Main extends GameObject
         }
     }
 
+    onPlayerScoreChanged = (points) =>
+    {
+        this.server.logPlayerScoreChanged(points);
+    }
+
     onGameOver = (points) =>
     {
-        this.server.logGameEnd(points);
+        this.server.logGameEnd();
         this.gameOverScreen.enable(points);
         this.selectionFeedback.disable();
     }
