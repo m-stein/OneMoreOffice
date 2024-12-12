@@ -1,7 +1,7 @@
 {
     "objects": {
         "x": { "class": "Desk" },
-        "y": { "class": "Server" }
+        "y": { "class": "Server", "args": { "color": "petrol" } }
     },
     "solution": [
         " . . . | x y . | . . . ",
