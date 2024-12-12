@@ -1,0 +1,30 @@
+{
+    "objects": {
+        "a": { "class": "Server", "args": { "color": "petrol" } },
+        "b": { "class": "Server", "args": { "color": "mint" } },
+        "c": { "class": "Server", "args": { "color": "red" } },
+        "d": { "class": "Server", "args": { "color": "orange" } },
+        "e": { "class": "Server", "args": { "color": "violet" } },
+        "f": { "class": "Server", "args": { "color": "gray" } },
+        "g": { "class": "Server", "args": { "color": "onyx" } },
+        "h": { "class": "Desk" }
+    },
+    "solution": [
+        " . . . | . . . | . . . ",
+        " a b h | e b h | f b h ",
+        " . . . | . . . | . . . ",
+        " ------+-------+------ ",
+        " . . . | . . . | . . . ",
+        " a c h | e c h | f c h ",
+        " . . . | . . . | . . . ",
+        " ------+-------+------ ",
+        " . . . | . . . | . . . ",
+        " a d h | e d h | f d h ",
+        " . . . | . . . | . . . "
+    ],
+    "baddies": [
+        " . . . | . . . | . . . ",
+        " g a h | f e h | a d h ",
+        " . . . | . . . | . . . "
+    ]
+}

@@ -4,7 +4,9 @@ import { Vector2 } from "./vector_2.js";
 
 export class RunningGame extends GameObject
 {
-    static maxNumLevels = 8;
+    static maxNumEasyLevels = 3;
+    static maxNumHardLevels = 5;
+    static maxNumLevels = RunningGame.maxNumEasyLevels + RunningGame.maxNumHardLevels;
     static maxPoints = 1000;
     static percentLosableLevelPoints = 50;
     static minutesTillMaxLevelPointsLost = 10;
@@ -18,19 +20,27 @@ export class RunningGame extends GameObject
         RunningGame.minutesTillMaxLevelPointsLost * 60 * 1000 /
         RunningGame.maxLevelPointsLost;
 
-    constructor(onGameOver, availableLevels)
+    constructor(onGameOver, easyLevels, hardLevels)
     {
         super(new Vector2(0, 0), "RunningGame");
-        this.levelSequence = makeRandomSelection(availableLevels, RunningGame.maxNumLevels);
+        this.easyLevelSequence = makeRandomSelection(easyLevels, RunningGame.maxNumEasyLevels);
+        this.hardLevelSequence = makeRandomSelection(hardLevels, RunningGame.maxNumHardLevels);
+        console.log(this.hardLevelSequence);
         this.points = 0;
-        this.numLevels = 0;
+        this.numEasyLevels = 0;
+        this.numHardLevels = 0;
         this.onGameOver = onGameOver;
         this.levelTimeMs = 0;
     }
 
     currentLevelName()
     {
-        return this.levelSequence[this.numLevels];
+        if (this.numEasyLevels < RunningGame.maxNumEasyLevels) {
+            return this.easyLevelSequence[this.numEasyLevels];
+        }
+        if (this.numHardLevels < RunningGame.maxNumHardLevels) {
+            return this.hardLevelSequence[this.numHardLevels];
+        }
     }
 
     update(deltaTimeMs)
@@ -56,8 +66,15 @@ export class RunningGame extends GameObject
 
     endLevel()
     {
-        this.numLevels++;
-        if (this.numLevels == RunningGame.maxNumLevels) {
+        if (this.numEasyLevels < RunningGame.maxNumEasyLevels) {
+            this.numEasyLevels++;
+
+        } else if (this.numHardLevels < RunningGame.maxNumHardLevels) {
+            this.numHardLevels++;
+        }
+        if (this.numEasyLevels >= RunningGame.maxNumEasyLevels &&
+            this.numHardLevels >= RunningGame.maxNumHardLevels)
+        {
             this.onGameOver(this.points);
         }
         this.levelTimeMs = 0;

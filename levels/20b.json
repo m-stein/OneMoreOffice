@@ -1,0 +1,31 @@
+{
+    "objects": {
+        "1": { "class": "Cake", "args": { "numCandles": 1 } },
+        "2": { "class": "Cake", "args": { "numCandles": 2 } },
+        "3": { "class": "Cake", "args": { "numCandles": 3 } },
+        "4": { "class": "Cake", "args": { "numCandles": 4 } },
+        "5": { "class": "Cake", "args": { "numCandles": 5 } },
+        "6": { "class": "Cake", "args": { "numCandles": 6 } },
+        "7": { "class": "Cake", "args": { "numCandles": 7 } },
+        "8": { "class": "Cake", "args": { "numCandles": 8 } },
+        "a": { "class": "Human" }
+    },
+    "solution": [
+        " . . . | . . . | 3 . . ",
+        " . . a | . . a | . . a ",
+        " . . . | . 2 . | . . 1 ",
+        " ------+-------+------ ",
+        " . . 2 | . 6 . | 7 . . ",
+        " 4 . a | . . a | . 3 a ",
+        " . . . | . 2 . | . . . ",
+        " ------+-------+------ ",
+        " 6 6 . | . . 8 | . . . ",
+        " . . a | . . a | 8 8 a ",
+        " . . . | . 6 . | . . . "
+    ],
+    "baddies": [
+        " . . . | . . . | . 7 . ",
+        " 1 . a | . 2 a | . 1 a ",
+        " . . 5 | 3 . . | . . . "
+    ]
+}

@@ -33,7 +33,15 @@ class Main extends GameObject
     static drawButtonAlphaMaps = false;
     static hoverAlphaThreshold = 128;
     static officeArrayY = 225;
-    static availableLevels = [
+    static easyLevels = [
+        "16a", "16b", "16c",
+        "17a", "17b",
+        "18a", "18b",
+        "19a", "19b",
+        "20a", "20b",
+        "21a", "21b",
+    ];
+    static hardLevels = [
         "1a", "1b",
         "2a", "2b",
         "3a", "3b",
@@ -48,8 +56,7 @@ class Main extends GameObject
         "12a", "12b",
         "13a", "13b",
         "14a", "14b",
-        "15a", "15b",
-        "16a", "16b",
+        "15a", "15b"
     ];
     static happyLofiCollection = [
         "poor_but_happy",
@@ -203,7 +210,7 @@ class Main extends GameObject
     startNewGame = () =>
     {
         if (this.menu.enabled) {
-            this.runningGame = new RunningGame(this.onGameOver, Main.availableLevels);
+            this.runningGame = new RunningGame(this.onGameOver, Main.easyLevels, Main.hardLevels);
             this.startLoadingLevelAssets(this.runningGame.currentLevelName());
             this.onAllAssetsLoaded = () =>
             { 
