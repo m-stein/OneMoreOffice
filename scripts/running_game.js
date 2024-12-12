@@ -32,9 +32,8 @@ export class RunningGame extends GameObject
         this.onGameOver = onGameOver;
         this.onPlayerScoreChanged = onPlayerScoreChanged;
         this.levelTimeMs = 0;
-        const floorIndicatorPadding = 5;
         this.floorIndicator = new FloorIndicator(
-            new Vector2(canvasRect.width - 32 - floorIndicatorPadding, floorIndicatorPadding),
+            new Vector2(canvasRect.width - 45, canvasRect.height - 60),
             images, RunningGame.maxNumEasyLevels, RunningGame.maxNumHardLevels);
 
         this.addChild(this.floorIndicator);
