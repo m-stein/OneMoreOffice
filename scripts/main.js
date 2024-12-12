@@ -34,6 +34,7 @@ class Main extends GameObject
     static hoverAlphaThreshold = 128;
     static officeArrayY = 225;
     static easyLevels = [
+        "1a", "1b",
         "16a", "16b", "16c",
         "17a", "17b",
         "18a", "18b",
@@ -42,7 +43,6 @@ class Main extends GameObject
         "21a", "21b",
     ];
     static hardLevels = [
-        "1a", "1b",
         "2a", "2b",
         "3a", "3b",
         "4",
