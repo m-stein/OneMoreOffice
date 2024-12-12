@@ -525,15 +525,20 @@ class Main extends GameObject
         if (this.state == Main.State.SelectionApplied)
         {
             let alpha;
+            const fadeOutDelay = 0.25;
             if (this.selectionFeedback.pointsMovement.arrived) {
                 alpha = 0;
             } else {
-                alpha = 1 - this.selectionFeedback.pointsMovement.amountOfDistTraveled;
+                if (this.selectionFeedback.pointsMovement.amountOfDistTraveled < fadeOutDelay) {
+                    alpha = 1;
+                } else {
+                    alpha = (1 - this.selectionFeedback.pointsMovement.amountOfDistTraveled) / (1 - fadeOutDelay);
+                }
             }
             this.officeArray.forEach((office) => { office.alpha = alpha; });
         }
         if (this.state == Main.State.SelectionRequested) {
-            this.selectOffice(this.selectedOfficeIdx);
+            this.selectCorrectOffice();
             this.selectionFeedback.enable(
                 this.selectedOfficeIdx == this.correctOfficeIdx,
                 this.runningGame.obtainPoints(this.selectedOfficeIdx == this.correctOfficeIdx),
@@ -560,9 +565,9 @@ class Main extends GameObject
         }
     }
 
-    selectOffice(idx)
+    selectCorrectOffice()
     {
-        const office = this.officeArray.splice(idx, 1)[0];
+        const office = this.officeArray.splice(this.correctOfficeIdx, 1)[0];
         this.removeChild(office);
         this.building.heighestFloor().officeMatrix.addMissingOffice(office);
     }

@@ -44,7 +44,7 @@ export class SelectionFeedback extends GameObject
         }
         this.points = points;
         this.pointsMovement = new LinearMovement(pointsStartPosition);
-        this.pointsMovement.startMovingTowards(pointsStartPosition.copy().add(new Vector2(0, -30)), 0.0015);
+        this.pointsMovement.startMovingTowards(pointsStartPosition.copy().add(new Vector2(0, -30)), 0.0008);
         this.addChild(this.pointsMovement);
         this.enabled = true;
     }
