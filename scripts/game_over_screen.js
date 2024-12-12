@@ -34,10 +34,11 @@ export class GameOverScreen extends GameObject
         }
         let ctx = drawingContext.canvasContext;
         ctx.fillStyle = "black";
+        const alpha = ctx.globalAlpha;
         ctx.globalAlpha = 0.6;
         ctx.fillRect(0, 0, this.rect.width, this.rect.height);
         ctx.fillStyle = "white";
-        ctx.globalAlpha = 1;
+        ctx.globalAlpha = alpha;
         drawingContext.drawText("You scored " + this.points + " points!", this.textPosition, 32, "center");
         this.drawChildren(drawingContext);
     }

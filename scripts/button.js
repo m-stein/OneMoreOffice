@@ -44,8 +44,10 @@ export class Button extends GameObject
     {
         let ctx = drawingContext.canvasContext;
         ctx.fillStyle = "white";
+        const alpha = ctx.globalAlpha;
         ctx.globalAlpha = this.hovered() ? 1 : 0.6;
         ctx.textBaseline = 'middle';
         drawingContext.drawText(this.label, this.rect.center, 16, "center");
+        ctx.globalAlpha = alpha;
     }
 }

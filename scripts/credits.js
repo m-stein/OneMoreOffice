@@ -77,6 +77,7 @@ export class Credits extends GameObject
         }
         let ctx = drawingContext.canvasContext;
         ctx.fillStyle = "black";
+        const alpha = ctx.globalAlpha;
         ctx.globalAlpha = 0.6;
         ctx.fillRect(0, 0, this.rect.width, this.rect.height);
         ctx.fillStyle = "white";
@@ -91,5 +92,6 @@ export class Credits extends GameObject
 
             lineY += this.lineStyles[lineIdx].lineHeight;
         }
+        ctx.globalAlpha = alpha;
     }
 }

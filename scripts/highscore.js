@@ -56,6 +56,7 @@ export class Highscore extends GameObject
         /* Draw screen background */
         let ctx = drawingContext.canvasContext;
         ctx.fillStyle = "black";
+        const alpha = ctx.globalAlpha;
         ctx.globalAlpha = 0.6;
         ctx.fillRect(0, 0, this.rect.width, this.rect.height);
 
@@ -83,5 +84,6 @@ export class Highscore extends GameObject
             }
             y = this.drawRow([rank + Highscore.rankSuffix[rank], score, userName], y, drawingContext, this.fontStyles.normal);
         }
+        ctx.globalAlpha = alpha;
     }
 }

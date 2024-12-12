@@ -82,10 +82,11 @@ export class OfficeBuildingFloor extends GameObject
             return;
         }
         this.drawChildrenToLocalDrawingContext();
-        const canvasCtx = drawingContext.canvasContext;
-        canvasCtx.globalAlpha = this.alpha;
+        const ctx = drawingContext.canvasContext;
+        const alpha = ctx.globalAlpha;
+        ctx.globalAlpha = this.alpha;
         const position = drawingContext.position.copy().add(this.wallsPosition);
-        canvasCtx.drawImage(this.localDrawingContext.canvas, position.x, position.y - OfficeBuildingFloor.localCanvasTopMargin);
-        canvasCtx.globalAlpha = 1;
+        ctx.drawImage(this.localDrawingContext.canvas, position.x, position.y - OfficeBuildingFloor.localCanvasTopMargin);
+        ctx.globalAlpha = alpha;
     }
 }

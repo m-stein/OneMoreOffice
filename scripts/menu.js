@@ -81,10 +81,11 @@ export class Menu extends GameObject
         }
         let ctx = drawingContext.canvasContext;
         ctx.fillStyle = "black";
+        const alpha = ctx.globalAlpha;
         ctx.globalAlpha = 0.6;
         ctx.fillRect(0, 0, this.rect.width, this.rect.height);
         ctx.fillStyle = "white";
-        ctx.globalAlpha = 1;
+        ctx.globalAlpha = alpha;
         let titleSize = 48;
         if (this.clickedOnce) {
             titleSize -= 16 * this.titleMovement.amountOfDistTraveled;

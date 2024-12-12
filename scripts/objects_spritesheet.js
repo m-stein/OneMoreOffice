@@ -3,7 +3,7 @@ import { Vector2 } from "./vector_2.js";
 
 export class ObjectsSpritesheet extends Sprite
 {
-    constructor(image)
+    constructor(image, frameIdx)
     {
         super({
             sourceImage: image,
@@ -11,5 +11,8 @@ export class ObjectsSpritesheet extends Sprite
             numColumns: 7,
             numRows: 7,
         });
+        if (frameIdx !== undefined) {
+            this.currFrameIndex = frameIdx;
+        }
     }
 }

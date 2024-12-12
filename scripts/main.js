@@ -210,7 +210,7 @@ class Main extends GameObject
     startNewGame = () =>
     {
         if (this.menu.enabled) {
-            this.runningGame = new RunningGame(this.onGameOver, Main.easyLevels, Main.hardLevels);
+            this.runningGame = new RunningGame(this.onGameOver, Main.easyLevels, Main.hardLevels, this.images, this.canvasRect);
             this.startLoadingLevelAssets(this.runningGame.currentLevelName());
             this.onAllAssetsLoaded = () =>
             { 
@@ -501,14 +501,14 @@ class Main extends GameObject
         this.addChild(this.camera);
         this.addChild(this.building);
         this.officeArray.forEach((office) => { this.addChild(office); });
+        if (this.runningGame !== undefined) {
+            this.addChild(this.runningGame);
+        }
         this.addChild(this.selectionFeedback);
         this.addChild(this.menu);
         this.addChild(this.credits);
         this.addChild(this.highscore);
         this.addChild(this.gameOverScreen);
-        if (this.runningGame !== undefined) {
-            this.addChild(this.runningGame);
-        }
     }
 
     update(deltaTimeMs)
@@ -546,7 +546,6 @@ class Main extends GameObject
             );
             this.state = Main.State.SelectionApplied;
         }
-        this.camera.position = new Vector2(0,0);
         if (this.state == Main.State.FadeInNextLevel) {
             this.buildingMovement.update(deltaTimeMs);
             this.building.position = this.buildingMovement.at;
@@ -575,15 +574,17 @@ class Main extends GameObject
     draw(drawingContext)
     {
         this.drawChildren(drawingContext);
+        const ctx = drawingContext.canvasContext;
         if (Main.drawButtonAlphaMaps) {
-            drawingContext.canvasContext.globalAlpha = 0.5;
+            const alpha = ctx.globalAlpha;
+            ctx.globalAlpha = 0.5;
             this.officeArray.forEach((office) => {
-                drawingContext.canvasContext.drawImage(
+                ctx.drawImage(
                     office.alphaMap,
                     office.position.x + office.boundingRect.position.x,
                     office.position.y + office.boundingRect.position.y);
             });
-            drawingContext.canvasContext.globalAlpha = 1;
+            ctx.globalAlpha = alpha;
         }
     }
 }
