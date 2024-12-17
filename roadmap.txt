@@ -1,35 +1,59 @@
-Milestone: Basic game mechanic
+Topic: The difficulty of the puzzles feels less overwhelming
 
-    Feature: The highscore button works
+    Feature:
+        When starting a new game, there is a short, skippable introductory text regarding the task of the
+        player in this game. See also the character feature.
 
-    Feature: There are 32 levels available to the game
+    Feature:
+        Maybe, the difficulty level should rise only on correct answers and, in turn, more difficult puzzles
+        give more points?
 
-Milestone: Polisihing the look and feel
+    Feature:
+        A static sequence of tutorial puzzles that can be accessed independently from the main game and
+        that introduces the basic puzzle mechanics (and/or/xor combinations, counting, movements, overlays,
+        colors, directions, ...) and actors (humans, servers, desks, ...) _step by step_.
 
-    Feature: When opening the menu while playing a game, its titled "Game paused" instead of "One more office"
+    Feature:
+        Puzzles get stripped of irrelevant information and randomization if not critical for estetical reasons
+        (random heading and appearance of humans, random color and movement of presents, ...)
 
-    Feature: Draw office building around offices
+    Feature: The player can buy visual or textual hints for points while in a puzzle
 
-    Feature: Animate a change of level as a change of building level
+    Feature:
+        Use multi-tile objects (connected desks, cubicles, cupboard rows, room dividers, ...) for making large
+        structures easier to perceive
+
+    Feature:
+        Raise the difficulty more fine-grained with the hardest current puzzles appearing only at the
+        highest floors
+
+    Feature:
+        In the short term make it more clear that the puzzle always reveals the correct solution.
+        In the long term don't reveal the correct solution and instead let the game give enough guidance
+        that a normal player eventually can learn how to solve each puzzle.
+
+Feature: Add "Go back" resp. "Continue" buttons to the highscore screen, credits screen, and title menu
+
+Topic: The source code of the game is more reusable and maintainable
+
+    Refactor: Extract combined alpha effect as tool from Office and OfficeBuildingFloor
+
+    Refactor: Separate classes for title menu and pause menu
+
+    Refactor: The generic game-engine tools are moved to a dedicated lib that can be reused by other JS games
+
+Topic: The game feels and looks more organic and rich
 
     Feature: The offices in the array are slightly floating up and down
-
-    Feature: There is some kind of timeout that prevents users from brute-forcing the game
 
     Feature: There is a character explaining the game before it starts
 
     Feature: The character also tells you whether you succeeded or failed in a level
 
-Milestone: Create replayability
-
-    Feature: There is a difficulty level that rises only on correct answers
-
-    Feature: Levels of higher difficulty give more points
-
-Other issues:
-
-    Feature: A user selection triggers a sound effect according to whether it was correct
+    Feature: Apply parallaxing to the background when the player moves to the next level.
 
     Feature: The clouds in the background are moving
 
-    Refactor: Extract combined alpha effect as tool from Office and OfficeBuildingFloor
+    Feature: Use more "organic" velocity-curves for the movement of objects (instead of linear)
+    
+    Feature: A user selection triggers a sound effect according to whether it was correct
